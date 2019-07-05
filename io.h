@@ -10,15 +10,15 @@
 #include "defines.h"
 
 /* input/output functions */
-void __NOINLINE __REGPARM putch_color(char c, unsigned char color);
-void __NOINLINE __REGPARM putch(char c);
-void __NOINLINE __REGPARM print(const char *s);
+void __REGPARM putch_color(char c, unsigned char color);
+void __REGPARM putch(char c);
+void __REGPARM print(const char *s);
 
-char __NOINLINE __REGPARM getch();
-char __NOINLINE __REGPARM getche();
+char __REGPARM getch();
+char __REGPARM getche();
 
 /* graphics functions */
-void __NOINLINE init_graphics(unsigned char mode);
-void __NOINLINE putpixel(int y, int x, unsigned char color);
+void init_graphics(unsigned char mode);
+void putpixel(int y, int x, unsigned char color);
 
 #endif

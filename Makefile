@@ -1,4 +1,5 @@
-CFLAGS=-Wall -Werror -g -Os -march=i686 -ffreestanding -I. -m32
+CFLAGS=-Wall -Werror -Os -march=i686 -ffreestanding -fno-stack-protector
+CFLAGS+=-fomit-frame-pointer -I. -m32
 
 .PHONY: all disk clean run
 all: boot

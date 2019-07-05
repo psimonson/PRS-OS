@@ -12,26 +12,26 @@ asm(".code16gcc\n");
 
 /* Puts a character on the screen.
  */
-void __NOINLINE __REGPARM putch_color(char c, unsigned char color)
+void __REGPARM putch_color(char c, unsigned char color)
 {
 	asm("int $0x10": : "a"((0x0e << 8) | c), "b"((0x00 << 8) | color), "c"(0x0001));
 }
 /* Puts a character on the screen with default color 0x07.
  */
-void __NOINLINE __REGPARM putch(char c)
+void __REGPARM putch(char c)
 {
 	putch_color(c, 0x07);
 }
 /* Prints a string on the screen using putch.
  */
-void __NOINLINE __REGPARM print(const char *s)
+void __REGPARM print(const char *s)
 {
 	while(*s)
 		putch(*s++);
 }
 /* Gets a character from the keyboard.
  */
-char __NOINLINE __REGPARM getch()
+char __REGPARM getch()
 {
 	char c;
 	asm("int $0x16" : "=a"(c) : "a"(0x0000));
@@ -39,7 +39,7 @@ char __NOINLINE __REGPARM getch()
 }
 /* Gets a character from the keyboard and echoes it on screen.
  */
-char __NOINLINE __REGPARM getche()
+char __REGPARM getche()
 {
 	char c;
 	c = getch();
@@ -51,13 +51,13 @@ char __NOINLINE __REGPARM getche()
 
 /* Initilize graphics.
  */
-void __NOINLINE init_graphics(unsigned char mode)
+void init_graphics(unsigned char mode)
 {
 	asm("int $0x10": : "a"((0x00 << 8) | mode));
 }
 /* Plot a pixel at given (y,x) coords.
  */
-void __NOINLINE putpixel(int y, int x, unsigned char color)
+void putpixel(int y, int x, unsigned char color)
 {
 	asm("int $0x10": : "a"((0x0c << 8) | color), "b"(0x0000), "c"(y), "d"(x));
 }

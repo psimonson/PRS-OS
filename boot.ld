@@ -2,21 +2,13 @@ ENTRY(main);
 SECTIONS
 {
     . = 0x7C00;
-    .text : AT(0x7C00)
+    .text :
     {
-        _text = .;
         *(.text);
-        _text_end = .;
     }
     .data :
     {
-        _data = .;
-        *(.bss);
-        *(.bss*);
-        *(.data);
-        *(.rodata*);
-        *(COMMON)
-        _data_end = .;
+        *(.rodata);
     }
     .sig : AT(0x7DFE)
     {
@@ -30,6 +22,5 @@ SECTIONS
         *(.rel*);
         *(.comment);
 	*(.eh_frame);
-/* add any unwanted sections spewed out by your version of gcc and flags here */
     }
 }
