@@ -19,6 +19,9 @@ char __REGPARM getche();
 
 /* graphics functions */
 void init_graphics(unsigned char mode);
-void putpixel(int y, int x, unsigned char color);
+void putpixel(short y, short x, unsigned char color);
+
+/* miscellaneous functions */
+void set_cursoryx(char y, char x);
 
 #endif

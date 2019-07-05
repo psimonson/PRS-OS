@@ -16,17 +16,16 @@ void __NORETURN main()
 	int i,x,y;
 
 	init_graphics(0x0d);
-	print("Woo hoo!  :)\r\n");
-	getch();
-	print("It works. yay!\r\n");
-	getch();
-	init_graphics(0x0d);
 	for(i=0; i<3; i++) {
 		for(y=i*100; y<=110; y++)
 			for(x=i*100; x<=110; x++)
 				if((x%10) == 0 || (y%10) == 0)
 				 	putpixel(y, x, 0x0a);
 	}
+	set_cursoryx(0x0e, 0x00);
+	print("Press a key...\r\n");
+	getch();
+	init_graphics(0x03);
 	while(1);
 }
 

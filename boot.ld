@@ -16,10 +16,10 @@ SECTIONS
     }
     /DISCARD/ :
     {
-        *(.note*);
-        *(.iplt*);
-        *(.igot*);
-        *(.rel*);
+	*(.note*);
+	*(.iplt*);
+	*(.igot*);
+	*(.rel*);
         *(.comment);
 	*(.eh_frame);
     }
