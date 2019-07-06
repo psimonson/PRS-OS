@@ -1,5 +1,4 @@
-CFLAGS=-Wall -Werror -Os -march=i686 -ffreestanding -fno-stack-protector
-CFLAGS+=-fomit-frame-pointer -I. -m32
+CFLAGS=-Wall -Werror -Os -march=i686 -ffreestanding -I. -m16
 
 .PHONY: all disk clean run
 all: boot
@@ -7,7 +6,7 @@ all: boot
 %.c.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-boot: boot.c.o io.c.o
+boot: boot.c.o disk.c.o
 	$(LD) $(LDFLAGS) -static -Tboot.ld -melf_i386 -nostdlib --nmagic -o $@.elf $^
 	objcopy -O binary $@.elf $@.bin
 
