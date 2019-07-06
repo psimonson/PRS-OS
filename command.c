@@ -12,8 +12,8 @@ asm("jmpl $0, $main\n");
 
 #define INFOMSG "\x43\x4f\x44\x45\x44\x20\x42\x59\x20\x50\x48\x49\x4c\x49\x50\x0a\x0d"
 
-void __REGPARM graphics();
-extern int __REGPARM shell();
+void graphics();
+extern int shell();
 
 void __NORETURN main()
 {
@@ -27,7 +27,7 @@ void __NORETURN main()
 	while(1);
 }
 
-void __REGPARM graphics()
+void graphics()
 {
 	int i,j;
 	getch();
