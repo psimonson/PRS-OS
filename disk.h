@@ -5,13 +5,13 @@
 
 #ifdef HARD_DISK_BOOT
 typedef struct __PACKED address_packet {
-	char		size;
-	char		:8;
-	unsigned short  blocks;
-	unsigned short  buffer_offset;
-	unsigned short  buffer_segment;
-	unsigned long   lba;
-	unsigned long   flat_buffer;
+	char                size;
+	char		    :8;
+	unsigned short      blocks;
+	unsigned short      buffer_offset;
+	unsigned short      buffer_segment;
+	unsigned long long  lba;
+	unsigned long long  flat_buffer;
 } address_packet_t;
 
 int __REGPARM lba_read(const void *buffer, unsigned int lba,

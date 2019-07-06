@@ -10,6 +10,8 @@ asm("jmpl $0, $main\n");
 #include "disk.h"
 
 /*
+#include "io.h"
+
 void __NORETURN main()
 {
 	int i,x,y;
@@ -48,7 +50,7 @@ void __NORETURN main()
 	void *buff = (void*)IMAGE_LMA;
 	void *entry = (void*)IMAGE_ENTRY;
 	unsigned short num_blocks = ((IMAGE_SIZE / BLOCK_SIZE) +
-		 (IMAGE_SIZE % BLOCK_SIZE == 0 ? 0 : 1));
+		 ((IMAGE_SIZE % BLOCK_SIZE) == 0 ? 0 : 1));
 	drive_params_t p;
 
 	asm volatile("movb %%dl, %0" : "=r"(bios_drive));
