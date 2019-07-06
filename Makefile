@@ -17,7 +17,7 @@ boot: boot.c.o disk.c.o
 	$(LD) $(LDFLAGS) -static -Tboot.ld -melf_i386 -nostdlib \
 	--nmagic -o $@.elf $^ && objcopy -O binary $@.elf $@.bin
 
-command: command.c.o io.c.o time.c.o
+command: command.c.o io.c.o time.c.o shell.c.o
 	$(LD) $(LDFLAGS) -static -Tcommand.ld -melf_i386 -nostdlib \
 	--nmagic -o $@.elf $^ && objcopy -O binary $@.elf $@.bin
 

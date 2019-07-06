@@ -80,7 +80,7 @@ void __REGPARM play_sound(unsigned int nfreq)
 
 	/* Set the PIT to the desired frequency */
 	div = 1193180 / nfreq;
-	outb(0x43, 0xb6);
+	outb(0x43, 0xB6);
 	outb(0x42, (unsigned char)(div));
 	outb(0x42, (unsigned char)(div >> 8));
 
@@ -101,9 +101,8 @@ void __REGPARM no_sound()
 void __REGPARM beep()
 {
 	play_sound(1000);
-	wait(500000);
+	wait(50000);
 	no_sound();
-	/* TODO: Reset PIT controller */
 }
 
 /* --------------------------- Port Functions ------------------------- */
