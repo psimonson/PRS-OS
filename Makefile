@@ -1,7 +1,13 @@
 CFLAGS=-Wall -Werror -Os -march=i686 -ffreestanding -I. -m16
 CFLAGS+=-fno-tree-loop-optimize -fomit-frame-pointer
 
-.PHONY: all disk clean run
+SRCDIR=$(shell pwd)
+
+VERSION=0.1
+BASENAM=$(shell basename $(SRCDIR))
+TARNAME=$(BASENAM)-$(VERSION).tgz
+
+.PHONY: all disk clean run distclean dist
 all: boot command
 
 %.c.o: %.c
@@ -26,3 +32,10 @@ clean:
 run: clean disk
 	qemu-system-i386 -fda floppy.img -boot a
 
+distclean: clean
+
+dist:
+	@echo Compressing $(TARNAME)...
+	@cd .. && tar --exclude=.git -cf - ./$(BASENAM) | \
+	gzip -9 > ./$(TARNAME) && echo Compression done! || \
+	echo Compression failed.
