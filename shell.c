@@ -15,11 +15,13 @@ typedef struct __PACKED command {
 } command_t;
 
 /* command prototypes here */
+int cmd_help(void);
 int cmd_hello(void);
 int cmd_exit(void);
 
 /* command structure initializer */
 static const command_t commands[] = {
+	{"help", "This help text.", &cmd_help},
 	{"hello", "Say hello to the user.", &cmd_hello},
 	{"exit", "Exit the shell.", &cmd_exit}
 };
@@ -29,6 +31,21 @@ static const command_t commands[] = {
 int command_count()
 {
 	return sizeof(commands)/sizeof(command_t);
+}
+/* Help command, displays the help for my shell.
+ */
+int cmd_help()
+{
+	int i;
+
+	print("Commands List [help,hello,exit]\r\n");
+	for(i=0; i<command_count(); i++) {
+		print(commands[i].cmd);
+		print(" - ");
+		print(commands[i].help);
+		print("\r\n");
+	}
+	return 1;
 }
 /* Hello command, says hello to the user.
  */
@@ -74,20 +91,16 @@ int strcmp(const char *s, const char *t)
 int shell()
 {
 	char buf[256];
-	int running;
+	int i;
 
-	running = 1;
-	while(running) {
-		int i;
+	print("Enter command >> ");
+	gets(buf, 255);
+	print("\r\n");
 
-		print("Enter command >> ");
-		gets(buf, 255);
-		print("\r\n");
-
-		for(i=0; i<command_count(); i++)
-			if(strcmp(buf, commands[i].cmd) == 0)
-				return commands[i].func();
-	}
-	return running;
+	for(i=0; i<command_count(); i++)
+		if(strcmp(buf, commands[i].cmd) == 0)
+			return commands[i].func();
+	print("Bad command.\r\n");
+	return 1;
 }
 
