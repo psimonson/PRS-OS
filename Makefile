@@ -1,3 +1,7 @@
+# My Simple Makefile for bootcode project.
+# by Philip R. Simonson
+#######################################################################
+
 CFLAGS=-Wall -Werror -Os -march=i686 -ffreestanding -I. -m16
 CFLAGS+=-fno-tree-loop-optimize -fomit-frame-pointer
 

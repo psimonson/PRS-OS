@@ -1,11 +1,13 @@
 /*
  * Time function implementations, everything for timing/waiting.
  * Author: Philip R. Simonson
- * Date  : June 6, 2019
+ * Date  : July 6, 2019
  */
 
 #include "time.h"
 
+/* Pause system for some amount of time.
+ */
 int __REGPARM wait(unsigned int ms)
 {
 	unsigned char failed = 0;

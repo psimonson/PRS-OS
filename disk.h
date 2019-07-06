@@ -1,3 +1,9 @@
+/*
+ * Header file for my simple lba read functions.
+ * Author: Philip R. Simonson
+ * Date  : July 6, 2019
+ */
+
 #ifndef DISK_H
 #define DISK_H
 

@@ -7,6 +7,7 @@
 #include "io.h"
 #include "time.h"
 
+/* command structure */
 typedef struct __PACKED command {
 	char *cmd;
 	char *help;
@@ -17,22 +18,27 @@ typedef struct __PACKED command {
 int cmd_hello(void);
 int cmd_exit(void);
 
+/* command structure initializer */
 static const command_t commands[] = {
 	{"hello", "Say hello to the user.", &cmd_hello},
 	{"exit", "Exit the shell.", &cmd_exit}
 };
 
+/* Count number of commands.
+ */
 int command_count()
 {
 	return sizeof(commands)/sizeof(command_t);
 }
-
+/* Hello command, says hello to the user.
+ */
 int cmd_hello()
 {
 	print("Hello user, welcome to a basic shell.\r\n");
 	return 1;
 }
-
+/* Exit command, just exits the shell.
+ */
 int cmd_exit()
 {
 	return 0;
@@ -40,6 +46,8 @@ int cmd_exit()
 
 /* ------------------------------ Shell Functions ------------------------- */
 
+/* My Simple implementation of gets.
+ */
 int gets(char *s, int size)
 {
 	char c;
@@ -50,7 +58,8 @@ int gets(char *s, int size)
 	s[i] = '\0';
 	return i;
 }
-
+/* Simple implementation of string compare.
+ */
 int strcmp(const char *s, const char *t)
 {
 	int i;
@@ -60,7 +69,8 @@ int strcmp(const char *s, const char *t)
 			return s[i]-t[i];
 	return 0;
 }
-
+/* Main function for processing and getting commands.
+ */
 int shell()
 {
 	char buf[256];

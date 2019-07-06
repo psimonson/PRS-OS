@@ -1,7 +1,7 @@
 /*
  * Header file for system timing and waiting.
  * Author: Philip R. Simonson
- * Date  : June 6, 2019
+ * Date  : July 6, 2019
  */
 
 #ifndef TIME_H

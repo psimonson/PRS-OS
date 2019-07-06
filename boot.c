@@ -36,6 +36,8 @@ void __NORETURN main()
 #define IMAGE_LMA  0x8000
 #define IMAGE_ENTRY 0x800c
 
+/* Simple print function for boot sector.
+ */
 void __REGPARM print(const char *s)
 {
 	while(*s) {
@@ -43,7 +45,8 @@ void __REGPARM print(const char *s)
 		s++;
 	}
 }
-
+/* Entry point for boot sector.
+ */
 void __NORETURN main()
 {
 	drive_params_t p;

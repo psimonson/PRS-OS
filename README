@@ -1,2 +1,18 @@
-Simple Boot Sector using C and inline assembler.
-Written by me.
+======================================================
+                  .:[BOOTCODE v0.1]:.
+======================================================
+Simple Boot Sector using C and inline assembler. It
+displays some simple graphics, then it takes you into
+my very simple shell.
+======================================================
+Written by Philip R. Simonson, Please do NOT be a dick
+don't clone/copy and/or modify. Then, put it as your
+own. If you barrowed something from my code. Please
+give me credit.
+
+Thanks,
+Philip R. Simonson
+======================================================
+                      .:[EOF]:.
+======================================================
+
