@@ -18,10 +18,10 @@ char __REGPARM getch();
 char __REGPARM getche();
 
 /* graphics functions */
-void init_graphics(unsigned char mode);
-void putpixel(short y, short x, unsigned char color);
+void __REGPARM init_graphics(unsigned char mode);
+void __REGPARM putpixel(short y, short x, unsigned char color);
 
 /* miscellaneous functions */
-void set_cursoryx(char y, char x);
+void __REGPARM set_cursoryx(char y, char x);
 
 #endif

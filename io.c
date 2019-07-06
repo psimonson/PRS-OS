@@ -51,22 +51,22 @@ char __REGPARM getche()
 
 /* Initilize graphics.
  */
-void init_graphics(unsigned char mode)
+void __REGPARM init_graphics(unsigned char mode)
 {
-	asm("int $0x10": : "a"((0x00 << 8) | mode));
+	asm("int $0x10": : "a"(0x0000 | mode));
 }
 /* Plot a pixel at given (y,x) coords.
  */
-void putpixel(short y, short x, unsigned char color)
+void __REGPARM putpixel(short y, short x, unsigned char color)
 {
-	asm("int $0x10": : "a"((0x0c << 8) | color), "b"(0x0000), "c"(y), "d"(x));
+	asm("int $0x10": : "a"(0x0c00 | color), "b"(0x0000), "c"(y), "d"(x));
 }
 
 /* ---------------------- Miscellaneous Functions ----------------------- */
 
 /* Set cursor position.
  */
-void set_cursoryx(char y, char x)
+void __REGPARM set_cursoryx(char y, char x)
 {
 	asm("int $0x10": : "a"(0x0200), "b"(0x0000), "d"((y << 8) | x));
 }

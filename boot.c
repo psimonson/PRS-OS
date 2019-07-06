@@ -33,8 +33,8 @@ void __NORETURN main()
 
 #define IMAGE_SIZE 8192
 #define BLOCK_SIZE 512
-#define IMAGE_LMA  0x1000
-#define IMAGE_ENTRY 0x100c
+#define IMAGE_LMA  0x8000
+#define IMAGE_ENTRY 0x800c
 
 void __REGPARM print(const char *s)
 {
@@ -55,16 +55,14 @@ void __NORETURN main()
 
 	asm volatile("movb %%dl, %0" : "=r"(bios_drive));
 	get_drive_params(&p, bios_drive);
-	asm volatile(
-		"push %ax\n"
-		"movw $0, %ax\n"
+	asm(
+		"xorw %ax, %ax\n"
 		"movw %ax, %ds\n"
 		"movw %ax, %es\n"
 		"movw %ax, %fs\n"
 		"movw %ax, %gs\n"
 		"movw %ax, %ss\n"
-		"movw $0x1000, %sp\n"
-		"pop %ax\n"
+		"mov $0x2000, %esp\n"
 	);
 	if(lba_read(buff, 1, num_blocks, bios_drive, &p) != 0) {
 		print("read error :(\r\n");
