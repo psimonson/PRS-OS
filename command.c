@@ -8,6 +8,7 @@ asm(".code16gcc\n");
 asm("jmpl $0, $main\n");
 
 #include "io.h"
+#include "time.h"
 
 void __REGPARM graphics();
 
@@ -18,6 +19,7 @@ void main()
 	print("Press any key to continue...\r\n");
 	graphics();
 	print(INFOMSG);
+	wait(1000000);
 	print("Hanging system.\r\n");
 	while(1);
 }
