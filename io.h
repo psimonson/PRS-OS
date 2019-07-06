@@ -23,5 +23,12 @@ void __REGPARM putpixel(short y, short x, unsigned char color);
 
 /* miscellaneous functions */
 void __REGPARM set_cursoryx(char y, char x);
+void __REGPARM play_sound(unsigned int nfreq);
+void __REGPARM no_sound();
+void __REGPARM beep();
+
+/* input and output to ports functions */
+void __REGPARM outb(unsigned short port, unsigned char byte);
+unsigned char __REGPARM inb(unsigned short port);
 
 #endif

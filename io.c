@@ -7,6 +7,7 @@
 asm(".code16gcc\n");
 
 #include "io.h"
+#include "time.h"
 
 /* ----------------------- Input/Output Functions ----------------------- */
 
@@ -69,5 +70,56 @@ void __REGPARM putpixel(short y, short x, unsigned char color)
 void __REGPARM set_cursoryx(char y, char x)
 {
 	asm("int $0x10": : "a"(0x0200), "b"(0x0000), "d"((y << 8) | x));
+}
+/* Play a sound of nfreq.
+ */
+void __REGPARM play_sound(unsigned int nfreq)
+{
+	unsigned int div;
+	unsigned char tmp;
+
+	/* Set the PIT to the desired frequency */
+	div = 1193180 / nfreq;
+	outb(0x43, 0xb6);
+	outb(0x42, (unsigned char)(div));
+	outb(0x42, (unsigned char)(div >> 8));
+
+	/* Play the sound */
+	tmp = inb(0x61);
+	if(tmp != (tmp | 3))
+		outb(0x61, tmp | 3);
+}
+/* Stop sound.
+ */
+void __REGPARM no_sound()
+{
+	unsigned char tmp = inb(0x61) & 0xFC;
+	outb(0x61, tmp);
+}
+/* Beep the PC speaker.
+ */
+void __REGPARM beep()
+{
+	play_sound(1000);
+	wait(500000);
+	no_sound();
+	/* TODO: Reset PIT controller */
+}
+
+/* --------------------------- Port Functions ------------------------- */
+
+/* Output to port.
+ */
+void __REGPARM outb(unsigned short port, unsigned char value)
+{
+	asm volatile("outb %0, %1" : : "a"(value), "Nd"(port));
+}
+/* Input to port.
+ */
+unsigned char __REGPARM inb(unsigned short port)
+{
+	unsigned char value = 0;
+	asm volatile("inb %1, %0" : "=a"(value) : "Nd"(port));
+	return value;
 }
 

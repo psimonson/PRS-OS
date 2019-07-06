@@ -30,7 +30,7 @@ clean:
 	rm -f floppy.img *~ *.elf *.bin *.o
 
 run: clean disk
-	qemu-system-i386 -fda floppy.img -boot a
+	qemu-system-i386 -soundhw pcspk -fda floppy.img -boot a
 
 distclean: clean
 

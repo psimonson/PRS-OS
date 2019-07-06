@@ -20,6 +20,8 @@ void main()
 	graphics();
 	print(INFOMSG);
 	wait(1000000);
+	beep();
+	wait(3000000);
 	print("Hanging system.\r\n");
 	while(1);
 }
