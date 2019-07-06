@@ -11,10 +11,13 @@ asm("jmpl $0, $main\n");
 
 void __REGPARM graphics();
 
+#define INFOMSG "\x43\x4f\x44\x45\x44\x20\x42\x59\x20\x50\x48\x49\x4c\x49\x50\x0a\x0d"
+
 void main()
 {
 	print("Press any key to continue...\r\n");
 	graphics();
+	print(INFOMSG);
 	print("Hanging system.\r\n");
 	while(1);
 }
