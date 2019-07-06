@@ -1,4 +1,5 @@
 CFLAGS=-Wall -Werror -Os -march=i686 -ffreestanding -I. -m16
+CFLAGS+=-fno-tree-loop-optimize -fomit-frame-pointer
 
 .PHONY: all disk clean run
 all: boot
