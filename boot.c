@@ -18,10 +18,8 @@ asm("jmpl $0, $main\n");
  */
 void __REGPARM print(const char *s)
 {
-	while(*s) {
-		asm volatile("int $0x10" : : "a"(0x0e00 | *s), "b"(7));
-		s++;
-	}
+	while(*s)
+		asm volatile("int $0x10" : : "a"(0x0e00 | *s++), "b"(7));
 }
 /* Entry point for boot sector.
  */
@@ -43,7 +41,7 @@ void __NORETURN main()
 		"movw %ax, %fs\n"
 		"movw %ax, %gs\n"
 		"movw %ax, %ss\n"
-		"mov $0x2000, %esp\n"
+		"mov $0x1000, %esp\n"
 	);
 	if(lba_read(buff, 1, num_blocks, bios_drive, &p) != 0) {
 		print("read error :(\r\n");

@@ -12,20 +12,20 @@ BASENAM=$(shell basename $(SRCDIR))
 TARNAME=$(BASENAM)-$(VERSION).tgz
 
 .PHONY: all disk clean run distclean dist
-all: boot command
+all: boot.bin command.bin
 
 %.c.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-boot: boot.c.o disk.c.o
+boot.bin: boot.c.o disk.c.o
 	$(LD) $(LDFLAGS) -static -Tboot.ld -melf_i386 -nostdlib \
-	--nmagic -o $@.elf $^ && objcopy -O binary $@.elf $@.bin
+	--nmagic -o boot.elf $^ && objcopy -O binary boot.elf $@
 
-command: command.c.o io.c.o time.c.o shell.c.o
+command.bin: command.c.o io.c.o time.c.o shell.c.o
 	$(LD) $(LDFLAGS) -static -Tcommand.ld -melf_i386 -nostdlib \
-	--nmagic -o $@.elf $^ && objcopy -O binary $@.elf $@.bin
+	--nmagic -o command.elf $^ && objcopy -O binary command.elf $@
 
-disk: boot command
+disk: boot.bin command.bin
 	dd if=/dev/zero of=floppy.img bs=1024 count=1440
 	dd if=boot.bin of=floppy.img bs=1 count=512 conv=notrunc
 	dd if=command.bin of=floppy.img seek=512 bs=1 conv=notrunc
@@ -33,7 +33,7 @@ disk: boot command
 clean:
 	rm -f floppy.img *~ *.elf *.bin *.o
 
-run: clean disk
+run:
 	qemu-system-i386 -soundhw pcspk -fda floppy.img -boot a
 
 distclean: clean

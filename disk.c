@@ -17,7 +17,8 @@ int __REGPARM lba_read(const void *buffer, unsigned int lba,
 		unsigned short blocks, unsigned char bios_drive)
 {
 	int i;
-	unsigned short failed = 0;
+	unsigned short value = 0;
+	unsigned char failed = 0;
 	address_packet_t packet;
 	packet.size = sizeof(address_packet_t);
 	packet.blocks = blocks;
@@ -28,14 +29,13 @@ int __REGPARM lba_read(const void *buffer, unsigned int lba,
 	for(i = 0; i < 3; i++) {
 		packet.blocks = blocks;
 		asm volatile(
-			"movw $0, %0\n"
 			"int $0x13\n"
-			"setcb %0\n"
-			: "=m"(failed)
+			: "=a"(value)
 			: "a"(0x4200), "d"(bios_drive), "S"(&packet)
 			: "cc"
 		);
-		if(!failed)
+		failed = value >> 8;
+		if(failed)
 			break;
 	}
 	return failed;
@@ -45,16 +45,15 @@ int __REGPARM lba_read(const void *buffer, unsigned int lba,
  */
 int __REGPARM get_drive_params(drive_params_t *p, unsigned char bios_drive)
 {
-	unsigned short failed = 0;
-	unsigned short tmp1, tmp2;
+	unsigned char failed = 0;
+	unsigned short tmp1, tmp2, val;
 	asm volatile(
-		"movw $0, %0\n"
 		"int $0x13\n"
-		"setcb %0\n"
-		: "=m"(failed), "=c"(tmp1), "=d"(tmp2)
+		: "=a"(val), "=c"(tmp1), "=d"(tmp2)
 		: "a"(0x0800), "d"(bios_drive), "D"(0)
 		: "cc", "bx"
 	);
+	failed = val >> 8;
 	if(failed)
 		return failed;
 	p->spt = tmp1 & 0x3F;
@@ -70,20 +69,20 @@ int __REGPARM lba_read(const void *buffer, unsigned int lba,
 	unsigned char c, h, s;
 	unsigned char failed;
 	unsigned char num_blocks_transferred;
-	unsigned short t;
+	unsigned short t,value;
 	c = lba / (p->numh * p->spt);
 	t = lba % (p->numh * p->spt);
 	h = t / p->spt;
 	s = (t % p->spt) + 1;
 	failed = num_blocks_transferred = 0;
 	asm volatile(
-		"movw $0, %0\n"
 		"int $0x13\n"
-		"setcb %0\n"
-		: "=m"(failed), "=a"(num_blocks_transferred)
+		: "=a"(value)
 		: "a"(0x0200 | blocks), "b"(buffer), "c"((c << 8) | s),
 			"d"((h << 8) | bios_drive)
 	);
+	num_blocks_transferred = value & 0xff;
+	failed = value >> 8;
 	return failed || (num_blocks_transferred != blocks);
 }
 #endif
