@@ -9,28 +9,6 @@ asm("jmpl $0, $main\n");
 
 #include "disk.h"
 
-/*
-#include "io.h"
-
-void __NORETURN main()
-{
-	int i,x,y;
-
-	init_graphics(0x0d);
-	for(i=0; i<3; i++) {
-		for(y=i*100; y<=110; y++)
-			for(x=i*100; x<=110; x++)
-				if((x%10) == 0 || (y%10) == 0)
-				 	putpixel(y, x, 0x0a);
-	}
-	set_cursoryx(0x0e, 0x00);
-	print("Press a key...\r\n");
-	getch();
-	init_graphics(0x03);
-	while(1);
-}
-*/
-
 #define IMAGE_SIZE 8192
 #define BLOCK_SIZE 512
 #define IMAGE_LMA  0x8000
