@@ -13,7 +13,6 @@
 void __REGPARM putch_color(char c, unsigned char color);
 void __REGPARM putch(char c);
 void __REGPARM print(const char *s);
-
 char __REGPARM getch();
 char __REGPARM getche();
 
@@ -23,7 +22,7 @@ void __REGPARM putpixel(short y, short x, unsigned char color);
 
 /* miscellaneous functions */
 void __REGPARM set_cursoryx(char y, char x);
-void __REGPARM play_sound(unsigned int nfreq);
+void __REGPARM play_sound(unsigned short nfreq);
 void __REGPARM no_sound();
 void __REGPARM beep();
 

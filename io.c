@@ -73,9 +73,9 @@ void __REGPARM set_cursoryx(char y, char x)
 }
 /* Play a sound of nfreq.
  */
-void __REGPARM play_sound(unsigned int nfreq)
+void __REGPARM play_sound(unsigned short nfreq)
 {
-	unsigned int div;
+	unsigned short div;
 	unsigned char tmp;
 
 	/* Set the PIT to the desired frequency */
@@ -101,7 +101,7 @@ void __REGPARM no_sound()
 void __REGPARM beep()
 {
 	play_sound(1000);
-	wait(50000);
+	wait(10000);
 	no_sound();
 }
 

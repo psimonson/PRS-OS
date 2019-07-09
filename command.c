@@ -12,9 +12,9 @@ asm("jmpl $0, $main");
 
 #define INFOMSG "\x43\x4f\x44\x45\x44\x20\x42\x59\x20\x50\x48\x49\x4c\x49\x50\x0a\x0d"
 
-extern int shell();
+extern int __REGPARM shell();
 
-void graphics()
+void __REGPARM graphics()
 {
 	int i,j;
 	getch();

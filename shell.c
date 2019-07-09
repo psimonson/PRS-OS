@@ -14,15 +14,15 @@ asm(".code16gcc");
 typedef struct __PACKED command {
 	char *cmd;
 	char *help;
-	int (*func)(void);
+	int __REGPARM (*func)(void);
 } command_t;
 
 /* command prototypes here */
-int cmd_help(void);
-int cmd_hello(void);
-int cmd_play(void);
-int cmd_search(void);
-int cmd_exit(void);
+int __REGPARM cmd_help(void);
+int __REGPARM cmd_hello(void);
+int __REGPARM cmd_play(void);
+int __REGPARM cmd_search(void);
+int __REGPARM cmd_exit(void);
 
 /* command structure initializer */
 static const command_t commands[] = {
@@ -41,7 +41,7 @@ int command_count()
 }
 /* Help command, displays the help for my shell.
  */
-int cmd_help()
+int __REGPARM cmd_help()
 {
 	int i;
 
@@ -56,14 +56,14 @@ int cmd_help()
 }
 /* Hello command, says hello to the user.
  */
-int cmd_hello()
+int __REGPARM cmd_hello()
 {
 	print("Hello user, welcome to a basic shell.\r\n");
 	return 1;
 }
 /* Play command, plays a given frequency with PC speaker.
  */
-int cmd_play()
+int __REGPARM cmd_play()
 {
 	char buf[256];
 	int freq;
@@ -86,7 +86,7 @@ int cmd_play()
 }
 /* Search command, searchs a string for another string.
  */
-int cmd_search()
+int __REGPARM cmd_search()
 {
 	char buf[256];
 	char str[256];
@@ -111,7 +111,7 @@ int cmd_search()
 }
 /* Exit command, just exits the shell.
  */
-int cmd_exit()
+int __REGPARM cmd_exit()
 {
 	return 0;
 }
@@ -120,7 +120,7 @@ int cmd_exit()
 
 /* Main function for processing and getting commands.
  */
-int shell()
+int __REGPARM shell()
 {
 	char buf[256];
 	int i;
