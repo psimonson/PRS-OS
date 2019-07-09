@@ -52,7 +52,7 @@ _start:
 	mov si, msg_loading
 	call print
 
-load_root:
+	load_root:
 	; ================================================
 	; compute size of root directory and store in "cx"
 	; ================================================
@@ -97,7 +97,7 @@ load_root:
 	; =====================================================
 	; load FAT
 	; =====================================================
-load_fat:
+	load_fat:
 	mov si, msg_crlf
 	call print
 	mov dx, WORD [di+0x001A]
@@ -127,7 +127,7 @@ load_fat:
 	; ======================================================
 	; load image "command.bin"
 	; ======================================================
-load_image:
+	load_image:
 	mov ax, WORD [cluster]
 	pop bx
 	call clusterlba
