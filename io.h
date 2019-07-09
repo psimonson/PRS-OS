@@ -22,9 +22,17 @@ void __REGPARM putpixel(short y, short x, unsigned char color);
 
 /* miscellaneous functions */
 void __REGPARM set_cursoryx(char y, char x);
+void __REGPARM reboot();
+
+/* sound functions (PC Speaker) */
 void __REGPARM play_sound(unsigned short nfreq);
 void __REGPARM no_sound();
 void __REGPARM beep();
+
+/* cmos functions */
+unsigned char __REGPARM cmos_read(unsigned char addr);
+void __REGPARM cmos_write(unsigned char addr, unsigned char byte);
+void __REGPARM cmos_invert(unsigned char addr);
 
 /* input and output to ports functions */
 void __REGPARM outb(unsigned short port, unsigned char byte);

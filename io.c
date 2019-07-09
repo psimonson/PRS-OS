@@ -71,6 +71,15 @@ void __REGPARM set_cursoryx(char y, char x)
 {
 	asm("int $0x10": : "a"(0x0200), "b"(0x0000), "d"((y << 8) | x));
 }
+/* Reboot system.
+ */
+void __REGPARM reboot()
+{
+	asm("jmpw $0xFFFF, $0x0000");
+}
+
+/* -------------------------- Sound Functions --------------------------- */
+
 /* Play a sound of nfreq.
  */
 void __REGPARM play_sound(unsigned short nfreq)
@@ -103,6 +112,31 @@ void __REGPARM beep()
 	play_sound(1000);
 	wait(10000);
 	no_sound();
+}
+
+/* --------------------------- CMOS Functions ------------------------- */
+
+/* Read a byte from the CMOS.
+ */
+unsigned char __REGPARM cmos_read(unsigned char addr)
+{
+	outb(0x70, addr);
+	wait(50000);
+	return inb(0x71);
+}
+/* Write a byte to the CMOS.
+ */
+void __REGPARM cmos_write(unsigned char addr, unsigned char byte)
+{
+	outb(0x70, addr);
+	wait(50000);
+	outb(0x71, byte);
+}
+/* Invert byte from CMOS.
+ */
+void __REGPARM cmos_invert(unsigned char addr)
+{
+	cmos_write(addr, 255 ^ cmos_read(addr));
 }
 
 /* --------------------------- Port Functions ------------------------- */

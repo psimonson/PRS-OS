@@ -23,6 +23,8 @@ int __REGPARM cmd_hello(void);
 int __REGPARM cmd_play(void);
 int __REGPARM cmd_playmusic(void);
 int __REGPARM cmd_search(void);
+int __REGPARM cmd_resetcmos(void);
+int __REGPARM cmd_reboot(void);
 int __REGPARM cmd_exit(void);
 
 /* command structure initializer */
@@ -32,6 +34,8 @@ static const command_t commands[] = {
 	{"play", "Play a frequency given by the user.", &cmd_play},
 	{"play music", "Play some hard coded music.", &cmd_playmusic},
 	{"search", "Search for a string in another.", &cmd_search},
+	{"reset_CMOS", "Reset the CMOS settings.", &cmd_resetcmos},
+	{"reboot", "Reboot the machine (warm reboot).", &cmd_reboot},
 	{"exit", "Exit the shell.", &cmd_exit}
 };
 
@@ -92,14 +96,19 @@ int __REGPARM cmd_playmusic()
 {
 	play_sound(10);
 	wait(100000);
+	no_sound();
 	play_sound(20);
 	wait(100000);
+	no_sound();
 	play_sound(30);
 	wait(100000);
+	no_sound();
 	play_sound(40);
 	wait(100000);
+	no_sound();
 	play_sound(50);
 	wait(100000);
+	no_sound();
 	play_sound(60);
 	wait(100000);
 	no_sound();
@@ -129,6 +138,25 @@ int __REGPARM cmd_search()
 	else
 		print(" [Not Found]\r\n");
 	return 1;
+}
+/* ResetCMOS command, just resets the CMOS settings.
+ */
+int __REGPARM cmd_resetcmos()
+{
+	const unsigned char CHECKSUM_HI = 0x2e;
+	const unsigned char CHECKSUM_LO = 0x2f;
+	print("Resetting CMOS to defaults...\r\n");
+	cmos_invert(CHECKSUM_HI);
+	cmos_invert(CHECKSUM_LO);
+	print("Done.\r\n");
+	return 1;
+}
+/* Reboot command, just reboots the machine.
+ */
+int __REGPARM cmd_reboot()
+{
+	reboot();
+	return 0;
 }
 /* Exit command, just exits the shell.
  */
