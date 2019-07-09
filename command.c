@@ -5,7 +5,7 @@
  */
 
 asm(".code16gcc");
-asm("jmpl $0, $main");
+asm("jmp main");
 
 #include "io.h"
 #include "time.h"
@@ -31,6 +31,7 @@ void __REGPARM graphics()
 
 void __NORETURN main()
 {
+	asm("push %cs\npop %ds");
 	print("Press any key to continue...\r\n");
 	graphics();
 	print(INFOMSG);

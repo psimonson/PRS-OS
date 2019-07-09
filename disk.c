@@ -13,7 +13,7 @@ asm(".code16gcc");
 #ifdef HARD_DISK_BOOT
 /* My Simple lba read function, reads a hard disk.
  */
-int __REGPARM lba_read(const void *buffer, unsigned int lba,
+int lba_read(const void *buffer, unsigned int lba,
 		unsigned short blocks, unsigned char bios_drive)
 {
 	int i;
@@ -43,7 +43,7 @@ int __REGPARM lba_read(const void *buffer, unsigned int lba,
 #else
 /* Get drive params, of the current drive.
  */
-int __REGPARM get_drive_params(drive_params_t *p, unsigned char bios_drive)
+int get_drive_params(drive_params_t *p, unsigned char bios_drive)
 {
 	unsigned char failed = 0;
 	unsigned short tmp1, tmp2, val;
@@ -62,7 +62,7 @@ int __REGPARM get_drive_params(drive_params_t *p, unsigned char bios_drive)
 }
 /* Reads a volume, like a floppy disk.
  */
-int __REGPARM lba_read(const void *buffer, unsigned int lba,
+int lba_read(const void *buffer, unsigned int lba,
 		unsigned char blocks, unsigned char bios_drive,
 		drive_params_t *p)
 {

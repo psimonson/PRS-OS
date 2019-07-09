@@ -17,9 +17,8 @@ all: boot.bin command.bin
 %.c.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-boot.bin: boot.c.o disk.c.o
-	$(LD) $(LDFLAGS) -static -Tboot.ld -melf_i386 -nostdlib \
-	--nmagic -o boot.elf $^ && objcopy -O binary boot.elf $@
+boot.bin: boot.asm
+	nasm -f bin -o $@ $^
 
 command.bin: command.c.o io.c.o time.c.o shell.c.o string.c.o
 	$(LD) $(LDFLAGS) -static -Tcommand.ld -melf_i386 -nostdlib \
@@ -27,8 +26,13 @@ command.bin: command.c.o io.c.o time.c.o shell.c.o string.c.o
 
 disk: boot.bin command.bin
 	dd if=/dev/zero of=floppy.img bs=1024 count=1440
+	sudo losetup /dev/loop0 floppy.img
+	sudo mkfs.vfat -F12 /dev/loop0
+	sudo mount /dev/loop0 /mnt
+	sudo cp command.bin /mnt
+	sudo umount /dev/loop0
+	sudo losetup -d /dev/loop0
 	dd if=boot.bin of=floppy.img bs=1 count=512 conv=notrunc
-	dd if=command.bin of=floppy.img seek=512 bs=1 conv=notrunc
 
 clean:
 	rm -f floppy.img *~ *.elf *.bin *.o

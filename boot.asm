@@ -6,10 +6,10 @@
 ; ================================================================
 
 [bits 16]
-[org 0x7c00]
+[org 0x0]
 
 jmp short _start ; jump past BPB
-nop ; needed for boot sector
+
 bpbOEM			DB "My OS   "
 bpbBytesPerSector:	DW 512
 bpbSectorsPerCluster:	DB 1
@@ -248,7 +248,7 @@ absoluteTrack db 0x00
 
 datasector dw 0x0000
 cluster dw 0x0000
-image_name db "COMMAND BIN"
+image_name db "COMMAND BIN",0x00
 msg_loading db "Loading shell",0x00
 msg_crlf db 0x0a, 0x0d, 0x00
 msg_progress db 0x2c, 0x00

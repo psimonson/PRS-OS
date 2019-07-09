@@ -10,6 +10,6 @@
 #include "defines.h"
 
 /* wait function prototype */
-int __REGPARM wait(unsigned int ms);
+int wait(unsigned int ms);
 
 #endif

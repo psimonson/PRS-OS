@@ -20,7 +20,7 @@ typedef struct __PACKED address_packet {
 	unsigned long long  flat_buffer;
 } address_packet_t;
 
-int __REGPARM lba_read(const void *buffer, unsigned int lba,
+int lba_read(const void *buffer, unsigned int lba,
 		unsigned short blocks, unsigned char bios_drive);
 #else
 /* use for floppy, or as a fallback */
@@ -29,8 +29,8 @@ typedef struct {
 	unsigned char numh;
 } drive_params_t;
 
-int __REGPARM get_drive_params(drive_params_t *p, unsigned char bios_drive);
-int __REGPARM lba_read(const void *buffer, unsigned int lba,
+int get_drive_params(drive_params_t *p, unsigned char bios_drive);
+int lba_read(const void *buffer, unsigned int lba,
 		unsigned char blocks, unsigned char bios_drive,
 		drive_params_t *p);
 #endif

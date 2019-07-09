@@ -14,18 +14,18 @@ asm(".code16gcc");
 typedef struct __PACKED command {
 	char *cmd;
 	char *help;
-	int __REGPARM (*func)(void);
+	int (*func)(void);
 } command_t;
 
 /* command prototypes here */
-int __REGPARM cmd_help(void);
-int __REGPARM cmd_hello(void);
-int __REGPARM cmd_play(void);
-int __REGPARM cmd_playmusic(void);
-int __REGPARM cmd_search(void);
-int __REGPARM cmd_resetcmos(void);
-int __REGPARM cmd_reboot(void);
-int __REGPARM cmd_exit(void);
+int cmd_help(void);
+int cmd_hello(void);
+int cmd_play(void);
+int cmd_playmusic(void);
+int cmd_search(void);
+int cmd_resetcmos(void);
+int cmd_reboot(void);
+int cmd_exit(void);
 
 /* command structure initializer */
 static const command_t commands[] = {
@@ -47,7 +47,7 @@ int command_count()
 }
 /* Help command, displays the help for my shell.
  */
-int __REGPARM cmd_help()
+int cmd_help()
 {
 	int i;
 
@@ -62,14 +62,14 @@ int __REGPARM cmd_help()
 }
 /* Hello command, says hello to the user.
  */
-int __REGPARM cmd_hello()
+int cmd_hello()
 {
 	print("Hello user, welcome to a basic shell.\r\n");
 	return 1;
 }
 /* Play command, plays a given frequency with PC speaker.
  */
-int __REGPARM cmd_play()
+int cmd_play()
 {
 	char buf[256];
 	int freq;
@@ -92,7 +92,7 @@ int __REGPARM cmd_play()
 }
 /* PlayMusic command, plays a hard coded song.
  */
-int __REGPARM cmd_playmusic()
+int cmd_playmusic()
 {
 	play_sound(10);
 	wait(100000);
@@ -116,7 +116,7 @@ int __REGPARM cmd_playmusic()
 }
 /* Search command, searchs a string for another string.
  */
-int __REGPARM cmd_search()
+int cmd_search()
 {
 	char buf[256];
 	char str[256];
@@ -141,7 +141,7 @@ int __REGPARM cmd_search()
 }
 /* ResetCMOS command, just resets the CMOS settings.
  */
-int __REGPARM cmd_resetcmos()
+int cmd_resetcmos()
 {
 	const unsigned char CHECKSUM_HI = 0x2e;
 	const unsigned char CHECKSUM_LO = 0x2f;
@@ -153,14 +153,14 @@ int __REGPARM cmd_resetcmos()
 }
 /* Reboot command, just reboots the machine.
  */
-int __REGPARM cmd_reboot()
+int cmd_reboot()
 {
 	reboot();
 	return 0;
 }
 /* Exit command, just exits the shell.
  */
-int __REGPARM cmd_exit()
+int cmd_exit()
 {
 	return 0;
 }
@@ -169,7 +169,7 @@ int __REGPARM cmd_exit()
 
 /* Main function for processing and getting commands.
  */
-int __REGPARM shell()
+int shell()
 {
 	char buf[256];
 	int i;

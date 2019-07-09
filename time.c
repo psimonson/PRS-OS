@@ -8,7 +8,7 @@
 
 /* Pause system for some amount of time.
  */
-int __REGPARM wait(unsigned int ms)
+int wait(unsigned int ms)
 {
 	unsigned char failed = 0;
 	asm volatile(

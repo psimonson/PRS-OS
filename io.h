@@ -10,32 +10,32 @@
 #include "defines.h"
 
 /* input/output functions */
-void __REGPARM putch_color(char c, unsigned char color);
-void __REGPARM putch(char c);
-void __REGPARM print(const char *s);
-char __REGPARM getch();
-char __REGPARM getche();
+void putch_color(char c, unsigned char color);
+void putch(char c);
+void print(const char *s);
+char getch();
+char getche();
 
 /* graphics functions */
-void __REGPARM init_graphics(unsigned char mode);
-void __REGPARM putpixel(short y, short x, unsigned char color);
+void init_graphics(unsigned char mode);
+void putpixel(short y, short x, unsigned char color);
 
 /* miscellaneous functions */
-void __REGPARM set_cursoryx(char y, char x);
-void __REGPARM reboot();
+void set_cursoryx(char y, char x);
+void reboot();
 
 /* sound functions (PC Speaker) */
-void __REGPARM play_sound(unsigned short nfreq);
-void __REGPARM no_sound();
-void __REGPARM beep();
+void play_sound(unsigned short nfreq);
+void no_sound();
+void beep();
 
 /* cmos functions */
-unsigned char __REGPARM cmos_read(unsigned char addr);
-void __REGPARM cmos_write(unsigned char addr, unsigned char byte);
-void __REGPARM cmos_invert(unsigned char addr);
+unsigned char cmos_read(unsigned char addr);
+void cmos_write(unsigned char addr, unsigned char byte);
+void cmos_invert(unsigned char addr);
 
 /* input and output to ports functions */
-void __REGPARM outb(unsigned short port, unsigned char byte);
-unsigned char __REGPARM inb(unsigned short port);
+void outb(unsigned short port, unsigned char byte);
+unsigned char inb(unsigned short port);
 
 #endif
