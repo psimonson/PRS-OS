@@ -4,8 +4,9 @@
  * Date  : July 5, 2019
  */
 
-asm(".code16gcc\n");
-asm("jmpl $0, $main\n");
+asm(".code16gcc");
+asm("jmp main");
+asm("nop");
 
 #include "disk.h"
 

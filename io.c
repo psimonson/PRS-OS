@@ -4,7 +4,7 @@
  * Date  : July 5, 2019
  */
 
-asm(".code16gcc\n");
+asm(".code16gcc");
 
 #include "io.h"
 #include "time.h"
