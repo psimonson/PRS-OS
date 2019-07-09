@@ -20,6 +20,7 @@ typedef struct __PACKED command {
 /* command prototypes here */
 int cmd_help(void);
 int cmd_hello(void);
+int cmd_play(void);
 int cmd_search(void);
 int cmd_exit(void);
 
@@ -27,6 +28,7 @@ int cmd_exit(void);
 static const command_t commands[] = {
 	{"help", "This help text.", &cmd_help},
 	{"hello", "Say hello to the user.", &cmd_hello},
+	{"play", "Play a frequency given by the user.", &cmd_play},
 	{"search", "Search for a string in another.", &cmd_search},
 	{"exit", "Exit the shell.", &cmd_exit}
 };
@@ -57,6 +59,29 @@ int cmd_help()
 int cmd_hello()
 {
 	print("Hello user, welcome to a basic shell.\r\n");
+	return 1;
+}
+/* Play command, plays a given frequency with PC speaker.
+ */
+int cmd_play()
+{
+	char buf[256];
+	int freq;
+
+	print("Enter a number: ");
+	if(gets(buf, sizeof(buf)) <= 0) {
+		print("\r\nYou need to enter a string.\r\n");
+		return -1;
+	}
+	print("\r\n");
+	freq = atoi(buf);
+	if(!freq) {
+		print("No number given.\r\n");
+		return -1;
+	}
+	play_sound(freq);
+	wait(50000);
+	no_sound();
 	return 1;
 }
 /* Search command, searchs a string for another string.

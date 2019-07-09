@@ -31,6 +31,19 @@ int gets(char *s, int size)
 	s[i] = 0;
 	return i;
 }
+/* Simple implementation of convert string to int.
+ */
+int atoi(const char *s)
+{
+	int number = 0;
+	while(*s) {
+		if(*s < '0' || *s > '9')
+			return 0;
+		number = (number << 3) + (number << 1) + *s-'0';
+		s++;
+	}
+	return number;
+}
 /* Simple implementation of string compare.
  */
 int strcmp(const char *s, const char *t)

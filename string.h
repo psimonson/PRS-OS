@@ -8,6 +8,7 @@
 #define STRING_H
 
 int gets(char *s, int size);
+int atoi(const char *s);
 int strcmp(const char *s, const char *t);
 char *strstr(char *s, const char *t);
 
