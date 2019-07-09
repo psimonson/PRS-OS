@@ -9,6 +9,7 @@
 [org 0x0]
 
 jmp short _start ; jump past BPB
+nop
 
 bpbOEM			DB "My OS   "
 bpbBytesPerSector:	DW 512
