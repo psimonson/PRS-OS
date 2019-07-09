@@ -8,6 +8,7 @@ asm(".code16gcc\n");
 
 #include "io.h"
 #include "time.h"
+#include "string.h"
 
 /* command structure */
 typedef struct __PACKED command {
@@ -19,12 +20,14 @@ typedef struct __PACKED command {
 /* command prototypes here */
 int cmd_help(void);
 int cmd_hello(void);
+int cmd_search(void);
 int cmd_exit(void);
 
 /* command structure initializer */
 static const command_t commands[] = {
 	{"help", "This help text.", &cmd_help},
 	{"hello", "Say hello to the user.", &cmd_hello},
+	{"search", "Search for a string in another.", &cmd_search},
 	{"exit", "Exit the shell.", &cmd_exit}
 };
 
@@ -56,6 +59,31 @@ int cmd_hello()
 	print("Hello user, welcome to a basic shell.\r\n");
 	return 1;
 }
+/* Search command, searchs a string for another string.
+ */
+int cmd_search()
+{
+	char buf[256];
+	char str[256];
+	char *found = 0;
+	print("Enter a string: ");
+	if(gets(buf, sizeof(buf)) <= 0) {
+		print("\r\nYou need to enter a string.");
+		return -1;
+	}
+	print("\r\nEnter search pattern: ");
+	if(gets(str, sizeof(str)) <= 0) {
+		print("\r\nPlease enter search pattern.\r\n");
+		return -1;
+	}
+	print("\r\nPattern: ");
+	print(str);
+	if((found = strstr(buf, str)) != 0)
+		print(" [Found]\r\n");
+	else
+		print(" [Not Found]\r\n");
+	return 1;
+}
 /* Exit command, just exits the shell.
  */
 int cmd_exit()
@@ -65,29 +93,6 @@ int cmd_exit()
 
 /* ------------------------------ Shell Functions ------------------------- */
 
-/* My Simple implementation of gets.
- */
-int gets(char *s, int size)
-{
-	char c;
-	int i;
-
-	for(i=0; (c = getche()) != -1 && c != '\r'; i++)
-		s[i] = c;
-	s[i] = '\0';
-	return i;
-}
-/* Simple implementation of string compare.
- */
-int strcmp(const char *s, const char *t)
-{
-	int i;
-
-	for(i=0; s[i] != 0 || t[i] != 0; i++)
-		if(s[i] != t[i])
-			return s[i]-t[i];
-	return 0;
-}
 /* Main function for processing and getting commands.
  */
 int shell()
