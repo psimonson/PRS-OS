@@ -16,21 +16,28 @@ int gets(char *s, int size)
 	char c;
 	int i;
 
-	for(i=0; (c = getche()) != -1 && c != '\r'; i++)
-		s[i] = c;
-	s[i] = '\0';
+	for(i=0; (c = getch()) != -1 && c != '\r';)
+		if(c == '\b') {
+			if(i > 0) {
+				s[--i] = 0;
+				putch(c);
+				putch(0);
+				putch(c);
+			}
+		} else {
+			s[i++] = c;
+			putch(c);
+		}
+	s[i] = 0;
 	return i;
 }
 /* Simple implementation of string compare.
  */
 int strcmp(const char *s, const char *t)
 {
-	int i;
-
-	for(i=0; s[i] != 0 || t[i] != 0; i++)
-		if(s[i] != t[i])
-			return s[i]-t[i];
-	return 0;
+	while(*s && *s == *t)
+		s++, t++;
+	return *s-*t;
 }
 /* Simple implementation of sub string.
  */
@@ -41,7 +48,7 @@ char *strstr(char *s, const char *t)
 		char *begin = p;
 		const char *pattern = t;
 
-		if(*begin == *pattern) while(*pattern && *begin == *pattern) begin++,pattern++;
+		while(*pattern && *begin == *pattern) begin++,pattern++;
 		if(!*pattern) return begin;
 		p++;
 	}
