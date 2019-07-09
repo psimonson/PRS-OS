@@ -31,7 +31,16 @@ void __REGPARM graphics()
 
 void __NORETURN main()
 {
-	asm("push %cs\npop %ds");
+	asm(
+		"push %cs\n"
+		"pop %ds\n"
+		"pop %es\n"
+		"pop %fs\n"
+		"pop %gs\n"
+		"xorw %ax, %ax\n"
+		"movw %ax, %ss\n"
+		"movw $0xFFFF, %sp\n"
+	);
 	print("Press any key to continue...\r\n");
 	graphics();
 	print(INFOMSG);
