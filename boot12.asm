@@ -51,7 +51,7 @@ _start:
 	mov si, msg_loading
 	call print
 
-	.load_root:
+load_root:
 	; ================================================
 	; compute size of root directory and store in "cx"
 	; ================================================
@@ -96,6 +96,7 @@ _start:
 	; =====================================================
 	; load FAT
 	; =====================================================
+load_fat:
 	mov si, msg_crlf
 	call print
 	mov dx, WORD [di+0x001A]
@@ -248,7 +249,7 @@ absoluteTrack db 0x00
 datasector dw 0x0000
 cluster dw 0x0000
 image_name db "COMMAND BIN"
-msg_load db "Loading shell",0x00
+msg_loading db "Loading shell",0x00
 msg_crlf db 0x0a, 0x0d, 0x00
 msg_progress db 0x2c, 0x00
 msg_failure db "ERROR: Press any key to reboot.", 0x0a, 0x0d, 0x00
