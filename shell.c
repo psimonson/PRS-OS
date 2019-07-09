@@ -11,11 +11,11 @@ asm(".code16gcc");
 #include "string.h"
 
 /* command structure */
-typedef struct __PACKED command {
+typedef struct command {
 	char *cmd;
 	char *help;
 	int (*func)(void);
-} command_t;
+} __attribute__((packed)) command_t;
 
 /* command prototypes here */
 int cmd_help(void);
