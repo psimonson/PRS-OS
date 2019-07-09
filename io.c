@@ -110,7 +110,7 @@ void __REGPARM no_sound()
 void __REGPARM beep()
 {
 	play_sound(1000);
-	wait(10000);
+	wait(50000);
 	no_sound();
 }
 
