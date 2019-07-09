@@ -21,6 +21,7 @@ typedef struct __PACKED command {
 int __REGPARM cmd_help(void);
 int __REGPARM cmd_hello(void);
 int __REGPARM cmd_play(void);
+int __REGPARM cmd_playmusic(void);
 int __REGPARM cmd_search(void);
 int __REGPARM cmd_exit(void);
 
@@ -29,6 +30,7 @@ static const command_t commands[] = {
 	{"help", "This help text.", &cmd_help},
 	{"hello", "Say hello to the user.", &cmd_hello},
 	{"play", "Play a frequency given by the user.", &cmd_play},
+	{"play music", "Play some hard coded music.", &cmd_playmusic},
 	{"search", "Search for a string in another.", &cmd_search},
 	{"exit", "Exit the shell.", &cmd_exit}
 };
@@ -81,6 +83,25 @@ int __REGPARM cmd_play()
 	}
 	play_sound(freq);
 	wait(50000);
+	no_sound();
+	return 1;
+}
+/* PlayMusic command, plays a hard coded song.
+ */
+int __REGPARM cmd_playmusic()
+{
+	play_sound(10);
+	wait(100000);
+	play_sound(20);
+	wait(100000);
+	play_sound(30);
+	wait(100000);
+	play_sound(40);
+	wait(100000);
+	play_sound(50);
+	wait(100000);
+	play_sound(60);
+	wait(100000);
 	no_sound();
 	return 1;
 }
