@@ -10,9 +10,10 @@
 #include "defines.h"
 
 /* input/output functions */
-void putch_color(char c, unsigned char color);
-void putch(char c);
-void print(const char *s);
+int putch_color(int c, unsigned char color);
+int putch(int c);
+int print(const char *s);
+int puts(const char *s);
 char getch();
 char getche();
 

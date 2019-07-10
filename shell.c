@@ -181,7 +181,7 @@ int shell()
 	for(i=0; i<command_count(); i++)
 		if(strcmp(buf, commands[i].cmd) == 0)
 			return commands[i].func();
-	print("Bad command.\r\n");
+	puts("Bad command.");
 	return 1;
 }
 

@@ -8,27 +8,43 @@ asm(".code16gcc");
 
 #include "io.h"
 #include "time.h"
+#include "string.h"
 
 /* ----------------------- Input/Output Functions ----------------------- */
 
 /* Puts a character on the screen.
  */
-void putch_color(char c, unsigned char color)
+int putch_color(int ic, unsigned char color)
 {
+	char c = (char)ic;
 	asm("int $0x10": : "a"((0x0e << 8) | c), "b"((0x00 << 8) | color), "c"(0x0001));
+	return c;
 }
 /* Puts a character on the screen with default color 0x07.
  */
-void putch(char c)
+int putch(int ic)
 {
+	char c = (char)ic;
 	putch_color(c, 0x07);
+	return ic;
 }
 /* Prints a string on the screen using putch.
  */
-void print(const char *s)
+int print(const char *s)
 {
 	while(*s)
-		putch(*s++);
+		if(putch(*s++) == -1)
+			return 0;
+	return 1;
+}
+/* Prints a string with a new line.
+ */
+int puts(const char *s)
+{
+	if(print(s))
+		return print("\r\n");
+	else
+		return 1;
 }
 /* Gets a character from the keyboard.
  */
