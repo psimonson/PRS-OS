@@ -21,11 +21,11 @@ int get_drive_params(drive_params_t *p, unsigned char drive)
 		: "a"(0x0800), "d"(drive), "D"(0)
 		: "cc", "bx"
 	);
-	if((failed >> 8) != 0)
+	if((failed >> 8))
 		return (failed >> 8);
 	p->spt = tmp1 & 0x3F;
 	p->numh = tmp2 >> 8;
-	return (failed >> 8);
+	return (unsigned char)failed;
 }
 /* Reads a disk drive.
  */

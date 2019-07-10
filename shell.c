@@ -9,6 +9,7 @@ asm(".code16gcc");
 #include "io.h"
 #include "time.h"
 #include "string.h"
+#include "fat12.h"
 
 /* command structure */
 typedef struct command {
@@ -42,6 +43,10 @@ static const command_t commands[] = {
 	{"ls", "List root directory file names.", &cmd_ls},
 	{"exit", "Exit the shell.", &cmd_exit}
 };
+
+/* uncomment these when needed */
+/*static unsigned long *_buffer = (unsigned long*)0x02007c00;	* root directory in memory */
+/*static entry_t const *_entry;					* directory entries */
 
 /* Count number of commands.
  */
@@ -179,7 +184,30 @@ int cmd_exec()
  */
 int cmd_ls()
 {
-	puts("Not yet implemented.");
+/*
+ * This code is for calculating stuff in a disk drive.
+ * c = Cylinders
+ * h = Heads
+ * t = Tracks
+ * s = Sectors
+ ******************************************************
+
+	unsigned char c, h, s;
+	unsigned short t;
+	unsigned long size;
+
+	c = 1 / (p->numh * p->spt);
+	t = 1 % (p->numh * p->spt);
+	s = (t % p->spt) + 1;
+	h = t / p->spt;
+
+	size = 0;
+ *******************************************************
+ * Uncomment when needed...
+ */
+
+	/* TODO: implement for loop for each entry on disk */
+
 	return 1;
 }
 /* Exit command, just exits the shell.
