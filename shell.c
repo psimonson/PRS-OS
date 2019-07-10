@@ -185,31 +185,17 @@ int cmd_exec()
  */
 int cmd_ls()
 {
-/*
- * This code is for calculating stuff in a disk drive.
- * c = Cylinders
- * h = Heads
- * t = Tracks
- * s = Sectors
- ******************************************************
-
-	unsigned char c, h, s;
+	extern drive_params_t p;
+	unsigned char /*c, h,*/ s;
 	unsigned short t;
 	unsigned long size;
-
-	c = 1 / (p->numh * p->spt);
-	t = 1 % (p->numh * p->spt);
-	s = (t % p->spt) + 1;
-	h = t / p->spt;
-
-	size = 0;
- *******************************************************
- * Uncomment when needed...
- */
-	extern drive_params_t p;
-	unsigned short t = 1 % (p.numh * p.spt);
-	unsigned long size = t * p.spt;
 	char buf[50];
+
+/*	c = 1 / (p.numh * p.spt); */
+	t = 1 % (p.numh * p.spt);
+	s = (t % p.spt) + 1;
+/*	h = t / p.spt; */
+	size = s;
 
 	printlu(size, buf);
 	puts(buf);
