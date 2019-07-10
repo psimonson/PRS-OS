@@ -27,6 +27,7 @@ int cmd_search(void);
 int cmd_resetcmos(void);
 int cmd_reboot(void);
 int cmd_exec(void);
+int cmd_ls(void);
 int cmd_exit(void);
 
 /* command structure initializer */
@@ -38,7 +39,8 @@ static const command_t commands[] = {
 	{"search", "Search for a string in another.", &cmd_search},
 	{"reset_CMOS", "Reset the CMOS settings.", &cmd_resetcmos},
 	{"reboot", "Reboot the machine (warm reboot).", &cmd_reboot},
-	{"exec", "Execute a given filename.", &cmd_exec},
+	{"exec", "Execute a given file name.", &cmd_exec},
+	{"ls", "List root directory file names.", &cmd_ls},
 	{"exit", "Exit the shell.", &cmd_exit}
 };
 
@@ -172,6 +174,19 @@ int cmd_exec()
 		return -1;
 	}
 	puts("\r\nNot yet implemented!");
+	return 1;
+}
+/* LS Command, just list out root directory entries.
+ */
+int cmd_ls()
+{
+	puts("Root directory contains:");
+	for(_entry=(entry_t*)_buffer; ; ++_entry) {
+		print(_entry->filename);
+		putch('.');
+		print(_entry->extension);
+		print("\r\n");
+	}
 	return 1;
 }
 /* Exit command, just exits the shell.
