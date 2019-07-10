@@ -9,6 +9,7 @@ asm(".code16gcc");
 #include "io.h"
 #include "time.h"
 #include "string.h"
+#include "disk.h"
 
 /* command structure */
 typedef struct command {
@@ -25,6 +26,7 @@ int cmd_playmusic(void);
 int cmd_search(void);
 int cmd_resetcmos(void);
 int cmd_reboot(void);
+int cmd_exec(void);
 int cmd_exit(void);
 
 /* command structure initializer */
@@ -36,6 +38,7 @@ static const command_t commands[] = {
 	{"search", "Search for a string in another.", &cmd_search},
 	{"reset_CMOS", "Reset the CMOS settings.", &cmd_resetcmos},
 	{"reboot", "Reboot the machine (warm reboot).", &cmd_reboot},
+	{"exec", "Execute a given filename.", &cmd_exec},
 	{"exit", "Exit the shell.", &cmd_exit}
 };
 
@@ -157,6 +160,19 @@ int cmd_reboot()
 {
 	reboot();
 	return 0;
+}
+/* Exec Command, loads and executes a given filename.
+ */
+int cmd_exec()
+{
+	char name[256];
+	print("Enter binary filename: ");
+	if(gets(name, sizeof(name)) <= 0) {
+		print("\r\nPlease enter a file name.\r\n");
+		return -1;
+	}
+	puts("\r\nNot yet implemented!");
+	return 1;
 }
 /* Exit command, just exits the shell.
  */

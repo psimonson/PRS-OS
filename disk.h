@@ -9,6 +9,25 @@
 
 #include "defines.h"
 
+/**
+ * Structure for FAT file entry.
+ */
+typedef struct {
+	char		filename[8];
+	char		extension[3];
+	unsigned char	attributes;
+	unsigned char	_a;
+	unsigned char	create_time_us;
+	unsigned short	create_time;
+	unsigned short	create_date;
+	unsigned short	last_access_date;
+	unsigned char	_b[2];
+	unsigned short	last_modified_time;
+	unsigned short	last_modified_date;
+	unsigned short	cluster;
+	unsigned long	size;
+} __PACKED entry_t;
+
 #ifdef HARD_DISK_BOOT
 typedef struct __PACKED address_packet {
 	char                size;

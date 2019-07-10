@@ -85,4 +85,15 @@ int strchr(char *s, const char c)
 			return p-s;
 	return 0;
 }
+/* Simple implementation of memset.
+ */
+int memset(void *mem, int c, int size)
+{
+	void *p = mem;
+	while((unsigned long*)p-(unsigned long*)mem < size)
+		*(unsigned long*)p++ = c;
+	while((unsigned char*)p-(unsigned char*)mem < size)
+		*(unsigned char*)p++ = c;
+	return ((unsigned char*)p-(unsigned char*)mem);
+}
 

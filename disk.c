@@ -81,7 +81,7 @@ int lba_read(const void *buffer, unsigned int lba,
 		: "a"(0x0200 | blocks), "b"(buffer), "c"((c << 8) | s),
 			"d"((h << 8) | bios_drive)
 	);
-	num_blocks_transferred = value & 0xff;
+	num_blocks_transferred = (unsigned char)value;
 	failed = value >> 8;
 	return failed || (num_blocks_transferred != blocks);
 }
