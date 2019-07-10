@@ -44,6 +44,14 @@ int atoi(const char *s)
 	}
 	return number;
 }
+/* Simple implementation of string length.
+ */
+int strlen(const char *s)
+{
+	const char *p = s;
+	while(*p++);
+	return p-s;
+}
 /* Simple implementation of string compare.
  */
 int strcmp(const char *s, const char *t)
@@ -67,3 +75,14 @@ char *strstr(char *s, const char *t)
 	}
 	return 0;
 }
+/* Simple implementation of strchr.
+ */
+int strchr(char *s, const char c)
+{
+	char *p = s;
+	while(*p)
+		if(*p == c)
+			return p-s;
+	return 0;
+}
+
