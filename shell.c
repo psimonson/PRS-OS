@@ -9,6 +9,7 @@ asm(".code16gcc");
 #include "io.h"
 #include "time.h"
 #include "string.h"
+#include "disk.h"
 #include "fat12.h"
 
 /* command structure */
@@ -205,9 +206,13 @@ int cmd_ls()
  *******************************************************
  * Uncomment when needed...
  */
+	extern drive_params_t p;
+	unsigned short t = 1 % (p.numh * p.spt);
+	unsigned long size = t * p.spt;
+	char buf[50];
 
-	/* TODO: implement for loop for each entry on disk */
-
+	printlu(size, buf);
+	puts(buf);
 	return 1;
 }
 /* Exit command, just exits the shell.

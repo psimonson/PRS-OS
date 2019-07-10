@@ -14,6 +14,7 @@ int putch_color(int c, unsigned char color);
 int putch(int c);
 int print(const char *s);
 int puts(const char *s);
+void printlu(unsigned long n, char s[]);
 char getch();
 char getche();
 

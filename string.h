@@ -14,5 +14,6 @@ int strcmp(const char *s, const char *t);
 char *strstr(char *s, const char *t);
 int strchr(char *s, const char c);
 int memset(void *mem, int c, int size);
+void reverse(char s[]);
 
 #endif

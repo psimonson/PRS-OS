@@ -49,7 +49,7 @@ int atoi(const char *s)
 int strlen(const char *s)
 {
 	const char *p = s;
-	while(*p++);
+	while(*p) p++;
 	return p-s;
 }
 /* Simple implementation of string compare.
@@ -95,5 +95,16 @@ int memset(void *mem, int c, int size)
 	while((unsigned char*)p-(unsigned char*)mem < size)
 		*(unsigned char*)p++ = c;
 	return ((unsigned char*)p-(unsigned char*)mem);
+}
+/* Simple implementation of reverse.
+ */
+void reverse(char s[])
+{
+	int i,j;
+	for(i=0,j=strlen(s)-1; i<j; i++,j--) {
+		char tmp = s[i];
+		s[i] = s[j];
+		s[j] = tmp;
+	}
 }
 
