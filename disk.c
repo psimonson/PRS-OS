@@ -10,24 +10,42 @@ asm(".code16gcc");
 
 #include "disk.h"
 
-boot_t const *_bs = (boot_t*)0x7c00;
-FILE *_disk = (FILE*)0x7e00;
-
+/* Gets drive parameters.
+ */
+int get_drive_parameters(drive_params_t *p, unsigned char drive)
+{
+	unsigned short failed = 0;
+	unsigned short tmp1, tmp2;
+	asm volatile("int $0x13"
+		: "=a"(failed), "=c"(tmp1), "=d"(tmp2)
+		: "a"(0x0800), "d"(drive), "D"(0)
+		: "cc", "bx"
+	);
+	if((failed >> 8) != 0)
+		return (failed >> 8);
+	p->spt = tmp1 & 0x3F;
+	p->numh = tmp2 >> 8;
+	return (failed >> 8);
+}
 /* Reads a disk drive.
  */
-unsigned short read()
+int lba_read(const void *buffer, unsigned int lba, unsigned short blocks,
+	unsigned char drive, drive_params_t *p)
 {
-	unsigned long t = _bs->heads * _disk->sectors;
-	unsigned short c = _disk->lba / t;
-	unsigned short h = (_disk->lba % t) / _disk->sectors;
 	unsigned short failed = 0;
-	c <<= 8;
-	c |= ((_disk->lba % t) % _disk->sectors) + 1;
+	unsigned char c,h,s;
+	unsigned short t;
+
+	/* for floppy disk */
+	c = lba / (p->numh * p->spt);
+	t = lba % (p->numh * p->spt);
+	h = t / p->spt;
+	s = (t % p->spt) + 1;
 
 	/* read sectors from disk drive */
 	asm("int $0x13"
 		: "=a"(failed)
-		: "a"(0x0200 | _size),"b"(_buffer),"c"(c),"d"((h << 8) | 0x0000));
-	return (failed >> 8) | (((unsigned char)failed) != _size);
+		: "a"(0x0200 | blocks),"b"(buffer),"c"((c << 8) | s),"d"((h << 8) | drive));
+	return (failed >> 8) | (((unsigned char)failed) != blocks);
 }
 
