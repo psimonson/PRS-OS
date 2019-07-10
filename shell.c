@@ -180,13 +180,7 @@ int cmd_exec()
  */
 int cmd_ls()
 {
-	puts("Root directory contains:");
-	for(_entry=(entry_t*)_buffer; ; ++_entry) {
-		print(_entry->filename);
-		putch('.');
-		print(_entry->extension);
-		print("\r\n");
-	}
+	puts("Not yet implemented");
 	return 1;
 }
 /* Exit command, just exits the shell.

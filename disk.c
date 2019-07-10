@@ -28,6 +28,6 @@ unsigned short read()
 	asm("int $0x13"
 		: "=a"(failed)
 		: "a"(0x0200 | _size),"b"(_buffer),"c"(c),"d"((h << 8) | 0x0000));
-	return (failed >> 8);
+	return (failed >> 8) | (((unsigned char)failed) != _size);
 }
 
