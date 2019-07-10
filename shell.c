@@ -9,7 +9,6 @@ asm(".code16gcc");
 #include "io.h"
 #include "time.h"
 #include "string.h"
-#include "disk.h"
 
 /* command structure */
 typedef struct command {
@@ -180,7 +179,7 @@ int cmd_exec()
  */
 int cmd_ls()
 {
-	puts("Not yet implemented");
+	puts("Not yet implemented.");
 	return 1;
 }
 /* Exit command, just exits the shell.

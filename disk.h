@@ -18,7 +18,7 @@ typedef struct {
 } drive_params_t;
 
 /* get drive parameters */
-int get_drive_parameters(drive_params_t *p, unsigned char drive);
+int get_drive_params(drive_params_t *p, unsigned char drive);
 /* read data from disk drive */
 int lba_read(const void *buffer, unsigned int lba, unsigned short blocks,
 	unsigned char drive, drive_params_t *p);

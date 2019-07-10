@@ -12,7 +12,7 @@ asm(".code16gcc");
 
 /* Gets drive parameters.
  */
-int get_drive_parameters(drive_params_t *p, unsigned char drive)
+int get_drive_params(drive_params_t *p, unsigned char drive)
 {
 	unsigned short failed = 0;
 	unsigned short tmp1, tmp2;
