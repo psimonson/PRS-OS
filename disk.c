@@ -16,7 +16,7 @@ int get_drive_status(unsigned char drive)
 {
 	unsigned short failed = 0;
 	asm("int $0x13" : "=a"(failed) : "a"(0x0100), "d"(0x0000 | drive));
-	return (failed >> 8);
+	return (failed >> 4) & 0xf;
 }
 /* Reset the disk drive.
  */
@@ -24,7 +24,7 @@ int reset_drive(unsigned char drive)
 {
 	unsigned short failed = 0;
 	asm("int $0x13": "=a"(failed) : "a"(0x0000), "d"(0x0000 | drive));
-	return (failed >> 8);
+	return (failed >> 4) & 0xf;
 }
 /* Gets drive parameters.
  */
@@ -37,11 +37,11 @@ int get_drive_params(drive_params_t *p, unsigned char drive)
 		: "a"(0x0800), "d"(drive), "D"(0)
 		: "cc", "bx"
 	);
-	if((failed >> 8) != 0)
-		return (failed >> 8);
-	p->spt = tmp1 & 0x3F;
+	if(((failed >> 4) & 0xf) != 0)
+		return (failed >> 8) & 0xf;
+	p->spt = tmp1 & 0x3f;
 	p->numh = tmp2 >> 8;
-	return (failed & 0x0f);
+	return (failed & 0xf);
 }
 /* Reads a disk drive.
  */
@@ -62,6 +62,6 @@ int read_drive(void* buffer, unsigned long lba, unsigned short blocks,
 	asm("int $0x13"
 		: "=a"(failed)
 		: "a"(0x0200 | blocks),"b"(buffer),"c"((c << 8) | s),"d"((h << 8) | drive));
-	return (failed >> 8) | ((failed & 0x0f) != blocks);
+	return (!((failed >> 8) & 0xf)) || ((failed & 0xf) != blocks);
 }
 
