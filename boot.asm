@@ -98,8 +98,8 @@ _start:
 	; load FAT
 	; =====================================================
 	load_fat:
-	mov si, msg_crlf
-	call print
+;	mov si, msg_crlf
+;	call print
 	mov dx, WORD [di+0x001A]
 	mov WORD [cluster], dx
 
@@ -117,8 +117,8 @@ _start:
 	call read_sectors
 
 	; read image file into memory
-	mov si, msg_crlf
-	call print
+;	mov si, msg_crlf
+;	call print
 	mov ax, 0x0050
 	mov es, ax
 	mov bx, 0x0000
@@ -156,14 +156,14 @@ _start:
 	mov WORD [cluster], dx
 	cmp dx, 0x0FF0
 	jb load_image
-done:
+	done:
 	mov si, msg_crlf
 	call print
 	push WORD 0x0050
 	push WORD 0x0000
 	retf
 
-failure:
+	failure:
 	mov si, msg_failure
 	call print
 	mov ah, 0x00
@@ -252,7 +252,7 @@ cluster dw 0x0000
 image_name db "COMMAND BIN",0x00
 msg_loading db "Loading shell",0x00
 msg_crlf db 0x0a, 0x0d, 0x00
-msg_progress db 0x2c, 0x00
+msg_progress db 0x2e, 0x00
 msg_failure db "ERROR: Press any key to reboot.", 0x0a, 0x0d, 0x00
 
 times 510-($-$$) db 0

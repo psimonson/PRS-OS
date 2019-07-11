@@ -101,6 +101,16 @@ int strchr(char *s, const char c)
 			return p-s;
 	return 0;
 }
+/* Simple implementation of strcpy.
+ */
+int strcpy(char *s, const char *t, int size)
+{
+	char *p = (char*)t;
+	int i = 0;
+	while(i < size && (*s++ = *p++));
+	*s = 0;
+	return p-t;
+}
 /* Simple implementation of memset.
  */
 int memset(void *mem, int c, int size)
