@@ -27,7 +27,7 @@ void main()
 
 	/* get current drive */
 	if(get_drive_params(&p, 0x00)) {
-		dummy_print("[ERROR] : Failed to get current drive info.\r\n");
+		print("[ERROR] : Failed to get current drive info.\r\n");
 		goto error;
 	}
 

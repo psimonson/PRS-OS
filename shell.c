@@ -56,12 +56,12 @@ int cmd_help()
 {
 	int i;
 
-	dummy_print("Commands List [help,hello,exit]\r\n");
+	print("Commands List [help,hello,exit]\r\n");
 	for(i=0; i<command_count(); i++) {
-		dummy_print(commands[i].cmd);
-		dummy_print(" - ");
-		dummy_print(commands[i].help);
-		dummy_print("\r\n");
+		print(commands[i].cmd);
+		print(" - ");
+		print(commands[i].help);
+		print("\r\n");
 	}
 	return 1;
 }
@@ -69,7 +69,7 @@ int cmd_help()
  */
 int cmd_hello()
 {
-	dummy_print("Hello user, welcome to a basic shell.\r\n");
+	print("Hello user, welcome to a basic shell.\r\n");
 	return 1;
 }
 /* Play command, plays a given frequency with PC speaker.
@@ -79,15 +79,15 @@ int cmd_play()
 	char buf[256];
 	int freq;
 
-	dummy_print("Enter a number: ");
+	print("Enter a number: ");
 	if(gets(buf, sizeof(buf)) <= 0) {
-		dummy_print("\r\nYou need to enter a string.\r\n");
+		print("\r\nYou need to enter a string.\r\n");
 		return -1;
 	}
-	dummy_print("\r\n");
+	print("\r\n");
 	freq = atoi(buf);
 	if(!freq) {
-		dummy_print("No number given.\r\n");
+		print("No number given.\r\n");
 		return -1;
 	}
 	play_sound(freq);
@@ -126,22 +126,22 @@ int cmd_search()
 	char buf[256];
 	char str[256];
 	char *found = 0;
-	dummy_print("Enter a string: ");
+	print("Enter a string: ");
 	if(gets(buf, sizeof(buf)) <= 0) {
-		dummy_print("\r\nYou need to enter a string.");
+		print("\r\nYou need to enter a string.");
 		return -1;
 	}
-	dummy_print("\r\nEnter search pattern: ");
+	print("\r\nEnter search pattern: ");
 	if(gets(str, sizeof(str)) <= 0) {
-		dummy_print("\r\nPlease enter search pattern.\r\n");
+		print("\r\nPlease enter search pattern.\r\n");
 		return -1;
 	}
-	dummy_print("\r\nPattern: ");
-	dummy_print(str);
+	print("\r\nPattern: ");
+	print(str);
 	if((found = strstr(buf, str)) != 0)
-		dummy_print(" [Found]\r\n");
+		print(" [Found]\r\n");
 	else
-		dummy_print(" [Not Found]\r\n");
+		print(" [Not Found]\r\n");
 	return 1;
 }
 /* ResetCMOS command, just resets the CMOS settings.
@@ -150,10 +150,10 @@ int cmd_resetcmos()
 {
 	const unsigned char CHECKSUM_HI = 0x2e;
 	const unsigned char CHECKSUM_LO = 0x2f;
-	dummy_print("Resetting CMOS to defaults...\r\n");
+	print("Resetting CMOS to defaults...\r\n");
 	cmos_invert(CHECKSUM_HI);
 	cmos_invert(CHECKSUM_LO);
-	dummy_print("Done.\r\n");
+	print("Done.\r\n");
 	return 1;
 }
 /* Reboot command, just reboots the machine.
@@ -168,9 +168,9 @@ int cmd_reboot()
 int cmd_exec()
 {
 	char name[256];
-	dummy_print("Enter binary filename: ");
+	print("Enter binary filename: ");
 	if(gets(name, sizeof(name)) <= 0) {
-		dummy_print("\r\nPlease enter a file name.\r\n");
+		print("\r\nPlease enter a file name.\r\n");
 		return -1;
 	}
 	puts("\r\nNot yet implemented!");
@@ -180,7 +180,7 @@ int cmd_exec()
  */
 int cmd_ls()
 {
-	dummy_print("Not yet implemented!\r\n");
+	print("Not yet implemented!\r\n");
 	return 1;
 }
 /* Exit command, just exits the shell.
@@ -199,9 +199,9 @@ int shell()
 	char buf[256];
 	int i;
 
-	dummy_print("Enter command >> ");
+	print("Enter command >> ");
 	gets(buf, 255);
-	dummy_print("\r\n");
+	print("\r\n");
 
 	for(i=0; i<command_count(); i++)
 		if(strcmp(buf, commands[i].cmd) == 0)

@@ -30,24 +30,7 @@ int putch(int ic)
 }
 /* Prints a string on the screen using putch.
  */
-char print(const char *data, int length)
-{
-	const unsigned char *bytes = (const unsigned char*)data;
-	int i;
-	for(i=0; i < length; i++)
-		if(putch(bytes[i]) == -1)
-			return 0;
-	return 1;
-}
-/* Prints a formatted string on the screen.
- */
-int printf(const char *restrict format, ...)
-{
-	return 0;
-}
-/* Dummy function remove when printf is available.
- */
-int dummy_print(const char *s)
+int print(const char *s)
 {
 	const char *p = s;
 	while(*p)
@@ -58,10 +41,10 @@ int dummy_print(const char *s)
  */
 int puts(const char *s)
 {
-	if(dummy_print(s))
-		return dummy_print("\r\n");
-	else
-		return 1;
+	int bytes = 0;
+	if((bytes = print(s)))
+		return bytes += print("\r\n");
+	return -1;
 }
 /* Prints an unsigned long integer.
  */
