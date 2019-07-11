@@ -10,6 +10,22 @@ asm(".code16gcc");
 
 #include "disk.h"
 
+/* Get the status of last drive operation.
+ */
+int get_drive_status(unsigned char drive)
+{
+	unsigned short failed = 0;
+	asm("int $0x13" : "=a"(failed) : "a"(0x0100), "d"(0x0000 | drive));
+	return (failed >> 8);
+}
+/* Reset the disk drive.
+ */
+int reset_drive(unsigned char drive)
+{
+	unsigned short failed = 0;
+	asm("int $0x13": "=a"(failed) : "a"(0x0000), "d"(0x0000 | drive));
+	return (failed >> 8);
+}
 /* Gets drive parameters.
  */
 int get_drive_params(drive_params_t *p, unsigned char drive)

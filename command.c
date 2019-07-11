@@ -25,6 +25,11 @@ void main()
 	asm("push %cs");
 	asm("pop %ds");
 
+	/* reset disk drive */
+	if(reset_drive(0x00)) {
+		print("[ERROR] : Could not reset disk drive.\r\n");
+		goto error;
+	}
 	/* get current drive */
 	if(get_drive_params(&p, 0x00)) {
 		print("[ERROR] : Failed to get current drive info.\r\n");
