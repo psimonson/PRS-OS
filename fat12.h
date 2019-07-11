@@ -41,10 +41,14 @@ typedef struct {
 	char		filename[8];
 	char		extension[3];
 	unsigned char	attributes;
-	unsigned char	reserved[10];
+	unsigned short	reserved;
 	unsigned short	create_time;
 	unsigned short	create_date;
-	unsigned short	cluster;
+	unsigned short	last_access_date;
+	unsigned short	_ignore_fat12;
+	unsigned short	last_write_time;
+	unsigned short	last_write_date;
+	unsigned short	first_cluster;
 	unsigned long	size;
 } __attribute__((packed)) entry_t;
 

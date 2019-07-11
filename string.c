@@ -123,6 +123,17 @@ int memset(void *mem, int c, int size)
 		*(unsigned char*)p++ = c;
 	return ((unsigned char*)p-(unsigned char*)mem);
 }
+/* Simple implementation of memcpy.
+ */
+int memcpy(void *dst, const void *src, int size)
+{
+	unsigned char *p = (unsigned char*)dst;
+	const unsigned char *t = (const unsigned char*)src;
+	int i;
+	for(i=0; i < size; i++)
+		p[i] = t[i];
+	return i;
+}
 /* Simple implementation of reverse.
  */
 void reverse(char s[])

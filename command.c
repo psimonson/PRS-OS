@@ -70,14 +70,23 @@ void main()
 			puts("File deleted.");
 		break;
 		case 0x05:
-			puts(entry->filename);
+			memcpy(buf, entry->filename, 8);
+			buf[8] = 0;
+			puts(buf);
 		break;
 		case 0xff:
-			puts(entry->filename);
+			memcpy(buf, entry->filename, 8);
+			buf[8] = 0;
+			puts(buf);
 			itoa(entry->size, buf);
 			puts(buf);
 		break;
 		default:
+			memcpy(buf, entry->filename, 8);
+			buf[8] = 0;
+			puts(buf);
+			itoa(entry->size, buf);
+			puts(buf);
 		break;
 		}
 
