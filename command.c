@@ -27,9 +27,10 @@ void main()
 
 	/* get current drive */
 	if(get_drive_params(&p, 0x00)) {
-		print("[ERROR] : Failed to get current drive info.\r\n");
+		dummy_print("[ERROR] : Failed to get current drive info.\r\n");
 		goto error;
 	}
+
 	/* start of actual command mode */
 	puts("Press any key to continue...");
 	getch();

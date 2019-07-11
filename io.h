@@ -12,9 +12,10 @@
 /* input/output functions */
 int putch_color(int c, unsigned char color);
 int putch(int c);
-int print(const char *s);
+int printf(const char *restrict format, ...);
+int dummy_print(const char *s);	/* TODO: remove dummy when printf is available */
 int puts(const char *s);
-void printlu(unsigned long n, char s[]);
+void printd(unsigned long n, char s[]);
 char getch();
 char getche();
 
