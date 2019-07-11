@@ -25,8 +25,7 @@ typedef struct {
 	unsigned short	heads;
 	unsigned long	hidden_sectors;
 	unsigned long	total_sectors2;
-	unsigned char	drive_index;
-	unsigned char	_b;
+	unsigned short	drive_index;
 	unsigned char	signature;
 	unsigned long	id;
 	char		label[11];
@@ -42,17 +41,20 @@ typedef struct {
 	char		filename[8];
 	char		extension[3];
 	unsigned char	attributes;
-	unsigned char	_a;
-	unsigned char	create_time_us;
+	unsigned char	reserved[10];
 	unsigned short	create_time;
 	unsigned short	create_date;
-	unsigned short	last_access_date;
-	unsigned char	_b[2];
-	unsigned short	last_modified_time;
-	unsigned short	last_modified_date;
 	unsigned short	cluster;
 	unsigned long	size;
 } __attribute__((packed)) entry_t;
+
+/**
+ * Structure for disk drive.
+ */
+typedef struct {
+	unsigned char sectors;
+	unsigned long lba;
+} FILE;
 
 #endif
 
