@@ -9,6 +9,7 @@
 
 int gets(char *s, int size);
 int atoi(const char *s);
+void itoa(unsigned long n, char s[]);
 int strlen(const char *s);
 int strcmp(const char *s, const char *t);
 char *strstr(char *s, const char *t);

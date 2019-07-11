@@ -44,6 +44,22 @@ int atoi(const char *s)
 	}
 	return number;
 }
+/* Simple implementation of itoa.
+ */
+void itoa(unsigned long n, char s[])
+{
+	int i,sign;
+	if((sign = n) < 0)
+		n = -n;
+	i = 0;
+	do {
+		s[i++] = n % 10 + '0';
+	} while((n /= 10) > 0);
+	if(sign < 0)
+		s[i++] = '-';
+	s[i] = 0;
+	reverse(s);
+}
 /* Simple implementation of string length.
  */
 int strlen(const char *s)

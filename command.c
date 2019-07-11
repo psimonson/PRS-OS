@@ -8,6 +8,7 @@ asm(".code16gcc");
 asm("jmp main");
 
 #include "io.h"
+#include "string.h"
 #include "time.h"
 #include "disk.h"
 
@@ -35,7 +36,7 @@ void main()
 		print("[ERROR] : Failed to get current drive info.\r\n");
 		goto error;
 	}
-
+	
 	/* start of actual command mode */
 	puts("Press any key to continue...");
 	getch();

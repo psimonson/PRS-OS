@@ -33,7 +33,7 @@ typedef struct {
 	char		type[8];
 	unsigned char	_c[448];
 	unsigned short	sig;
-} __PACKED boot_t;
+} __attribute__((packed)) boot_t;
 
 /**
  * Structure for FAT file entry.
@@ -52,7 +52,7 @@ typedef struct {
 	unsigned short	last_modified_date;
 	unsigned short	cluster;
 	unsigned long	size;
-} __PACKED entry_t;
+} __attribute__((packed)) entry_t;
 
 #endif
 

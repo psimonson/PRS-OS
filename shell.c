@@ -180,7 +180,7 @@ int cmd_exec()
  */
 int cmd_ls()
 {
-	print("Not yet implemented!\r\n");
+	puts("Not yet implemented!");
 	return 1;
 }
 /* Exit command, just exits the shell.
