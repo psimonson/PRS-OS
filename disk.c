@@ -62,6 +62,6 @@ int read_drive(void* buffer, unsigned long lba, unsigned short blocks,
 	asm("int $0x13"
 		: "=a"(failed)
 		: "a"(0x0200 | blocks),"b"(buffer),"c"((c << 8) | s),"d"((h << 8) | drive));
-	return (!((failed >> 8) & 0xf)) || ((failed & 0xf) != blocks);
+	return ((failed >> 8) & 0xf) || ((failed & 0xf) != blocks);
 }
 

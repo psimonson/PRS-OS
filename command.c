@@ -20,7 +20,7 @@ asm("jmp main");
 void main()
 {
 	extern int shell();
-	unsigned short* buffer;
+	unsigned char* buffer;
 	entry_t const* entry;
 	boot_t const* bs = (boot_t const*)1000;
 	unsigned long lba;
@@ -48,7 +48,7 @@ void main()
 		goto error;
 	}
 	/* read disk into memory */
-	if(!read_drive((void*)bs, 0, 1, 0x00, &p)) {
+	if(read_drive((void*)bs, 1, 1, 0x00, &p)) {
 		print("[ERROR] : Could not load disk sectors.\r\n");
 		goto error;
 	}
@@ -57,13 +57,9 @@ void main()
 		print("[ERROR] : Could not reset disk drive.\r\n");
 		goto error;
 	}
-	buffer = (unsigned short*)0x0500;
+	buffer = (unsigned char*)0x0500;
 	lba = bs->reserved_sectors + (bs->fats * bs->sectors_per_fat);
 	blocks = bs->root_entries * sizeof(entry_t) / bs->bytes_per_sector;
-	itoa(lba, buf);
-	puts(buf);
-	itoa(blocks, buf);
-	puts(buf);
 	if(!read_drive(buffer, lba, blocks, 0x00, &p)) {
 		print("[ERROR] : Could not read disk.\r\n");
 		goto error;
@@ -78,6 +74,8 @@ void main()
 		break;
 		case 0xff:
 			puts(entry->filename);
+			itoa(entry->size, buf);
+			puts(buf);
 		break;
 		default:
 		break;
