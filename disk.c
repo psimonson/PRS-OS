@@ -37,16 +37,16 @@ int get_drive_params(drive_params_t *p, unsigned char drive)
 		: "a"(0x0800), "d"(drive), "D"(0)
 		: "cc", "bx"
 	);
-	if((failed >> 8))
+	if((failed >> 8) != 0)
 		return (failed >> 8);
 	p->spt = tmp1 & 0x3F;
 	p->numh = tmp2 >> 8;
-	return (unsigned char)failed;
+	return (failed & 0x0f);
 }
 /* Reads a disk drive.
  */
-int lba_read(const void *buffer, unsigned int lba, unsigned short blocks,
-	unsigned char drive, drive_params_t *p)
+int read_drive(void* buffer, unsigned long lba, unsigned short blocks,
+	unsigned char drive, drive_params_t* p)
 {
 	unsigned short failed = 0;
 	unsigned char c,h,s;
@@ -62,6 +62,6 @@ int lba_read(const void *buffer, unsigned int lba, unsigned short blocks,
 	asm("int $0x13"
 		: "=a"(failed)
 		: "a"(0x0200 | blocks),"b"(buffer),"c"((c << 8) | s),"d"((h << 8) | drive));
-	return (failed >> 8) | (((unsigned char)failed) != blocks);
+	return (failed >> 8) | ((failed & 0x0f) != blocks);
 }
 

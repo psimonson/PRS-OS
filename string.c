@@ -107,7 +107,8 @@ int strcpy(char *s, const char *t, int size)
 {
 	char *p = (char*)t;
 	int i = 0;
-	while(i < size && (*s++ = *p++));
+	while(i < size && (*s = *p))
+		s++,p++;
 	*s = 0;
 	return p-t;
 }

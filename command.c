@@ -16,13 +16,12 @@ asm("jmp main");
 
 drive_params_t p;
 
+extern int shell();
+
 /* Entry point for my command shell.
  */
 void main()
 {
-	extern drive_params_t p;
-	extern int shell();
-
 	asm("push %cs");
 	asm("pop %ds");
 
@@ -36,7 +35,12 @@ void main()
 		print("[ERROR] : Failed to get current drive info.\r\n");
 		goto error;
 	}
-	
+	/* reset disk drive */
+	if(reset_drive(0x00)) {
+		print("[ERROR] : Could not reset disk drive.\r\n");
+		goto error;
+	}
+
 	/* start of actual command mode */
 	puts("Press any key to continue...");
 	getch();
