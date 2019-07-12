@@ -13,17 +13,13 @@
  */
 void load_boot(boot_t *bs)
 {
-	unsigned char *buffer;
 	drive_params_t p;
 
-	buffer = (unsigned char*)0x0500;
 	/* read disk drive */
 	if(get_drive_params(&p, 0x00)) {
 		puts("Error: Cannot get drive params.");
-		if(read_drive(buffer, 1, 0, 0, 1, &p)) {
+		if(read_drive(bs, 1, 0, 0, 1, &p)) {
 			puts("Error: Cannot copy boot sector.");
-		} else {
-			memcpy(bs, buffer, sizeof(boot_t));
 		}
 	}
 }
