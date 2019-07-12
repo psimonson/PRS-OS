@@ -15,7 +15,6 @@ asm("jmp main");
 
 #define INFOMSG "\x43\x4f\x44\x45\x44\x20\x42\x59\x20\x50\x48\x49\x4c\x49\x50\x00"
 
-drive_params_t p;
 boot_t bs;
 
 /* Entry point for my command shell.
@@ -28,15 +27,8 @@ void main()
 	asm("movw $0x50, %ax");
 	asm("movw %ax, %ds");
 
-	/* read disk drive */
-	if(get_drive_params(&p, 0x00)) {
-		puts("Error: Cannot get drive params.");
-		goto error;
-	}
-	if(!read_drive(&bs, 1, 0, 0, 1, &p)) {
-		puts("Error: Cannot copy boot sector.");
-		goto error;
-	}
+	load_boot(&bs);
+	puts(bs.name);
 
 	/* start of actual command mode */
 	puts("Press any key to continue...");
@@ -47,7 +39,6 @@ void main()
 	beep();
 	while(shell());
 
-error:
 	puts("Hanging system.");
 	asm("cli");
 	asm("hlt");

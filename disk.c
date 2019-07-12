@@ -63,7 +63,7 @@ int read_drive_lba(void* buffer, unsigned long lba, unsigned char blocks, drive_
 	asm("int $0x13"
 		: "=a"(failed)
 		: "a"(0x0200 | blocks),"b"(buffer),"c"((c << 4) | s),"d"((h << 4) | p->drive));
-	return ((failed & 0xf) == blocks);
+	return ((failed >> 4 ) & 0xf);
 }
 /* Reads from disk drive CHS.
  */
@@ -76,6 +76,6 @@ int read_drive(void* buffer, unsigned char blocks, unsigned char c, unsigned cha
 	asm("int $0x13"
 		: "=a"(failed)
 		: "a"(0x0200 | blocks),"b"(buffer),"c"((c << 4) | s),"d"((h << 4) | p->drive));
-	return ((failed & 0xf) == blocks);
+	return ((failed >> 4) & 0xf);
 }
 
