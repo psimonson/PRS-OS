@@ -27,22 +27,17 @@ void main()
 	char buf[100];
 
 	/* setup data segment */
-	asm("push %cs");
-	asm("pop %ds");
-
-	memcpy(&bs, boot_address, sizeof(boot_t));
+	asm("movw $0x50, %ax");
+	asm("movw %ax, %ds");
 
 	itoa(sizeof(boot_t), buf);
 	puts(buf);
-	puts(bs.name);
 
-	if(get_drive_params(&p, bs.drive_index)) {
+	if(get_drive_params(&p, 0x00)) {
 		puts("Error: Cannot get drive params.");
 		goto error;
 	}
 
-	itoa(bs.fats, buf);
-	puts(buf);
 	itoa(p.drive, buf);
 	puts(buf);
 	itoa(p.spt, buf);
