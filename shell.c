@@ -98,22 +98,40 @@ int cmd_play()
  */
 int cmd_playmusic()
 {
-	play_sound(10);
+	play_sound(100);
 	wait(100000);
 	no_sound();
-	play_sound(20);
+	play_sound(200);
 	wait(100000);
 	no_sound();
-	play_sound(30);
+	play_sound(300);
 	wait(100000);
 	no_sound();
-	play_sound(40);
+	play_sound(400);
 	wait(100000);
 	no_sound();
-	play_sound(50);
+	play_sound(250);
 	wait(100000);
 	no_sound();
-	play_sound(60);
+	play_sound(280);
+	wait(100000);
+	no_sound();
+	play_sound(300);
+	wait(100000);
+	no_sound();
+	play_sound(200);
+	wait(100000);
+	no_sound();
+	play_sound(300);
+	wait(100000);
+	no_sound();
+	play_sound(100);
+	wait(100000);
+	no_sound();
+	play_sound(500);
+	wait(100000);
+	no_sound();
+	play_sound(200);
 	wait(100000);
 	no_sound();
 	return 1;
@@ -147,11 +165,13 @@ int cmd_search()
  */
 int cmd_resetcmos()
 {
-	const unsigned char CHECKSUM_HI = 0x2e;
-	const unsigned char CHECKSUM_LO = 0x2f;
+	unsigned char i;
 	print("Resetting CMOS to defaults...\r\n");
-	cmos_invert(CHECKSUM_HI);
-	cmos_invert(CHECKSUM_LO);
+	for(i=0; i<255; i++) {
+		cmos_write(0x70, i);
+		cmos_read(0x71);
+		cmos_write(0x70, !i);
+	}
 	print("Done.\r\n");
 	return 1;
 }

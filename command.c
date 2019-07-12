@@ -22,13 +22,13 @@ boot_t bs;
 void main()
 {
 	extern int shell();
+/*	char buf[50]; */
 
 	/* setup data segment */
 	asm("push %cs");
 	asm("pop %ds");
 
 	load_boot(&bs);
-	puts(bs.name);
 
 	/* start of actual command mode */
 	puts("Press any key to continue...");
