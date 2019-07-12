@@ -38,8 +38,8 @@ typedef struct {
  * Structure for FAT file entry.
  */
 typedef struct {
-	char		filename[8];
-	char		extension[3];
+	unsigned char	filename[8];
+	unsigned char	extension[3];
 	unsigned char	attributes;
 	unsigned short	reserved;
 	unsigned short	create_time;
@@ -48,7 +48,7 @@ typedef struct {
 	unsigned short	_ignore_fat12;
 	unsigned short	last_write_time;
 	unsigned short	last_write_date;
-	unsigned short	first_cluster;
+	unsigned short	cluster;
 	unsigned long	size;
 } __attribute__((packed)) entry_t;
 
