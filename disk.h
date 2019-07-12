@@ -49,13 +49,15 @@ typedef struct {
 } drive_params_t;
 
 /* get status of last drive operation */
-int get_drive_status(unsigned char drive);
+int get_drive_status(drive_params_t *p);
 /* reset disk drive */
-int reset_drive(unsigned char drive);
+int reset_drive(drive_params_t *p);
 /* get drive parameters */
 int get_drive_params(drive_params_t *p, unsigned char drive);
 /* read data from disk drive */
-int read_drive(void* buffer, unsigned long lba, unsigned short blocks,
-	unsigned char drive, drive_params_t* p);
+int read_drive_lba(void* buffer, unsigned long lba, unsigned char blocks, drive_params_t* p);
+/* read data from disk drive */
+int read_drive(void* buffer, unsigned char blocks, unsigned char cylinder, unsigned char head,
+	unsigned sector, drive_params_t* p);
 
 #endif

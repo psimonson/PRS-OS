@@ -60,5 +60,8 @@ typedef struct {
 	unsigned long lba;
 } FILE;
 
+/* try and fill boot structure */
+void load_boot(boot_t *bs);
+
 #endif
 
