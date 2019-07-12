@@ -9,7 +9,6 @@ asm(".code16gcc");
 #include "io.h"
 #include "time.h"
 #include "string.h"
-#include "disk.h"
 
 /* command structure */
 typedef struct command {

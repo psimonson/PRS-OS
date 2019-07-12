@@ -20,7 +20,7 @@ all: boot.bin command.bin
 boot.bin: boot.asm
 	nasm -f bin -o $@ $^
 
-command.bin: command.c.o io.c.o time.c.o shell.c.o string.c.o disk.c.o
+command.bin: command.c.o io.c.o time.c.o shell.c.o string.c.o
 	$(LD) $(LDFLAGS) -static -Tcommand.ld -melf_i386 -nostdlib \
 	--nmagic -o command.elf $^ && objcopy -O binary command.elf $@
 
