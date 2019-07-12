@@ -14,17 +14,27 @@ asm(".code16gcc");
  */
 int get_drive_status(drive_params_t *p)
 {
-	unsigned short failed = 0;
-	asm("int $0x13" : "=a"(failed) : "a"(0x0100), "d"(0x0000 | p->drive));
-	return (failed >> 8);
+	unsigned char failed = 0;
+	asm volatile(
+		"int $0x13\n"
+		"setc %0\n"
+		: "=r"(failed)
+		: "a"(0x0100), "d"(0x0000 | p->drive)
+	);
+	return failed;
 }
 /* Reset the disk drive.
  */
 int reset_drive(drive_params_t *p)
 {
-	unsigned short failed = 0;
-	asm("int $0x13": "=a"(failed) : "a"(0x0000), "d"(0x0000 | p->drive));
-	return (failed >> 8);
+	unsigned char failed = 0;
+	asm volatile(
+		"int $0x13\n"
+		"setc %0\n"
+		: "=r"(failed)
+		: "a"(0x0000), "d"(0x0000 | p->drive)
+	);
+	return failed;
 }
 /* Gets drive parameters.
  */
