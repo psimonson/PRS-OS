@@ -16,7 +16,7 @@ char *strstr(char *s, const char *t);
 int strchr(char *s, const char c);
 int strcpy(char *s, const char *t, int size);
 int memset(void *mem, int c, int size);
-int memcpy(void *dst, const void *src, int size);
+int memcpy(void *dst, void *src, int size);
 void reverse(char s[]);
 
 #endif

@@ -39,8 +39,10 @@ int get_drive_params(drive_params_t *p, unsigned char drive)
 	);
 	if(((failed >> 4) & 0xf) != 0)
 		return ((failed >> 4) & 0xf);
+	p->drive = drive;
 	p->spt = tmp1 & 0x3f;
 	p->numh = tmp2 >> 8;
+	p->lba = 0;
 	return (failed & 0xf);
 }
 /* Reads a disk drive.

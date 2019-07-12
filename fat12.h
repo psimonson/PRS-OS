@@ -19,14 +19,14 @@ typedef struct {
 	unsigned char	fats;
 	unsigned short	root_entries;
 	unsigned short	total_sectors;
-	unsigned char	media_descriptor;
 	unsigned short	sectors_per_fat;
 	unsigned short	sectors_per_track;
-	unsigned short	heads;
+	unsigned short	heads_per_cylinder;
 	unsigned long	hidden_sectors;
-	unsigned long	total_sectors2;
+	unsigned long	total_sectors_big;
 	unsigned short	drive_index;
-	unsigned char	signature;
+	unsigned char	_unused;
+	unsigned char	ext_boot_sig;
 	unsigned long	id;
 	char		label[11];
 	char		type[8];

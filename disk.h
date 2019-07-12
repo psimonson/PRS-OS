@@ -41,8 +41,11 @@
  * Drive parameters structure.
  */
 typedef struct {
+	unsigned char	drive;
 	unsigned char	spt;
 	unsigned char	numh;
+	unsigned char	_unused;
+	unsigned long	lba;
 } drive_params_t;
 
 /* get status of last drive operation */
