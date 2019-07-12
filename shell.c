@@ -168,8 +168,7 @@ int cmd_resetcmos()
 	unsigned char i;
 	print("Resetting CMOS to defaults...\r\n");
 	for(i=0; i<255; i++) {
-		cmos_write(0x70, i);
-		cmos_read(0x71);
+		i = cmos_read(0x71);
 		cmos_write(0x70, !i);
 	}
 	print("Done.\r\n");
