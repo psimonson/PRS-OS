@@ -68,7 +68,7 @@ int read_drive_lba(void* buffer, unsigned long lba, unsigned char blocks, drive_
 /* Reads from disk drive CHS.
  */
 int read_drive(void* buffer, unsigned char blocks, unsigned char c, unsigned char h,
-	unsigned s, drive_params_t* p)
+	unsigned char s, drive_params_t* p)
 {
 	unsigned short failed = 0;
 
