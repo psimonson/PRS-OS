@@ -24,8 +24,8 @@ void main()
 	extern int shell();
 
 	/* setup data segment */
-	asm("movw $0x50, %ax");
-	asm("movw %ax, %ds");
+	asm("push %cs");
+	asm("pop %ds");
 
 	load_boot(&bs);
 	puts(bs.name);

@@ -19,16 +19,17 @@ void load_boot(boot_t *bs)
 	/* read disk drive */
 	if(get_drive_params(&p, 0x00)) {
 		puts("Error: Cannot get drive params.");
-		if(reset_drive(&p)) {
-			int i;
-			if(read_drive(curbs, 1, 0, 0, 1, &p)) {
-				puts("Error: Cannot copy boot sector.");
-				return;
-			}
-			for(i=0; i<512; i++)
-				putch(curbs[i]);
-			memcpy(bs, curbs, sizeof(boot_t));
+		return;
+	}
+	if(!reset_drive(&p)) {
+		int i;
+		if(read_drive(curbs, 1, 0, 0, 1, &p)) {
+			puts("Error: Cannot copy boot sector.");
+			return;
 		}
+		for(i=0; i<512; i++)
+			putch(curbs[i]);
+		memcpy(bs, curbs, sizeof(boot_t));
 	}
 }
 
