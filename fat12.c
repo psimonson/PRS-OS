@@ -22,10 +22,13 @@ void load_boot(boot_t *bs)
 		return;
 	}
 	if(!reset_drive(&p)) {
-		if(read_drive(curbs, 1, 0, 0, 1, &p)) {
+		int i;
+		if(read_drive(bs, 1, 0, 0, 1, &p)) {
 			puts("Error: Cannot copy boot sector.");
 			return;
 		}
+		for(i=0; i < 8; i++)
+			putch(bs->name[i]);
 		memcpy(bs, curbs, sizeof(boot_t));
 	}
 }
