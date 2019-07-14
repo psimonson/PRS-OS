@@ -165,8 +165,10 @@ int read_drive_lba(void *buf, unsigned long lba, unsigned char blocks,
 
 	/* read sectors from disk drive */
 	asm volatile(
+		"push %%es\n"
 		"int $0x13\n"
 		"setcb %0\n"
+		"pop %%es\n"
 		: "=m"(failed), "=a"(p->status)
 		: "a"(0x0200 | blocks), "b"((unsigned char *)buf),
 			"c"((c << 8) | s), "d"((h << 8) | p->drive)
@@ -189,8 +191,10 @@ int read_drive_chs(void *buf, unsigned char blocks, unsigned char sector,
 
 	/* read sectors from disk drive */
 	asm volatile(
+		"push %%es\n"
 		"int $0x13\n"
 		"setcb %0\n"
+		"pop %%es\n"
 		: "=m"(failed), "=a"(p->status)
 		: "a"(0x0200 | blocks), "b"((unsigned char *)buf),
 			"c"((c << 8) | s), "d"((h << 8) | p->drive)

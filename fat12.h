@@ -8,7 +8,7 @@
 #define FAT12_H
 
 /**
- * Boot structure.
+ * Boot sector structure.
  */
 typedef struct {
 	char		_a[3];

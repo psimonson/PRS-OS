@@ -1,5 +1,5 @@
 /*
- * Simple FAT12 implementation.
+ * Simple FAT12 boot sector loading.
  * Author: Philip R. Simonson
  * Date  : July 12, 2019
  */

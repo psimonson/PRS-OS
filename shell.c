@@ -55,13 +55,22 @@ int cmd_help()
 {
 	int i;
 
-	print("Commands List [help,hello,exit]\r\n");
+	print(
+	"============================================================\r\n"
+	"                      .:[COMMANDS]:.\r\n"
+	"============================================================\r\n"
+	);
 	for(i=0; i<command_count(); i++) {
 		print(commands[i].cmd);
 		print(" - ");
 		print(commands[i].help);
 		print("\r\n");
 	}
+	print(
+	"============================================================\r\n"
+	"                        .:[EOL]:.\r\n"
+	"============================================================\r\n"
+	);
 	return 1;
 }
 /* Hello command, says hello to the user.
