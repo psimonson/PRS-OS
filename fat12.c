@@ -19,6 +19,7 @@ void load_boot(boot_t *bs)
 	static drive_params_t p;
 	char buf[50];
 
+	memset(bs, 0, sizeof(boot_t));
 	/* read disk drive */
 	if(get_drive_params(&p, 0x00))
 		goto disk_error;
@@ -30,6 +31,7 @@ void load_boot(boot_t *bs)
 	print("Sectors read: ");
 	itoa((unsigned char)(p.status), buf);
 	puts(buf);
+	memcpy(bs, boot, sizeof(boot_t));
 	return;
 
 disk_error:

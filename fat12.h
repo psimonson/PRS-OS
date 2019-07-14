@@ -61,7 +61,7 @@ typedef struct {
 } FILE;
 
 /* try and fill boot structure */
-void load_boot(boot_t *bs);
+void load_boot(boot_t *);
 
 #endif
 

@@ -5,7 +5,6 @@
  */
 
 asm(".code16gcc");
-asm("jmp main");
 
 #include "io.h"
 #include "string.h"
@@ -14,20 +13,26 @@ asm("jmp main");
 
 #define INFOMSG "\x43\x4f\x44\x45\x44\x20\x42\x59\x20\x50\x48\x49\x4c\x49\x50\x00"
 
+static boot_t _bs;
+
 /* Entry point for my command shell.
  */
 void main()
 {
 	extern int shell();
-	static boot_t bs;
+	extern boot_t _bs;
 
 	/* setup segment registers */
 	asm("push %cs");
 	asm("pop %ds");
 	asm("pop %es");
 
-	/* Sectors loading correctly now. */
-	load_boot(&bs);
+	/**
+	 * Sectors loading correctly now.
+	 * Still doesn't copy to boot_t "_bs" struct.
+	 * Hmmm... I wonder why?
+	 */
+	load_boot(&_bs);
 
 	/* start of actual command mode */
 	puts("Press any key to continue...");
