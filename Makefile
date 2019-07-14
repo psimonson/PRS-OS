@@ -22,8 +22,8 @@ makeboot: makeboot.c
 boot.bin: boot.asm
 	nasm -f bin -o $@ $^
 
-command.bin: command.c.o io.c.o time.c.o shell.c.o string.c.o disk.c.o fat12.c.o
-	$(LD) $(LDFLAGS) -no-PIE -static -e 0x7c00 -Ttext=0x0000 -R.note -R.comment \
+command.bin: command.c.o io.c.o time.c.o shell.c.o string.c.o # disk.c.o fat12.c.o
+	$(LD) $(LDFLAGS) -no-PIE -static -e main -Ttext=0x0000 -R.note -R.comment \
 	-melf_i386 -nostdlib --nmagic --oformat binary -o $@ $^
 
 disk: all
