@@ -15,7 +15,8 @@ asm(".code16gcc");
  */
 void load_boot(boot_t *bs)
 {
-	drive_params_t p;
+	static unsigned char boot[512];
+	static drive_params_t p;
 	char buf[50];
 
 	/* read disk drive */
@@ -23,7 +24,7 @@ void load_boot(boot_t *bs)
 		goto disk_error;
 	if(reset_drive(&p))
 		goto disk_error;
-	if(read_drive_chs(bs, 1, 0, &p))
+	if(read_drive_chs(boot, 1, 0, &p))
 		goto disk_error;
 	get_drive_error(&p);
 	print("Sectors read: ");

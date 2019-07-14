@@ -58,9 +58,10 @@ int reset_drive(drive_params_t *p);
 /* get drive parameters */
 int get_drive_params(drive_params_t *p, unsigned char drive);
 /* read data from disk drive */
-int read_drive_lba(void* buffer, unsigned long lba, unsigned char blocks, drive_params_t* p);
+int read_drive_lba(unsigned char buf[], unsigned long lba, unsigned char blocks,
+	drive_params_t* p);
 /* read data from disk drive */
-int read_drive_chs(void* buffer, unsigned char blocks, unsigned char sector,
+int read_drive_chs(unsigned char buf[], unsigned char blocks, unsigned char sector,
 	drive_params_t* p);
 
 #endif
