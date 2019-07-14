@@ -27,7 +27,7 @@ void load_boot(boot_t *bs)
 		goto disk_error;
 	get_drive_error(&p);
 	print("Sectors read: ");
-	itoa((unsigned char)p.status, buf);
+	itoa((unsigned char)(p.status), buf);
 	puts(buf);
 	return;
 

@@ -167,8 +167,7 @@ int read_drive_lba(void* buffer, unsigned long lba, unsigned char blocks,
 	asm volatile(
 		"int $0x13\n"
 		"setcb %0\n"
-		"movw %%ax, %1\n"
-		: "=r"(failed), "=r"(p->status)
+		: "=m"(failed), "=a"(p->status)
 		: "a"(0x0200 | blocks), "b"(buffer), "c"((c << 8) | s), "d"((h << 8) | p->drive)
 		: "cc"
 	);
@@ -185,8 +184,7 @@ int read_drive_chs(void* buffer, unsigned char blocks, unsigned char c,
 	asm volatile(
 		"int $0x13\n"
 		"setcb %0\n"
-		"movw %%ax, %1\n"
-		: "=r"(failed), "=r"(p->status)
+		: "=m"(failed), "=a"(p->status)
 		: "a"(0x0200 | blocks), "b"(buffer), "c"((c << 8) | s), "d"((h << 8) | p->drive)
 		: "cc"
 	);
