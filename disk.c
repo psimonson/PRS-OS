@@ -150,7 +150,7 @@ int get_drive_params(drive_params_t *p, unsigned char drive)
 }
 /* Reads a disk drive using LBA.
  */
-int read_drive_lba(unsigned char buf[], unsigned long lba, unsigned char blocks,
+int read_drive_lba(void *buf, unsigned long lba, unsigned char blocks,
 	drive_params_t* p)
 {
 	unsigned char failed = 0;
@@ -168,15 +168,15 @@ int read_drive_lba(unsigned char buf[], unsigned long lba, unsigned char blocks,
 		"int $0x13\n"
 		"setcb %0\n"
 		: "=m"(failed), "=a"(p->status)
-		: "a"(0x0200 | blocks), "b"(buf), "c"((c << 8) | s),
-			"d"((h << 8) | p->drive)
+		: "a"(0x0200 | blocks), "b"((unsigned char *)buf),
+			"c"((c << 8) | s), "d"((h << 8) | p->drive)
 		: "cc"
 	);
 	return (failed ? 1 : 0);
 }
 /* Reads a disk drive using CHS.
  */
-int read_drive_chs(unsigned char buf[], unsigned char blocks, unsigned char sector,
+int read_drive_chs(void *buf, unsigned char blocks, unsigned char sector,
 	drive_params_t* p)
 {
 	unsigned char failed = 0;
@@ -192,8 +192,8 @@ int read_drive_chs(unsigned char buf[], unsigned char blocks, unsigned char sect
 		"int $0x13\n"
 		"setcb %0\n"
 		: "=m"(failed), "=a"(p->status)
-		: "a"(0x0200 | blocks), "b"(buf), "c"((c << 8) | s),
-			"d"((h << 8) | p->drive)
+		: "a"(0x0200 | blocks), "b"((unsigned char *)buf),
+			"c"((c << 8) | s), "d"((h << 8) | p->drive)
 		: "cc"
 	);
 	return (failed ? 1 : 0);

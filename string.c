@@ -125,10 +125,10 @@ int memset(void *mem, int c, int size)
 }
 /* Simple implementation of memcpy.
  */
-int memcpy(void *dst, void *src, int size)
+int memcpy(void *dst, const void *src, int size)
 {
-	char *cdst = (char *)dst;
-	char *csrc = (char *)src;
+	char *cdst = (char*)dst;
+	const char *csrc = (const char*)src;
 	int i;
 	for(i=0; i < size; i++)
 		cdst[i] = csrc[i];
