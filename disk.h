@@ -60,7 +60,7 @@ int get_drive_params(drive_params_t *p, unsigned char drive);
 /* read data from disk drive */
 int read_drive_lba(void* buffer, unsigned long lba, unsigned char blocks, drive_params_t* p);
 /* read data from disk drive */
-int read_drive_chs(void* buffer, unsigned long lba, unsigned char blocks,
-	unsigned char c, unsigned char h, unsigned char s, drive_params_t* p);
+int read_drive_chs(void* buffer, unsigned char blocks, unsigned char c,
+	unsigned char h, unsigned char s, drive_params_t* p);
 
 #endif

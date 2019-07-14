@@ -176,8 +176,8 @@ int read_drive_lba(void* buffer, unsigned long lba, unsigned char blocks,
 }
 /* Reads a disk drive using CHS.
  */
-int read_drive_chs(void* buffer, unsigned long lba, unsigned char blocks,
-	unsigned char c, unsigned char h, unsigned char s, drive_params_t* p)
+int read_drive_chs(void* buffer, unsigned char blocks, unsigned char c,
+	unsigned char h, unsigned char s, drive_params_t* p)
 {
 	unsigned char failed = 0;
 

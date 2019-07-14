@@ -23,7 +23,7 @@ void load_boot(boot_t *bs)
 		goto disk_error;
 	if(reset_drive(&p))
 		goto disk_error;
-	if(read_drive_lba(bs, 0, 1, &p))
+	if(read_drive_chs(bs, 1, 0, 0, 1, &p))
 		goto disk_error;
 	get_drive_error(&p);
 	print("Sectors read: ");
