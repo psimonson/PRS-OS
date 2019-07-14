@@ -20,11 +20,10 @@ void load_boot(boot_t *bs)
 	/* read disk drive */
 	if(get_drive_params(&p, 0x00))
 		goto disk_error;
-
-	if(!reset_drive(&p)) {
-		if(read_drive_floppy(bs, 1, &p))
-			goto disk_error;
-	}
+	if(reset_drive(&p))
+		goto disk_error;
+	if(read_drive_floppy(bs, 1, &p))
+		goto disk_error;
 	return;
 
 disk_error:

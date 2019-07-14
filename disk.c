@@ -162,13 +162,14 @@ int read_drive_lba(void* buffer, unsigned long lba, unsigned char blocks,
 	t = lba % (p->numh * p->spt);
 	h = t / p->spt;
 	s = (t % p->spt) + 1;
+
 	/* read sectors from disk drive */
 	asm volatile(
 		"int $0x13\n"
 		"setcb %0\n"
-		: "=r"(failed), "=a"(p->error)
-		: "a"(0x0200 | blocks), "b"(buffer), "c"((c << 8) | s),
-			"d"((h << 8) | p->drive)
+		"movw %%ax, %1\n"
+		: "=r"(failed), "=r"(p->error)
+		: "a"(0x0200 | blocks), "b"(buffer), "c"((c << 8) | s), "d"((h << 8) | p->drive)
 		: "cc"
 	);
 	return (failed ? 1 : 0);
@@ -189,9 +190,9 @@ int read_drive_floppy(void* buffer, unsigned char block, drive_params_t* p)
 	asm volatile(
 		"int $0x13\n"
 		"setcb %0\n"
-		: "=r"(failed), "=a"(p->error)
-		: "a"(0x0200 | block), "b"(buffer), "c"((c << 8) | s),
-			"d"((h << 8) | p->drive)
+		"movw %%ax, %1\n"
+		: "=r"(failed), "=r"(p->error)
+		: "a"(0x0200 | block), "b"(buffer), "c"((c << 8) | s), "d"((h << 8) | p->drive)
 		: "cc"
 	);
 	return (failed ? 1 : 0);
