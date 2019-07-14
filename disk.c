@@ -168,24 +168,32 @@ int read_drive_lba(void* buffer, unsigned long lba, unsigned char blocks,
 		"int $0x13\n"
 		"setcb %0\n"
 		: "=m"(failed), "=a"(p->status)
-		: "a"(0x0200 | blocks), "b"(buffer), "c"((c << 8) | s), "d"((h << 8) | p->drive)
+		: "a"(0x0200 | blocks), "b"(buffer), "c"((c << 8) | s),
+			"d"((h << 8) | p->drive)
 		: "cc"
 	);
 	return (failed ? 1 : 0);
 }
 /* Reads a disk drive using CHS.
  */
-int read_drive_chs(void* buffer, unsigned char blocks, unsigned char c,
-	unsigned char h, unsigned char s, drive_params_t* p)
+int read_drive_chs(void* buffer, unsigned char blocks, unsigned char sector,
+	drive_params_t* p)
 {
 	unsigned char failed = 0;
+	unsigned char c, h, s;
+
+	/* sector calculations */
+	c = (sector / p->spt) / p->numh;
+	h = (sector / p->spt) % p->numh;
+	s = (sector % p->spt) + 1;
 
 	/* read sectors from disk drive */
 	asm volatile(
 		"int $0x13\n"
 		"setcb %0\n"
 		: "=m"(failed), "=a"(p->status)
-		: "a"(0x0200 | blocks), "b"(buffer), "c"((c << 8) | s), "d"((h << 8) | p->drive)
+		: "a"(0x0200 | blocks), "b"(buffer), "c"((c << 8) | s),
+			"d"((h << 8) | p->drive)
 		: "cc"
 	);
 	return (failed ? 1 : 0);

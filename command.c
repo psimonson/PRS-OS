@@ -14,12 +14,13 @@ asm("jmp main");
 
 #define INFOMSG "\x43\x4f\x44\x45\x44\x20\x42\x59\x20\x50\x48\x49\x4c\x49\x50\x00"
 
+boot_t bs;
+
 /* Entry point for my command shell.
  */
 void main()
 {
 	extern int shell();
-	static boot_t bs;
 	char buf[50];
 
 	/* setup segment registers */
