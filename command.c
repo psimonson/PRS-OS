@@ -26,8 +26,6 @@ void main()
 	asm("push %cs");
 	asm("pop %ds");
 	asm("pop %es");
-	asm("pop %fs");
-	asm("pop %gs");
 
 	/**
 	 * TODO: Make load_boot actually work; it's buggy right now.
