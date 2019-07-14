@@ -15,7 +15,6 @@ asm(".code16gcc");
  */
 void load_boot(boot_t *bs)
 {
-	static unsigned char curbs[512];
 	drive_params_t p;
 
 	/* read disk drive */
@@ -23,9 +22,8 @@ void load_boot(boot_t *bs)
 		goto disk_error;
 
 	if(!reset_drive(&p)) {
-		if(read_drive(curbs, 1, 0, 0, 1, &p))
+		if(read_drive(bs, 1, 0, 0, 1, &p))
 			goto disk_error;
-		memcpy(bs, curbs, sizeof(boot_t));
 	}
 	return;
 

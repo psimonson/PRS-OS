@@ -150,7 +150,6 @@ int read_drive_lba(void* buffer, unsigned long lba, unsigned char blocks,
 	drive_params_t* p)
 {
 	unsigned char failed = 0;
-	unsigned char status = 0;
 	unsigned char c,h,s;
 	unsigned short t;
 
@@ -159,17 +158,16 @@ int read_drive_lba(void* buffer, unsigned long lba, unsigned char blocks,
 	t = lba % (p->numh * p->spt);
 	h = t / p->spt;
 	s = (t % p->spt) + 1;
-
 	/* read sectors from disk drive */
 	asm(
 		"int $0x13\n"
 		"setcb %0\n"
-		"movb %%ah, %1\n"
-		: "=r"(failed), "=r"(status), "=a"(p->error)
-		: "a"(0x0200 | blocks), "b"(buffer), "c"((c << 8) | s), "d"((h << 8) | p->drive)
+		: "=r"(failed), "=a"(p->error)
+		: "a"(0x0200 | blocks), "b"((unsigned char *)buffer), "c"((c << 8) | s),
+			"d"((h << 8) | p->drive)
 		: "cc"
 	);
-	return ((failed << 8) | status);
+	return failed;
 }
 /* Reads from disk drive CHS.
  */
@@ -177,17 +175,16 @@ int read_drive(void* buffer, unsigned char blocks, unsigned char c, unsigned cha
 	unsigned char s, drive_params_t* p)
 {
 	unsigned char failed = 0;
-	unsigned char status = 0;
 
 	/* read sectors from disk drive */
 	asm(
 		"int $0x13\n"
 		"setcb %0\n"
-		"movb %%ah, %1\n"
-		: "=r"(failed), "=r"(status), "=a"(p->error)
-		: "a"(0x0200 | blocks), "b"(buffer), "c"((c << 8) | s), "d"((h << 8) | p->drive)
+		: "=r"(failed), "=a"(p->error)
+		: "a"(0x0200 | blocks), "b"((unsigned char *)buffer), "c"((c << 8) | s),
+			"d"((h << 8) | p->drive)
 		: "cc"
 	);
-	return ((failed << 8) | status);
+	return failed;
 }
 
