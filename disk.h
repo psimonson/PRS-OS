@@ -45,9 +45,12 @@ typedef struct {
 	unsigned char	spt;
 	unsigned char	numh;
 	unsigned char	_unused;
+	unsigned short	error;
 	unsigned long	lba;
 } drive_params_t;
 
+/* get drive error and print message */
+void get_drive_error(drive_params_t *p);
 /* get status of last drive operation */
 int get_drive_status(drive_params_t *p);
 /* reset disk drive */

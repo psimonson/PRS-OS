@@ -22,7 +22,7 @@ makeboot: makeboot.c
 boot.bin: boot.asm
 	nasm -f bin -o $@ $^
 
-command.bin: command.c.o io.c.o time.c.o shell.c.o string.c.o # disk.c.o fat12.c.o
+command.bin: command.c.o io.c.o time.c.o shell.c.o string.c.o disk.c.o fat12.c.o
 	$(LD) $(LDFLAGS) -no-PIE -static -e main -Ttext=0x0000 -R.note -R.comment \
 	-melf_i386 -nostdlib --nmagic --oformat binary -o $@ $^
 
@@ -38,7 +38,7 @@ disk: all
 #	dd if=boot.bin of=floppy.img bs=1 count=512 conv=notrunc
 
 clean:
-	rm -f floppy.img *~ *.elf *.bin *.o makeboot
+	rm -f floppy.img *~ *.bin *.o makeboot
 
 run:
 	qemu-system-i386 -soundhw pcspk -fda floppy.img -boot a
