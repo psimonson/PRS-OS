@@ -2,9 +2,7 @@
 # by Philip R. Simonson
 #######################################################################
 
-CFLAGS=-Wall -Werror -Os -march=i686 -ffreestanding -I. -m16
-CFLAGS+=-fno-tree-loop-optimize -fomit-frame-pointer
-
+CFLAGS=-Wall -Werror -Os -march=i686 -ffreestanding -I. -m32
 SRCDIR=$(shell pwd)
 
 VERSION=0.1
@@ -15,7 +13,7 @@ TARNAME=$(BASENAM)-$(VERSION).tgz
 all: boot.bin command.bin makeboot
 
 %.c.o: %.c
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) -fno-PIC -c $< -o $@
 
 makeboot: makeboot.c
 	$(CC) -std=c89 -Wall -Wextra -Werror -I. $(shell pkg-config --cflags prs) -o $@ $^ \
@@ -25,10 +23,10 @@ boot.bin: boot.asm
 	nasm -f bin -o $@ $^
 
 command.bin: command.c.o io.c.o time.c.o shell.c.o string.c.o disk.c.o fat12.c.o
-	$(LD) $(LDFLAGS) -static -Tcommand.ld -melf_i386 -nostdlib \
-	--nmagic -o command.elf $^ && objcopy -O binary command.elf $@
+	$(LD) $(LDFLAGS) -no-PIE -static -e 0x7c00 -Ttext=0x0000 -R.note -R.comment \
+	-melf_i386 -nostdlib --nmagic --oformat binary -o $@ $^
 
-disk: boot.bin command.bin
+disk: all
 	dd if=/dev/zero of=floppy.img bs=1024 count=1440
 	sudo losetup /dev/loop0 floppy.img
 	sudo mkfs.vfat -F12 /dev/loop0
