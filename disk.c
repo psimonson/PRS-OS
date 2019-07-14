@@ -103,6 +103,7 @@ void get_drive_error(drive_params_t *p)
 int get_drive_status(drive_params_t *p)
 {
 	unsigned char failed = 0;
+
 	asm volatile(
 		"int $0x13\n"
 		"setcb %0\n"
@@ -116,6 +117,8 @@ int get_drive_status(drive_params_t *p)
 int reset_drive(drive_params_t *p)
 {
 	unsigned char failed = 0;
+
+	p->error = 0x0000;
 	asm volatile(
 		"int $0x13\n"
 		"setcb %0\n"
@@ -130,6 +133,7 @@ int get_drive_params(drive_params_t *p, unsigned char drive)
 {
 	unsigned char failed = 0;
 	unsigned short tmp1, tmp2;
+
 	asm volatile(
 		"int $0x13\n"
 		"setcb %0\n"
@@ -159,32 +163,37 @@ int read_drive_lba(void* buffer, unsigned long lba, unsigned char blocks,
 	h = t / p->spt;
 	s = (t % p->spt) + 1;
 	/* read sectors from disk drive */
-	asm(
+	asm volatile(
 		"int $0x13\n"
 		"setcb %0\n"
 		: "=r"(failed), "=a"(p->error)
-		: "a"(0x0200 | blocks), "b"((unsigned char *)buffer), "c"((c << 8) | s),
+		: "a"(0x0200 | blocks), "b"(buffer), "c"((c << 8) | s),
 			"d"((h << 8) | p->drive)
 		: "cc"
 	);
-	return failed;
+	return (failed ? 1 : 0);
 }
 /* Reads from disk drive CHS.
  */
-int read_drive(void* buffer, unsigned char blocks, unsigned char c, unsigned char h,
-	unsigned char s, drive_params_t* p)
+int read_drive_floppy(void* buffer, unsigned char block, drive_params_t* p)
 {
 	unsigned char failed = 0;
+	unsigned c, h, s;
+
+	/* calculate floppy blocks */
+	c = ((block * 2) / 18) / 2;
+	h = ((block * 2) / 18) % 2;
+	s = (block * 2) % 18 + 1;
 
 	/* read sectors from disk drive */
-	asm(
+	asm volatile(
 		"int $0x13\n"
 		"setcb %0\n"
 		: "=r"(failed), "=a"(p->error)
-		: "a"(0x0200 | blocks), "b"((unsigned char *)buffer), "c"((c << 8) | s),
+		: "a"(0x0200 | block), "b"(buffer), "c"((c << 8) | s),
 			"d"((h << 8) | p->drive)
 		: "cc"
 	);
-	return failed;
+	return (failed ? 1 : 0);
 }
 

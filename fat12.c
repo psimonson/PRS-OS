@@ -22,7 +22,7 @@ void load_boot(boot_t *bs)
 		goto disk_error;
 
 	if(!reset_drive(&p)) {
-		if(read_drive(bs, 1, 0, 0, 1, &p))
+		if(read_drive_floppy(bs, 1, &p))
 			goto disk_error;
 	}
 	return;

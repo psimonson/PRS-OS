@@ -20,6 +20,7 @@ void main()
 {
 	extern int shell();
 	static boot_t bs;
+	char buf[50];
 
 	/* setup segment registers */
 	asm("push %cs");
@@ -34,6 +35,9 @@ void main()
 	 * of the diskette. But I will try to fix it.
 	 */
 	load_boot(&bs);
+	memcpy(buf, bs.name, 8);
+	buf[8] = 0;
+	puts(buf);
 
 	/* start of actual command mode */
 	puts("Press any key to continue...");
