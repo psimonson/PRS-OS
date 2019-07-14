@@ -19,16 +19,20 @@ void load_boot(boot_t *bs)
 	drive_params_t p;
 
 	/* read disk drive */
-	if(get_drive_params(&p, 0x00)) {
-		puts("Error: Cannot get drive params.");
-		return;
-	}
+	if(get_drive_params(&p, 0x00))
+		goto disk_error;
+
 	if(!reset_drive(&p)) {
-		if(read_drive(bs, 1, 0, 0, 1, &p)) {
-			puts("Error: Cannot copy boot sector.");
-			return;
-		}
+		if(read_drive(curbs, 1, 0, 0, 1, &p))
+			goto disk_error;
 		memcpy(bs, curbs, sizeof(boot_t));
 	}
+	return;
+
+disk_error:
+	get_drive_error(&p);
+	puts("Hanging system.");
+	asm("cli");
+	asm("hlt");
 }
 
