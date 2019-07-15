@@ -2,7 +2,7 @@
 # by Philip R. Simonson
 #######################################################################
 
-CFLAGS=-Wall -Werror -Os -march=i686 -ffreestanding -I. -m32 \
+CFLAGS=-Wall -Werror -Os -march=i686 -ffreestanding -I. -m16 \
 -fno-asynchronous-unwind-tables -fno-pic -fno-builtin -fno-ident \
 -fno-stack-protector
 
