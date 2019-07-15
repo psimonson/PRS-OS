@@ -11,13 +11,11 @@ asm(".code16gcc");
 #include "fat12.h"
 #include "disk.h"
 
-/* buffer for read sector */
-static unsigned char sector[512];
-
 /* Fill boot structure with boot sector data.
  */
 void load_boot(boot_t *bs)
 {
+	static unsigned char sector[512];
 	static drive_params_t p;
 	char buf[50];
 	char retries, cflag;
