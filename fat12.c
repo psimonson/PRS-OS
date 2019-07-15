@@ -26,10 +26,15 @@ void load_boot(boot_t *bs)
 		goto disk_error;
 	retries = 3;
 	do {
-		if((cflag = read_drive_chs(sector, 1, 0, &p))) {
+		if((cflag = read_drive_chs(&sector, 1, 0, &p))) {
 			if(reset_drive(&p))
 				goto disk_error;
+			print("Retrying... Times left ");
+			itoa(retries, buf);
+			print(buf);
+			print(".\r\n");
 		}
+
 	} while(--retries > 0);
 	if(cflag)
 		goto disk_error;

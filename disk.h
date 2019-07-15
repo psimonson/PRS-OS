@@ -52,16 +52,16 @@ typedef struct {
 /* get drive error and print message */
 void get_drive_error(drive_params_t *p);
 /* get status of last drive operation */
-int get_drive_status(drive_params_t *p);
+int __REGPARM get_drive_status(drive_params_t *p);
 /* reset disk drive */
-int reset_drive(drive_params_t *p);
+int __REGPARM reset_drive(drive_params_t *p);
 /* get drive parameters */
-int get_drive_params(drive_params_t *p, unsigned char drive);
+int __REGPARM get_drive_params(drive_params_t *p, unsigned char drive);
 /* read data from disk drive */
-int read_drive_lba(void *buf, unsigned long lba, unsigned char blocks,
+int __REGPARM read_drive_lba(void *buf, unsigned long lba, unsigned char blocks,
 	drive_params_t* p);
 /* read data from disk drive */
-int read_drive_chs(void *buf, unsigned char blocks, unsigned char sector,
+int __REGPARM read_drive_chs(void *buf, unsigned char blocks, unsigned char sector,
 	drive_params_t* p);
 
 #endif
