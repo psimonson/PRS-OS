@@ -2,7 +2,13 @@
 # by Philip R. Simonson
 #######################################################################
 
-CFLAGS=-Wall -Werror -Os -march=i686 -ffreestanding -I. -m32
+CFLAGS=-Wall -Werror -Os -march=i686 -ffreestanding -I. -m32 \
+-fno-asynchronous-unwind-tables -fno-pic -fno-builtin -fno-ident \
+-fno-stack-protector
+
+LDFLAGS=-no-PIE -static -e main -Ttext=0x0000 -R.note -R.comment \
+-melf_i386 -nostdlib --nmagic --oformat binary
+
 SRCDIR=$(shell pwd)
 
 VERSION=0.1
@@ -23,8 +29,7 @@ boot.bin: boot.asm
 	nasm -f bin -o $@ $^
 
 command.bin: command.c.o io.c.o time.c.o shell.c.o string.c.o disk.c.o fat12.c.o
-	$(LD) $(LDFLAGS) -no-PIE -static -e main -Ttext=0x0000 -R.note -R.comment \
-	-melf_i386 -nostdlib --nmagic --oformat binary -o $@ $^
+	$(LD) $(LDFLAGS) -o $@ $^
 
 disk: all
 	dd if=/dev/zero of=floppy.img bs=1024 count=1440
