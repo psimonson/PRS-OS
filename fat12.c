@@ -11,21 +11,29 @@ asm(".code16gcc");
 #include "fat12.h"
 #include "disk.h"
 
+/* buffer for read sector */
+static unsigned char sector[512];
+
 /* Fill boot structure with boot sector data.
  */
 void load_boot(boot_t *bs)
 {
-	static unsigned char sector[512];
 	static drive_params_t p;
 	char buf[50];
+	char retries, cflag;
 
 	memset(bs, 0, sizeof(boot_t));
 	/* read disk drive */
 	if(get_drive_params(&p, 0x00))
 		goto disk_error;
-	if(reset_drive(&p))
-		goto disk_error;
-	if(read_drive_chs(sector, 1, 0, &p))
+	retries = 3;
+	do {
+		if((cflag = read_drive_chs(sector, 1, 0, &p))) {
+			if(reset_drive(&p))
+				goto disk_error;
+		}
+	} while(--retries > 0);
+	if(cflag)
 		goto disk_error;
 	get_drive_error(&p);
 	print("Sectors read: ");
