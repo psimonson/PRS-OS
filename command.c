@@ -19,7 +19,6 @@ void main()
 {
 	extern int shell();
 	static boot_t _bs;
-	int i;
 
 	/* setup segment registers */
 	asm(
@@ -34,8 +33,6 @@ void main()
 	 * Hmmm... I wonder why?
 	 */
 	load_boot(&_bs);
-	for(i=0; i<sizeof(boot_t); i++)
-		putch(((unsigned char *)&_bs)[i]);
 
 	/* start of actual command mode */
 	puts("Press any key to continue...");
