@@ -110,7 +110,6 @@ int __REGPARM get_drive_status(drive_params_t *p)
 		"setcb %0\n"
 		: "=m"(failed), "=a"(p->status)
 		: "a"(0x0100), "d"(0x0000 | p->drive)
-		: "cc"
 	);
 	return failed;
 }
@@ -127,7 +126,6 @@ int __REGPARM reset_drive(drive_params_t *p)
 		"setcb %0\n"
 		: "=m"(failed), "=a"(p->status)
 		: "a"(0x0000), "d"(0x0000 | p->drive)
-		: "cc"
 	);
 	return failed;
 }
@@ -144,7 +142,6 @@ int __REGPARM get_drive_params(drive_params_t *p, unsigned char drive)
 		"setcb %0\n"
 		: "=r"(failed), "=a"(p->status), "=c"(tmp1), "=d"(tmp2)
 		: "a"(0x0800), "d"(drive), "D"(0)
-		: "cc"
 	);
 	if((failed >> 8) != 0)
 		return (failed >> 8);
@@ -177,7 +174,6 @@ int __REGPARM read_drive_lba(void *buf, unsigned long lba, unsigned char blocks,
 		: "=m"(failed), "=a"(p->status)
 		: "a"(0x0200 | blocks), "b"(buf),
 			"c"((c << 8) | s), "d"((h << 8) | p->drive)
-		: "cc"
 	);
 	return failed;
 }
@@ -202,7 +198,6 @@ int __REGPARM read_drive_chs(void *buf, unsigned char blocks, unsigned char sect
 		: "=m"(failed), "=a"(p->status)
 		: "a"(0x0200 | blocks), "b"(buf),
 			"c"((c << 8) | s), "d"((h << 8) | p->drive)
-		: "cc"
 	);
 	return failed;
 }
