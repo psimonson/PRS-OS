@@ -16,7 +16,7 @@ BASENAM=$(shell basename $(SRCDIR))
 TARNAME=$(BASENAM)-$(VERSION).tgz
 
 .PHONY: all disk clean run distclean dist
-all: boot.bin command.bin makeboot
+all: boot.bin command.bin #makeboot
 
 %.c.o: %.c
 	$(CC) $(CFLAGS) -fno-PIC -c $< -o $@
@@ -38,12 +38,12 @@ disk: all
 	sudo mount /dev/loop0 /mnt
 	sudo cp command.bin /mnt
 	sudo umount /dev/loop0
-	sudo ./makeboot /dev/loop0 || sudo losetup -d /dev/loop0
+#	sudo ./makeboot /dev/loop0 || sudo losetup -d /dev/loop0
 	sudo losetup -d /dev/loop0
-#	dd if=boot.bin of=floppy.img bs=1 count=512 conv=notrunc
+	dd if=boot.bin of=floppy.img bs=1 count=512 conv=notrunc
 
 clean:
-	rm -f floppy.img *~ *.bin *.o makeboot
+	rm -f floppy.img *~ *.bin *.o
 
 run:
 	qemu-system-i386 -soundhw pcspk -fda floppy.img -boot a

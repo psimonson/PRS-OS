@@ -11,7 +11,7 @@
 jmp short _start ; jump past BPB
 nop
 
-bpbOEM			DB "My OS   "
+bpbOEM			DB "PRS OS  "
 bpbBytesPerSector:	DW 512
 bpbSectorsPerCluster:	DB 1
 bpbReservedSectors:	DW 1
