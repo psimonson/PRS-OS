@@ -116,12 +116,10 @@ int strcpy(char *s, const char *t, int size)
  */
 int memset(void *mem, int c, int size)
 {
-	void *p = mem;
-	while((unsigned long*)p-(unsigned long*)mem < size)
-		*(unsigned long*)p++ = c;
-	while((unsigned char*)p-(unsigned char*)mem < size)
-		*(unsigned char*)p++ = c;
-	return ((unsigned char*)p-(unsigned char*)mem);
+	unsigned char *p = mem;
+	while(p-((unsigned char*)mem) < size)
+		*p++ = c;
+	return (p-((unsigned char*)mem));
 }
 /* Simple implementation of memcpy.
  */

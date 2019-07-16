@@ -232,7 +232,10 @@ int shell()
 	for(i=0; i<command_count(); i++)
 		if(strcmp(buf, commands[i].cmd) == 0)
 			return commands[i].func();
-	puts("Bad command.");
+
+	print("Bad command entered - \"");
+	print(buf);
+	puts("\".");
 	return 1;
 }
 

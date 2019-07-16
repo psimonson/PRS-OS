@@ -2,12 +2,12 @@
 # by Philip R. Simonson
 #######################################################################
 
-CFLAGS=-Wall -Werror -Os -march=i686 -ffreestanding -I. -m16 \
--fno-asynchronous-unwind-tables -fno-pic -fno-builtin -fno-ident \
--fno-stack-protector
+CFLAGS=-std=gnu89 -Wall -Werror -Os -march=i686 -ffreestanding -I. -m16 -pedantic
+CFLAGS+=-fno-asynchronous-unwind-tables -fno-pic -fno-builtin -fno-ident
+CFLAGS+=-fomit-frame-pointer
 
-LDFLAGS=-no-PIE -static -e main -Ttext=0x0000 -R.note -R.comment \
--melf_i386 -nostdlib --nmagic --oformat binary
+LDFLAGS=-static -Tcommand.ld -m elf_i386 -no-pie -nostdlib --nmagic
+LDFLAGS+=--oformat binary
 
 SRCDIR=$(shell pwd)
 

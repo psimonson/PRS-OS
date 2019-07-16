@@ -5,6 +5,7 @@
  */
 
 asm(".code16gcc");
+asm("jmp main");
 
 #include "io.h"
 #include "string.h"

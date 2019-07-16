@@ -1,7 +1,7 @@
 ENTRY(main);
 SECTIONS
 {
-	. = 0x0050;
+	. = 0x0000;
 	.text :
 	{
 		*(.text);
@@ -15,6 +15,9 @@ SECTIONS
 	/DISCARD/ :
 	{
 		*(.note);
+		*(.iplt*);
+		*(.igot*);
+		*(.rel*);
 		*(.comment);
 	}
 }
