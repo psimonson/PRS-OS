@@ -139,6 +139,7 @@ int __REGPARM get_drive_params(drive_params_t *p, unsigned char drive)
 	unsigned short tmp1, tmp2;
 
 	asm volatile(
+		"mov $0, %0\n"
 		"int $0x13\n"
 		"setcb %0\n"
 		: "=r"(failed), "=a"(p->status), "=c"(tmp1), "=d"(tmp2)
