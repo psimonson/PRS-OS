@@ -32,7 +32,7 @@ command.bin: command.c.o io.c.o time.c.o shell.c.o string.c.o disk.c.o fat12.c.o
 	$(LD) $(LDFLAGS) -o $@ $^
 
 disk: all
-	dd if=/dev/zero of=floppy.img bs=1024 count=1440
+	dd if=/dev/zero of=floppy.img bs=512 count=2880
 	sudo losetup /dev/loop0 floppy.img
 	sudo mkfs.vfat -F12 /dev/loop0
 	sudo losetup -d /dev/loop0
