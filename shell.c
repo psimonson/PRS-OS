@@ -200,16 +200,16 @@ int cmd_dump()
 	print("===========================================\r\n");
 	print("CMOS Data\r\n===========================================\r\n");
 	for(i=0; i<255; i++) {
-		if(i>0 && !(i%10))
+		if(i>0 && !(i%15))
 			print("\r\n");
-		itoa(cmos_read(i), buf);
+		itoh(cmos_read(i), buf);
 		print(buf);
 		putch(' ');
 	}
 	print("\r\n===========================================\r\n");
 	print("CMOS Data\r\n===========================================\r\n");
 	for(i=0; i<255; i++) {
-		if(i>0 && !(i%40))
+		if(i>0 && !(i%45))
 			print("\r\n");
 		putch(cmos_read(i));
 	}

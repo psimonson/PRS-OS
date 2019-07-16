@@ -31,6 +31,21 @@ int gets(char *s, int size)
 	s[i] = 0;
 	return i;
 }
+/* Simple implementation of hex to string.
+ */
+void itoh(int n, char s[])
+{
+	static const char hex_digits[] = "0123456789ABCDEF";
+	int i;
+	i = 0;
+	do {
+		s[i++] = hex_digits[(n % 16)];
+		if(n < 10 && i > 0 && (i % 2))
+			s[i++] = hex_digits[0];
+	} while((n /= 16) > 0);
+	s[i] = 0;
+	reverse(s);
+}
 /* Simple implementation of convert string to int.
  */
 int atoi(const char *s)
@@ -46,7 +61,7 @@ int atoi(const char *s)
 }
 /* Simple implementation of itoa.
  */
-void itoa(unsigned long n, char s[])
+void itoa(int n, char s[])
 {
 	int i,sign;
 	if((sign = n) < 0)

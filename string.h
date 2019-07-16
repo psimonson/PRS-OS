@@ -8,8 +8,9 @@
 #define STRING_H
 
 int gets(char *s, int size);
+void itoh(int n, char s[]);
 int atoi(const char *s);
-void itoa(unsigned long n, char s[]);
+void itoa(int n, char s[]);
 int strlen(const char *s);
 int strcmp(const char *s, const char *t);
 char *strstr(char *s, const char *t);
