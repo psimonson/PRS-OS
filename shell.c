@@ -25,6 +25,7 @@ int cmd_playmusic(void);
 int cmd_search(void);
 int cmd_resetcmos(void);
 int cmd_reboot(void);
+int cmd_dump(void);
 int cmd_exec(void);
 int cmd_ls(void);
 int cmd_exit(void);
@@ -38,6 +39,7 @@ static const command_t commands[] = {
 	{"search", "Search for a string in another.", &cmd_search},
 	{"reset_CMOS", "Reset the CMOS settings.", &cmd_resetcmos},
 	{"reboot", "Reboot the machine (warm reboot).", &cmd_reboot},
+	{"dump", "Dumps the CMOS data to the screen.", &cmd_dump},
 	{"exec", "Execute a given file name.", &cmd_exec},
 	{"ls", "List root directory file names.", &cmd_ls},
 	{"exit", "Exit the shell.", &cmd_exit}
@@ -189,7 +191,32 @@ int cmd_reboot()
 	reboot();
 	return 0;
 }
-/* Exec Command, loads and executes a given filename.
+/* Dump command, dumps the CMOS data to the screen.
+ */
+int cmd_dump()
+{
+	char buf[32];
+	int i;
+	print("===========================================\r\n");
+	print("CMOS Data\r\n===========================================\r\n");
+	for(i=0; i<255; i++) {
+		if(i>0 && !(i%10))
+			print("\r\n");
+		itoa(cmos_read(i), buf);
+		print(buf);
+		putch(' ');
+	}
+	print("\r\n===========================================\r\n");
+	print("CMOS Data\r\n===========================================\r\n");
+	for(i=0; i<255; i++) {
+		if(i>0 && !(i%40))
+			print("\r\n");
+		putch(cmos_read(i));
+	}
+	print("\r\n===========================================\r\n");
+	return 1;
+}
+/* Exec command, loads and executes a given filename.
  */
 int cmd_exec()
 {
@@ -202,7 +229,7 @@ int cmd_exec()
 	puts("\r\nNot yet implemented!");
 	return 1;
 }
-/* LS Command, just list out root directory entries.
+/* Ls command, just list out root directory entries.
  */
 int cmd_ls()
 {
@@ -230,7 +257,7 @@ int shell()
 	print("\r\n");
 
 	for(i=0; i<command_count(); i++)
-		if(strcmp(buf, commands[i].cmd) == 0)
+		if(strcmp(commands[i].cmd, buf) == 0)
 			return commands[i].func();
 
 	print("Bad command entered - \"");
