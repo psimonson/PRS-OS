@@ -28,7 +28,7 @@ bsUnused:		DB 0
 bsExtBootSignature:	DB 0x29
 bsSerialNumber:		DD 0xa0a1b2b3
 bsVolumeLabel:		DB "PRS FLOPPY "
-bsFileSystem:		DB "FAT12   "
+bsFileSystem:		DB "FAT     "
 
 ; ===============================================================
 ; Main Entry point

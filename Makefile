@@ -35,11 +35,10 @@ disk: all
 	dd if=/dev/zero of=floppy.img bs=1024 count=1440
 	sudo losetup /dev/loop0 floppy.img
 	sudo mkfs.vfat -F12 /dev/loop0
-	sudo mount /dev/loop0 /mnt
-	sudo cp command.bin /mnt
-	sudo umount /dev/loop0
-#	sudo ./makeboot /dev/loop0 || sudo losetup -d /dev/loop0
 	sudo losetup -d /dev/loop0
+	sudo mount -t vfat -o loop floppy.img /mnt
+	sudo cp command.bin /mnt/command.bin
+	sudo umount /mnt
 	dd if=boot.bin of=floppy.img bs=1 count=512 conv=notrunc
 
 clean:
