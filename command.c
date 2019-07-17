@@ -31,9 +31,10 @@ asm("jmp main");
 void main()
 {
 	extern int shell();
-	boot_t _bs;
+	static boot_t _bs;
 
 	load_boot(&_bs);
+	puts(_bs.name);
 
 	/* start of actual command mode */
 	puts("Press any key to continue...");

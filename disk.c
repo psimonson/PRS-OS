@@ -105,11 +105,13 @@ int __REGPARM get_drive_status(drive_params_t *p)
 	unsigned char failed = 0;
 
 	asm volatile(
+		"push %%ds\n\t"
 		"push %%es\n\t"
 		"movb $0, %0\n\t"
 		"int $0x13\n\t"
 		"setcb %0\n\t"
 		"pop %%es\n\t"
+		"pop %%ds\n\t"
 		: "=m"(failed), "=a"(p->status)
 		: "a"(0x0100), "d"(0x0000 | p->drive)
 	);
@@ -123,11 +125,13 @@ int __REGPARM reset_drive(drive_params_t *p)
 
 	p->status = 0;
 	asm volatile(
+		"push %%ds\n\t"
 		"push %%es\n\t"
 		"movb $0, %0\n\t"
 		"int $0x13\n\t"
 		"setcb %0\n\t"
 		"pop %%es\n\t"
+		"pop %%ds\n\t"
 		: "=m"(failed), "=a"(p->status)
 		: "a"(0x0000), "d"(0x0000 | p->drive)
 	);
@@ -141,11 +145,13 @@ int __REGPARM get_drive_params(drive_params_t *p, unsigned char drive)
 	unsigned short tmp1, tmp2;
 
 	asm volatile(
+		"push %%ds\n\t"
 		"push %%es\n\t"
 		"movb $0, %0\n\t"
 		"int $0x13\n\t"
 		"setcb %0\n\t"
 		"pop %%es\n\t"
+		"pop %%ds\n\t"
 		: "=r"(failed), "=a"(p->status), "=c"(tmp1), "=d"(tmp2)
 		: "a"(0x0800), "d"(drive), "D"(0)
 	);
@@ -174,11 +180,13 @@ int __REGPARM read_drive_lba(void *buf, unsigned long lba, unsigned char blocks,
 
 	/* read sectors from disk drive */
 	asm volatile(
-		"pop %%es\n\t"
+		"push %%ds\n\t"
+		"push %%es\n\t"
 		"movw $0, %0\n\t"
 		"int $0x13\n\t"
 		"setcb %0\n\t"
-		"push %%es\n\t"
+		"pop %%es\n\t"
+		"pop %%ds\n\t"
 		: "=m"(failed), "=a"(p->status)
 		: "a"(0x0200 | blocks), "b"(buf),
 			"c"((c << 8) | s), "d"((h << 8) | p->drive)
@@ -200,11 +208,13 @@ int __REGPARM read_drive_chs(void *buf, unsigned char blocks, unsigned char sect
 
 	/* read sectors from disk drive */
 	asm volatile(
-		"pop %%es\n\t"
+		"push %%ds\n\t"
+		"push %%es\n\t"
 		"movw $0, %0\n\t"
 		"int $0x13\n\t"
 		"setcb %0\n\t"
-		"push %%es\n\t"
+		"pop %%es\n\t"
+		"pop %%ds\n\t"
 		: "=m"(failed), "=a"(p->status)
 		: "a"(0x0200 | blocks), "b"(buf),
 			"c"((c << 8) | s), "d"((h << 8) | p->drive)
