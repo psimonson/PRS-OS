@@ -15,7 +15,6 @@ asm(".code16gcc");
  */
 void load_boot(boot_t *bs)
 {
-	static unsigned char sector[512];
 	static drive_params_t p;
 	char buf[50];
 	char retries, cflag;
@@ -26,7 +25,7 @@ void load_boot(boot_t *bs)
 		goto disk_error;
 	retries = 3;
 	do {
-		if((cflag = read_drive_chs(&sector, 1, 0, &p))) {
+		if((cflag = read_drive_chs(bs, 1, 0, &p))) {
 			if(reset_drive(&p))
 				goto disk_error;
 			print("Retrying... Times left ");
@@ -42,7 +41,6 @@ void load_boot(boot_t *bs)
 	print("Sectors read: ");
 	itoa((unsigned char)(p.status), buf);
 	puts(buf);
-	memcpy(bs, sector, sizeof(boot_t));
 	return;
 
 disk_error:
