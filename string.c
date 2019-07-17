@@ -40,7 +40,7 @@ void itoh(int n, char s[])
 	i = 0;
 	do {
 		s[i++] = hex_digits[(n % 16)];
-		if(n < 10 && i > 0 && (i % 2))
+		if(n < 16 && i > 0 && (i % 2))
 			s[i++] = hex_digits[0];
 	} while((n /= 16) > 0);
 	s[i] = 0;
