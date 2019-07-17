@@ -7,8 +7,6 @@
 #ifndef DISK_H
 #define DISK_H
 
-#include "defines.h"
-
 /* Drive failure defines */
 #define	DISK_ERR_OK	0x00	/* success */
 #define	DISK_ERR_IC	0x01	/* invalid command */
@@ -47,7 +45,7 @@ typedef struct {
 	unsigned char	_unused;
 	unsigned short	status;
 	unsigned long	lba;
-} drive_params_t;
+} __attribute__((packed)) drive_params_t;
 
 /* get drive error and print message */
 void get_drive_error(drive_params_t *p);

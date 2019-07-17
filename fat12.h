@@ -7,6 +7,8 @@
 #ifndef FAT12_H
 #define FAT12_H
 
+#include "disk.h"
+
 /**
  * Boot sector structure.
  */
@@ -52,16 +54,8 @@ typedef struct {
 	unsigned long	size;
 } __attribute__((packed)) entry_t;
 
-/**
- * Structure for disk drive.
- */
-typedef struct {
-	unsigned char sectors;
-	unsigned long lba;
-} FILE;
-
 /* try and fill boot structure */
-void load_boot(boot_t *);
+drive_params_t *load_boot(boot_t *);
 
 #endif
 

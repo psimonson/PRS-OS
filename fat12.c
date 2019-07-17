@@ -13,7 +13,7 @@ asm(".code16gcc");
 
 /* Fill boot structure with boot sector data.
  */
-void load_boot(boot_t *bs)
+drive_params_t *load_boot(boot_t *bs)
 {
 	static drive_params_t p;
 	char retries, cflag;
@@ -35,12 +35,13 @@ void load_boot(boot_t *bs)
 		goto disk_error;
 	get_drive_error(&p);
 	printf("Sectors read: %d\r\n", ((unsigned char)(p.status)));
-	return;
+	return &p;
 
 disk_error:
 	get_drive_error(&p);
 	puts("Hanging system.");
 	asm("cli");
 	asm("hlt");
+	return 0;
 }
 
