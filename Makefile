@@ -2,6 +2,8 @@
 # by Philip R. Simonson
 #######################################################################
 
+SRCDIR=$(shell pwd)
+
 CFLAGS=-std=gnu89 -Wall -Werror -Os -march=i686 -ffreestanding -I. -m16 -pedantic
 CFLAGS+=-fno-asynchronous-unwind-tables -fno-pic -fno-builtin -fno-ident
 CFLAGS+=-fomit-frame-pointer
@@ -9,7 +11,9 @@ CFLAGS+=-fomit-frame-pointer
 LDFLAGS=-static -Tcommand.ld -m elf_i386 -no-pie -nostdlib --nmagic
 LDFLAGS+=--oformat binary
 
-SRCDIR=$(shell pwd)
+# uncomment for fat12
+#CMDOBJS=command.c.o io.c.o time.c.o string.c.o shell.c.o disk.c.o fat12.c.o
+CMDOBJS=command.c.o io.c.o time.c.o string.c.o shell.c.o
 
 VERSION=0.1
 BASENAM=$(shell basename $(SRCDIR))
@@ -28,7 +32,7 @@ makeboot: makeboot.c
 boot.bin: boot.asm
 	nasm -f bin -o $@ $^
 
-command.bin: command.c.o io.c.o time.c.o shell.c.o string.c.o disk.c.o fat12.c.o
+command.bin: $(CMDOBJS)
 	$(LD) $(LDFLAGS) -o $@ $^
 
 disk: all
