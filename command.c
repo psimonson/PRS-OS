@@ -31,11 +31,21 @@ asm("jmp main");
 void main()
 {
 	extern int shell();
-/*	static boot_t _bs; */
+/*	static boot_t _bs;
+	int i; */
 
 /*	load_boot(&_bs);
-	puts(_bs.name); */
-
+	print("========================================================\r\n");
+	puts("                   .:[BOOT SECTOR]:.");
+	print("========================================================\r\n");
+	for(i=0; i<sizeof(boot_t); i++) {
+		if(i>0 && !(i%60))
+			print("\r\n");
+		putch(((unsigned char *)&_bs)[i]);
+	}
+	print("\r\n");
+	print("========================================================\r\n");
+*/
 	/* start of actual command mode */
 	puts("Press any key to continue...");
 	getch();
