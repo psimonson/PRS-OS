@@ -35,7 +35,7 @@ void load_boot(boot_t *bs)
 			print(".\r\n");
 		}
 
-	} while(--retries > 0);
+	} while(--retries > 0 && !cflag);
 	if(cflag)
 		goto disk_error;
 	get_drive_error(&p);

@@ -19,5 +19,6 @@ SECTIONS
 		*(.igot*);
 		*(.rel*);
 		*(.comment);
+		*(.eh_frame);
 	}
 }

@@ -28,7 +28,7 @@ makeboot: makeboot.c
 boot.bin: boot.asm
 	nasm -f bin -o $@ $^
 
-command.bin: command.c.o io.c.o time.c.o shell.c.o string.c.o# disk.c.o fat12.c.o
+command.bin: command.c.o io.c.o time.c.o shell.c.o string.c.o disk.c.o fat12.c.o
 	$(LD) $(LDFLAGS) -o $@ $^
 
 disk: all
