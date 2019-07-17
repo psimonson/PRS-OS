@@ -32,9 +32,9 @@ void main()
 {
 	extern int shell();
 /*	static boot_t _bs;
-	int i; */
+	int i;
 
-/*	load_boot(&_bs);
+	load_boot(&_bs);
 	print("========================================================\r\n");
 	puts("                   .:[BOOT SECTOR]:.");
 	print("========================================================\r\n");
@@ -47,7 +47,7 @@ void main()
 	print("========================================================\r\n");
 */
 	/* start of actual command mode */
-	puts("Press any key to continue...");
+	printf("Press any key to continue...");
 	getch();
 	init_graphics(0x03);
 	puts(INFOMSG);

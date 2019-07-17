@@ -8,7 +8,7 @@ CFLAGS=-std=gnu89 -Wall -Werror -Os -march=i686 -ffreestanding -I. -m16 -pedanti
 CFLAGS+=-fno-asynchronous-unwind-tables -fno-pic -fno-builtin -fno-ident
 CFLAGS+=-fomit-frame-pointer
 
-LDFLAGS=-static -Tcommand.ld -m elf_i386 -no-pie -nostdlib --nmagic
+LDFLAGS=-static -Tcommand.ld -m elf_i386 -no-pie -nostartfiles --nmagic
 LDFLAGS+=--oformat binary
 
 # uncomment for fat12

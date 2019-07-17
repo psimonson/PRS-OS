@@ -6,6 +6,8 @@
 
 asm(".code16gcc");
 
+#include <stdarg.h>
+
 #include "io.h"
 #include "time.h"
 #include "string.h"
@@ -27,6 +29,50 @@ int putch(int ic)
 	char c = (char)ic;
 	putch_color(c, 0x07);
 	return ic;
+}
+/* Prints a formatted string on the screen using putch.
+ */
+int printf(const char *format, ...)
+{
+	va_list ap;
+	int i = 0;
+
+	va_start(ap, format);
+	while(*format) {
+		if(format[0] == '%' && format[1] == '%')
+			putch('%');
+		else if(format[0] == '%' && format[1] != '%'){
+			const char *s;
+			char buf[50];
+			int c, d;
+
+			switch(*++format) {
+			case 'd':
+				d = (int)va_arg(ap, int);
+				memset(buf, 0, sizeof(buf));
+				itoa(d, buf);
+				print(buf);
+				format++;
+			break;
+			case 'c':
+				c = (int)va_arg(ap, int);
+				putch(c);
+				format++;
+			break;
+			case 's':
+				s = (const char *)va_arg(ap, const char *);
+				print(s);
+				format++;
+			break;
+			default:
+			break;
+			}
+		}
+		putch(*format);
+		format++, i++;
+	}
+	va_end(ap);
+	return i;
 }
 /* Prints a string on the screen using putch.
  */
