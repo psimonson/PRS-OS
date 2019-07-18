@@ -8,8 +8,8 @@
 [bits 16]
 [org 0x0]
 
-jmp short _start ; jump past BPB
 nop
+jmp short _start ; jump past BPB
 
 bpbOEM			db "PRS OS  "
 bpbBytesPerSector:	dw 512
@@ -17,13 +17,14 @@ bpbSectorsPerCluster:	db 1
 bpbReservedSectors:	dw 1
 bpbNumberOfFATs:	db 2
 bpbRootEntries:		dw 224
-bpbMedia:		db 0xF0
+bpbTotalSectors:	dw 2880
+bpbMedia:		db 0xf0
 bpbSectorsPerFAT:	dw 9
 bpbSectorsPerTrack:	dw 18
 bpbHeadsPerCylinder:	dw 2
 bpbHiddenSectors:	dd 0
 bpbTotalSectorsBig:	dd 0
-bsDriveNumber:		resb 0
+bsDriveNumber:		db 0
 bsUnused:		db 0
 bsExtBootSignature:	db 0x29
 bsSerialNumber:		dd 0xa0a1b2b3
@@ -35,7 +36,6 @@ bsFileSystem:		db "FAT     "
 ; ===============================================================
 
 _start:
-	mov BYTE [bsDriveNumber], dl	; get drive index
 	cli				; disable interrupts
 	mov ax, 0x07c0
 	mov ds, ax

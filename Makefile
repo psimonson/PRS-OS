@@ -38,7 +38,7 @@ command.bin: $(CMDOBJS)
 disk: all
 	dd if=/dev/zero of=floppy.img bs=512 count=2880
 	sudo losetup /dev/loop0 floppy.img
-	sudo mkfs.vfat -F12 /dev/loop0
+	sudo mkfs.fat /dev/loop0
 	sudo losetup -d /dev/loop0
 	sudo mount -t vfat -o loop floppy.img /mnt
 	sudo cp command.bin /mnt/command.bin
@@ -50,6 +50,7 @@ clean:
 
 run:
 	qemu-system-i386 -soundhw pcspk -fda floppy.img -boot a
+#	bochs
 
 distclean: clean
 
