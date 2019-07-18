@@ -45,13 +45,14 @@ disk_error:
 }
 /* Get file entry from FAT12 filesystem.
  */
-void load_root(drive_params_t *p, boot_t *bs)
+entry_t *load_root(drive_params_t *p, boot_t *bs)
 {
 /* TODO: Implement this function */
-#if 0
-	extern void *_disk;
+#if 1
+	static entry_t entries[224*sizeof(entry_t)/512];
 	unsigned char retries, cflag, c, h, s;
 	int size;
+	memset(entries, 0, 224*sizeof(entry_t)/512);
 	if(reset_drive(p))
 		goto disk_error;
 	retries = 3;
@@ -60,7 +61,7 @@ void load_root(drive_params_t *p, boot_t *bs)
 	lba_to_chs(p->lba, &c, &h, &s);
 	do {
 		--retries;
-		if((cflag = read_drive_chs(_disk, size, c, h, s, p))) {
+		if((cflag = read_drive_chs(&entries, size, c, h, s, p))) {
 			if(reset_drive(p))
 				goto disk_error;
 			printf("Retrying... Tries left %d.\r\n", retries);
@@ -71,7 +72,7 @@ void load_root(drive_params_t *p, boot_t *bs)
 	get_drive_error(p);
 	printf("Sectors read: %d\r\n", ((unsigned char)(p->status)));
 	p->lba = 0;
-	return;
+	return &entries[0];
 
 disk_error:
 	get_drive_error(p);
@@ -81,6 +82,6 @@ disk_error:
 #else
 	printf("Not yet implemented!\r\n");
 #endif
-	return;
+	return 0;
 }
 
