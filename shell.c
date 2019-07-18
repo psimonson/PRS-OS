@@ -62,12 +62,8 @@ int cmd_help()
 	"                      .:[COMMANDS]:.\r\n"
 	"============================================================\r\n"
 	);
-	for(i=0; i<command_count(); i++) {
-		print(commands[i].cmd);
-		print(" - ");
-		print(commands[i].help);
-		print("\r\n");
-	}
+	for(i=0; i<command_count(); i++)
+		printf("%s - %s\r\n", commands[i].cmd, commands[i].help);
 	print(
 	"============================================================\r\n"
 	"                        .:[EOL]:.\r\n"
@@ -109,42 +105,46 @@ int cmd_play()
  */
 int cmd_playmusic()
 {
-	play_sound(100);
-	wait(100000);
-	no_sound();
-	play_sound(200);
-	wait(100000);
-	no_sound();
-	play_sound(300);
-	wait(100000);
-	no_sound();
-	play_sound(400);
-	wait(100000);
-	no_sound();
-	play_sound(250);
-	wait(100000);
-	no_sound();
-	play_sound(280);
-	wait(100000);
-	no_sound();
-	play_sound(300);
-	wait(100000);
-	no_sound();
-	play_sound(200);
-	wait(100000);
-	no_sound();
-	play_sound(300);
-	wait(100000);
-	no_sound();
-	play_sound(100);
-	wait(100000);
-	no_sound();
-	play_sound(500);
-	wait(100000);
-	no_sound();
-	play_sound(200);
-	wait(100000);
-	no_sound();
+	int i = 3;
+	while(i > 0) {
+		play_sound(100);
+		wait(100000);
+		no_sound();
+		play_sound(200);
+		wait(100000);
+		no_sound();
+		play_sound(300);
+		wait(100000);
+		no_sound();
+		play_sound(400);
+		wait(100000);
+		no_sound();
+		play_sound(250);
+		wait(100000);
+		no_sound();
+		play_sound(280);
+		wait(100000);
+		no_sound();
+		play_sound(300);
+		wait(100000);
+		no_sound();
+		play_sound(200);
+		wait(100000);
+		no_sound();
+		play_sound(300);
+		wait(100000);
+		no_sound();
+		play_sound(100);
+		wait(100000);
+		no_sound();
+		play_sound(500);
+		wait(100000);
+		no_sound();
+		play_sound(200);
+		wait(100000);
+		no_sound();
+		--i;
+	}
 	return 1;
 }
 /* Search command, searchs a string for another string.
@@ -164,21 +164,20 @@ int cmd_search()
 		print("\r\nPlease enter search pattern.\r\n");
 		return -1;
 	}
-	print("\r\nPattern: ");
-	print(str);
+	printf("\r\nPattern: ");
 	if((found = strstr(buf, str)) != 0)
-		print(" [Found]\r\n");
+		printf("\"%s\" [Found]\r\n", str);
 	else
-		print(" [Not Found]\r\n");
+		printf("\"%s\" [Not Found]\r\n", str);
 	return 1;
 }
 /* ResetCMOS command, just resets the CMOS settings.
  */
 int cmd_resetcmos()
 {
-	unsigned char i;
+	char i;
 	print("Resetting CMOS to defaults...\r\n");
-	for(i=0; i<255; i++) {
+	for(i=0; i<128; i++) {
 		cmos_write(i, 0xff);
 	}
 	print("Done.\r\n");
@@ -203,8 +202,7 @@ int cmd_dump()
 		if(i>0 && !(i%15))
 			print("\r\n");
 		itoh(cmos_read(i), buf);
-		print(buf);
-		putch(' ');
+		printf("%s ", buf);
 	}
 	print("\r\n===========================================\r\n");
 	print("Press any key to continue...\r\n");
@@ -223,13 +221,16 @@ int cmd_dump()
  */
 int cmd_exec()
 {
+#if 0
 	char name[256];
 	print("Enter binary filename: ");
 	if(gets(name, sizeof(name)) <= 0) {
 		print("\r\nPlease enter a file name.\r\n");
 		return -1;
 	}
-	puts("\r\nNot yet implemented!");
+#else
+	puts("Not yet implemented!");
+#endif
 	return 1;
 }
 /* Ls command, just list out root directory entries.
