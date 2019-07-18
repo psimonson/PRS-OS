@@ -55,7 +55,9 @@ typedef struct {
 } __attribute__((packed)) entry_t;
 
 /* try and fill boot structure */
-drive_params_t *load_boot(boot_t *);
+boot_t *load_boot(drive_params_t *p);
+/* try and get root directory entries */
+entry_t *load_root(drive_params_t *p, boot_t *bs);
 
 #endif
 
