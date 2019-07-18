@@ -248,8 +248,8 @@ int __REGPARM read_drive(void *buf, unsigned char blocks, unsigned char sector,
 void lba_to_chs(unsigned long lba, unsigned char *c, unsigned char *h,
 	unsigned char *s)
 {
-	*c = lba / (2 * FLP_144_SPT);
-	*h = ((lba % (2 * FLP_144_SPT)) / FLP_144_SPT);
-	*s = ((lba % (2 * FLP_144_SPT)) % FLP_144_SPT);
+	*c = lba / (2*FLP_144_SPT);
+	*h = ((lba % (2*FLP_144_SPT)) / FLP_144_SPT);
+	*s = ((lba % (2*FLP_144_SPT)) % FLP_144_SPT + 1);
 }
 

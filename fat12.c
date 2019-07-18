@@ -59,9 +59,10 @@ entry_t *load_root(drive_params_t *p, boot_t *bs)
 	p->lba = bs->reserved_sectors + (bs->fats * bs->sectors_per_fat);
 	size = bs->root_entries * sizeof(entry_t) / bs->bytes_per_sector;
 	lba_to_chs(p->lba, &c, &h, &s);
+	printf("%d %d %d\r\n", c, h, s);
 	do {
 		--retries;
-		if((cflag = read_drive_chs(&entries, size, c, h, s, p))) {
+		if((cflag = read_drive_chs(entries, size, c, h, s, p))) {
 			if(reset_drive(p))
 				goto disk_error;
 			printf("Retrying... Tries left %d.\r\n", retries);
@@ -69,12 +70,14 @@ entry_t *load_root(drive_params_t *p, boot_t *bs)
 	} while(retries > 0 && !cflag);
 	if(cflag)
 		goto disk_error;
+	printf("[%x] : ", (unsigned char)(p->status >> 8));
 	get_drive_error(p);
 	printf("Sectors read: %d\r\n", ((unsigned char)(p->status)));
 	p->lba = 0;
 	return &entries[0];
 
 disk_error:
+	printf("[%x] : ", (unsigned char)(p->status >> 8));
 	get_drive_error(p);
 	puts("Hanging system...");
 	asm("cli");

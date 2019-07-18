@@ -21,6 +21,7 @@ typedef struct {
 	unsigned char	fats;
 	unsigned short	root_entries;
 	unsigned short	total_sectors;
+	unsigned char	media;
 	unsigned short	sectors_per_fat;
 	unsigned short	sectors_per_track;
 	unsigned short	heads_per_cylinder;

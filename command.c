@@ -31,20 +31,20 @@ extern int shell();
 
 /* boot sector */
 boot_t *_boot_sector;
-
+drive_params_t p;
+/*entry_t *_entry;
+*/
 /* Entry point for my command shell.
  */
 void main()
 {
-	static drive_params_t p;
-
 	if(get_drive_params(&p, 0))
 		goto end;
 	if((_boot_sector = load_boot(&p)) == 0)
 		goto end;
-/*	load_root(&p, _boot_sector);
+/*	_entry = load_root(&p, _boot_sector);
+	printf("%d\r\n", _entry[0].filename[0]);
 */
-
 	/* start of actual command mode */
 	printf("Press any key to continue...");
 	getch();
