@@ -43,33 +43,57 @@ int printf(const char *format, ...)
 			putch('%');
 		else if(format[0] == '%' && format[1] != '%'){
 			const char *s;
-			char buf[50];
+			char buf[256];
+			void *p;
 			int c, d;
 
 			switch(*++format) {
 			case 'd':
+			case 'i':
 				d = (int)va_arg(ap, int);
 				memset(buf, 0, sizeof(buf));
 				itoa(d, buf);
 				print(buf);
-				format++;
+				i += strlen(buf);
 			break;
 			case 'c':
 				c = (int)va_arg(ap, int);
 				putch(c);
-				format++;
+				i++;
+			break;
+			case 'x':
+			case 'X':
+				d = (int)va_arg(ap, int);
+				memset(buf, 0, sizeof(buf));
+				itoh(d, buf);
+				print(buf);
+				i += strlen(buf);
+			break;
+			case 'p':
+			case 'P':
+				p = (void *)va_arg(ap, void *);
+				if(p == 0) {
+					printf("<null>\r\n");
+					break;
+				}
+				memset(buf, 0, sizeof(buf));
+				itoh((int)p, buf);
+				print(buf);
+				i += strlen(buf);
 			break;
 			case 's':
 				s = (const char *)va_arg(ap, const char *);
 				print(s);
-				format++;
+				i += strlen(s);
 			break;
 			default:
 			break;
 			}
+		} else {
+			putch(*format);
+			i++;
 		}
-		putch(*format);
-		format++, i++;
+		format++;
 	}
 	va_end(ap);
 	return i;
