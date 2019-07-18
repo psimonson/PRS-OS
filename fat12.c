@@ -11,8 +11,6 @@ asm(".code16gcc");
 #include "fat12.h"
 #include "disk.h"
 
-#define MAXROOT 255
-
 /* Fill boot structure with boot sector data.
  */
 boot_t *load_boot(drive_params_t *p)
@@ -25,7 +23,7 @@ boot_t *load_boot(drive_params_t *p)
 	retries = 3;
 	do {
 		--retries;
-		if((cflag = read_drive_chs((void*)&_bs, 1, 0, p))) {
+		if((cflag = read_drive((void*)&_bs, 1, 0, p))) {
 			if(reset_drive(p))
 				goto disk_error;
 			printf("Retrying... Times left %d.\r\n", retries);
@@ -47,22 +45,22 @@ disk_error:
 }
 /* Get file entry from FAT12 filesystem.
  */
-entry_t *load_root(drive_params_t *p, boot_t *bs)
+void load_root(drive_params_t *p, boot_t *bs)
 {
 /* TODO: Implement this function */
 #if 0
-	static entry_t _entry[MAXROOT];
-	char retries, cflag;
+	extern void *_disk;
+	unsigned char retries, cflag, c, h, s;
 	int size;
-	memset(&_entry, 0, sizeof(entry_t));
 	if(reset_drive(p))
 		goto disk_error;
 	retries = 3;
 	p->lba = bs->reserved_sectors + (bs->fats * bs->sectors_per_fat);
 	size = bs->root_entries * sizeof(entry_t) / bs->bytes_per_sector;
+	lba_to_chs(p->lba, &c, &h, &s);
 	do {
 		--retries;
-		if((cflag = read_drive_lba(&_entry, size, p->lba, p))) {
+		if((cflag = read_drive_chs(_disk, size, c, h, s, p))) {
 			if(reset_drive(p))
 				goto disk_error;
 			printf("Retrying... Tries left %d.\r\n", retries);
@@ -73,7 +71,7 @@ entry_t *load_root(drive_params_t *p, boot_t *bs)
 	get_drive_error(p);
 	printf("Sectors read: %d\r\n", ((unsigned char)(p->status)));
 	p->lba = 0;
-	return &_entry[0];
+	return;
 
 disk_error:
 	get_drive_error(p);
@@ -83,6 +81,6 @@ disk_error:
 #else
 	printf("Not yet implemented!\r\n");
 #endif
-	return 0;
+	return;
 }
 

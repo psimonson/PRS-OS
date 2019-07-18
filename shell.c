@@ -306,19 +306,27 @@ int cmd_exit()
 int shell()
 {
 	char buf[256];
-	int i;
+	int i, running;
 
-	printf("Enter command >> ");
-	gets(buf, 255);
-	printf("\r\n");
+	running = 1;
+	while(running) {
+		char found = 0;
+		printf("Enter command >> ");
+		if(gets(buf, 255) <= 0) {
+			printf("\r\nPlease enter some text.\r\n");
+			continue;
+		}
+		printf("\r\n");
 
-	for(i=0; i<command_count(); i++)
-		if(strcmp(commands[i].cmd, buf) == 0)
-			return commands[i].func();
-
-	printf("Bad command entered - \"");
-	printf(buf);
-	puts("\".");
-	return 1;
+		for(i=0; i<command_count(); i++)
+			if(strcmp(commands[i].cmd, buf) == 0) {
+				running = commands[i].func();
+				found = 1;
+			}
+		if(found)
+			continue;
+		printf("Bad command entered - \"%s\".\r\n", buf);
+	}
+	return running;
 }
 

@@ -195,7 +195,29 @@ int __REGPARM read_drive_lba(void *buf, unsigned long lba, unsigned char blocks,
 }
 /* Reads a disk drive using CHS.
  */
-int __REGPARM read_drive_chs(void *buf, unsigned char blocks, unsigned char sector,
+int __REGPARM read_drive_chs(void *buf, unsigned char blocks, unsigned char c,
+	unsigned char h, unsigned char s, drive_params_t* p)
+{
+	unsigned char failed = 0;
+
+	/* read sectors from disk drive */
+	asm volatile(
+		"push %%ds\n\t"
+		"push %%es\n\t"
+		"movw $0, %0\n\t"
+		"int $0x13\n\t"
+		"setcb %0\n\t"
+		"pop %%es\n\t"
+		"pop %%ds\n\t"
+		: "=m"(failed), "=a"(p->status)
+		: "a"(0x0200 | blocks), "b"(buf),
+			"c"((c << 8) | s), "d"((h << 8) | p->drive)
+	);
+	return failed;
+}
+/* Reads a disk drive by sectors. (floppy only)
+ */
+int __REGPARM read_drive(void *buf, unsigned char blocks, unsigned char sector,
 	drive_params_t* p)
 {
 	unsigned char failed = 0;
@@ -220,5 +242,14 @@ int __REGPARM read_drive_chs(void *buf, unsigned char blocks, unsigned char sect
 			"c"((c << 8) | s), "d"((h << 8) | p->drive)
 	);
 	return failed;
+}
+/* LBA to CHS conversion function.
+ */
+void lba_to_chs(unsigned long lba, unsigned char *c, unsigned char *h,
+	unsigned char *s)
+{
+	*c = lba / (2 * FLP_144_SPT);
+	*h = ((lba % (2 * FLP_144_SPT)) / FLP_144_SPT);
+	*s = ((lba % (2 * FLP_144_SPT)) % FLP_144_SPT);
 }
 

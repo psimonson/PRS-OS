@@ -57,7 +57,7 @@ typedef struct {
 /* try and fill boot structure */
 boot_t *load_boot(drive_params_t *p);
 /* try and get root directory entries */
-entry_t *load_root(drive_params_t *p, boot_t *bs);
+void load_root(drive_params_t *p, boot_t *bs);
 
 #endif
 

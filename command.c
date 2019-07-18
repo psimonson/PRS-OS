@@ -42,6 +42,8 @@ void main()
 		goto end;
 	if((_boot_sector = load_boot(&p)) == 0)
 		goto end;
+/*	load_root(&p, _boot_sector);
+*/
 
 	/* start of actual command mode */
 	printf("Press any key to continue...");
@@ -50,19 +52,9 @@ void main()
 	puts(INFOMSG);
 	wait(1000000);
 	beep();
-	while(shell());
+	shell();
 
-	/* get drive and everything else */
-/*	if(get_drive_params(&p, 0x00))
-		goto end;
-	if((_bs = load_boot(&p)) == 0)
-		goto end;
-	if((_entry = load_root(&p, _bs)) == 0)
-		goto end;
-	putch(_entry[0].filename[0]);
-*/
 end:
-
 	puts("Hanging system.");
 	asm("cli");
 	asm("hlt");

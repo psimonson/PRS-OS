@@ -7,6 +7,8 @@
 #ifndef DISK_H
 #define DISK_H
 
+#define FLP_144_SPT	18	/* sectors per track 1.44MB floppy */
+
 /* Drive failure defines */
 #define	DISK_ERR_OK	0x00	/* success */
 #define	DISK_ERR_IC	0x01	/* invalid command */
@@ -59,7 +61,13 @@ int __REGPARM get_drive_params(drive_params_t *p, unsigned char drive);
 int __REGPARM read_drive_lba(void *buf, unsigned long lba, unsigned char blocks,
 	drive_params_t* p);
 /* read data from disk drive */
-int __REGPARM read_drive_chs(void *buf, unsigned char blocks, unsigned char sector,
+int __REGPARM read_drive_chs(void *buf, unsigned char blocks, unsigned char c,
+	unsigned char h, unsigned char s, drive_params_t* p);
+/* read data from disk drive */
+int __REGPARM read_drive(void *buf, unsigned char blocks, unsigned char sector,
 	drive_params_t* p);
+/* LBA to CHS */
+void lba_to_chs(unsigned long lba, unsigned char *c, unsigned char *h,
+	unsigned char *s);
 
 #endif
