@@ -20,6 +20,8 @@ boot_t *load_boot(drive_params_t *p)
 	static boot_t _bs;
 	char retries, cflag;
 	memset(&_bs, 0, sizeof(boot_t));
+	if(reset_drive(p))
+		goto disk_error;
 	retries = 3;
 	do {
 		--retries;
@@ -53,6 +55,8 @@ entry_t *load_root(drive_params_t *p, boot_t *bs)
 	char retries, cflag;
 	int size;
 	memset(&_entry, 0, sizeof(entry_t));
+	if(reset_drive(p))
+		goto disk_error;
 	retries = 3;
 	p->lba = bs->reserved_sectors + (bs->fats * bs->sectors_per_fat);
 	size = bs->root_entries * sizeof(entry_t) / bs->bytes_per_sector;

@@ -22,39 +22,27 @@ asm("jmp main");
 #include "io.h"
 #include "string.h"
 #include "time.h"
-/*
 #include "fat12.h"
 #include "disk.h"
-*/
 
 #define INFOMSG "\x43\x4f\x44\x45\x44\x20\x42\x59\x20\x50\x48\x49\x4c\x49\x50\x00"
 
 extern int shell();
 
+/* boot sector */
+boot_t *_boot_sector;
+
 /* Entry point for my command shell.
  */
 void main()
 {
-/*	static drive_params_t p;
-	static entry_t *_entry;
-	static boot_t *_bs;
-	int i;
+	static drive_params_t p;
 
 	if(get_drive_params(&p, 0))
 		goto end;
-	if((_bs = load_boot(&p)) == 0)
+	if((_boot_sector = load_boot(&p)) == 0)
 		goto end;
-	print("========================================================\r\n");
-	puts("                   .:[BOOT SECTOR]:.");
-	print("========================================================\r\n");
-	for(i=0; i<sizeof(boot_t); i++) {
-		if(i>0 && !(i%60))
-			print("\r\n");
-		putch(((unsigned char *)&_bs)[i]);
-	}
-	print("\r\n");
-	print("========================================================\r\n");
-*/
+
 	/* start of actual command mode */
 	printf("Press any key to continue...");
 	getch();
@@ -72,9 +60,9 @@ void main()
 	if((_entry = load_root(&p, _bs)) == 0)
 		goto end;
 	putch(_entry[0].filename[0]);
-
-end:
 */
+end:
+
 	puts("Hanging system.");
 	asm("cli");
 	asm("hlt");

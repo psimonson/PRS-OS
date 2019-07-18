@@ -11,31 +11,32 @@
 jmp short _start ; jump past BPB
 nop
 
-bpbOEM			DB "PRS OS  "
-bpbBytesPerSector:	DW 512
-bpbSectorsPerCluster:	DB 1
-bpbReservedSectors:	DW 1
-bpbNumberOfFATs:	DB 2
-bpbRootEntries:		DW 224
-bpbMedia:		DB 0xF0
-bpbSectorsPerFAT:	DW 9
-bpbSectorsPerTrack:	DW 18
-bpbHeadsPerCylinder:	DW 2
-bpbHiddenSectors:	DD 0
-bpbTotalSectorsBig:	DD 0
-bsDriveNumber:		DB 0
-bsUnused:		DB 0
-bsExtBootSignature:	DB 0x29
-bsSerialNumber:		DD 0xa0a1b2b3
-bsVolumeLabel:		DB "PRS FLOPPY "
-bsFileSystem:		DB "FAT     "
+bpbOEM			db "PRS OS  "
+bpbBytesPerSector:	dw 512
+bpbSectorsPerCluster:	db 1
+bpbReservedSectors:	dw 1
+bpbNumberOfFATs:	db 2
+bpbRootEntries:		dw 224
+bpbMedia:		db 0xF0
+bpbSectorsPerFAT:	dw 9
+bpbSectorsPerTrack:	dw 18
+bpbHeadsPerCylinder:	dw 2
+bpbHiddenSectors:	dd 0
+bpbTotalSectorsBig:	dd 0
+bsDriveNumber:		resb 0
+bsUnused:		db 0
+bsExtBootSignature:	db 0x29
+bsSerialNumber:		dd 0xa0a1b2b3
+bsVolumeLabel:		db "PRS FLOPPY "
+bsFileSystem:		db "FAT     "
 
 ; ===============================================================
 ; Main Entry point
 ; ===============================================================
 
 _start:
-	cli		; disable interrupts
+	mov BYTE [bsDriveNumber], dl	; get drive index
+	cli				; disable interrupts
 	mov ax, 0x07c0
 	mov ds, ax
 	mov es, ax
@@ -46,7 +47,7 @@ _start:
 	mov ax, 0x0000
 	mov ss, ax
 	mov sp, 0xFFFF
-	sti		; enable interrupts
+	sti				; enable interrupts
 
 	; display loading message
 	mov si, msg_loading

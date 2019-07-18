@@ -9,6 +9,7 @@ asm(".code16gcc");
 #include "io.h"
 #include "time.h"
 #include "string.h"
+#include "fat12.h"
 
 /* command structure */
 typedef struct command {
@@ -57,14 +58,14 @@ int cmd_help()
 {
 	int i;
 
-	print(
+	printf(
 	"============================================================\r\n"
 	"                      .:[COMMANDS]:.\r\n"
 	"============================================================\r\n"
 	);
 	for(i=0; i<command_count(); i++)
 		printf("%s - %s\r\n", commands[i].cmd, commands[i].help);
-	print(
+	printf(
 	"============================================================\r\n"
 	"                        .:[EOL]:.\r\n"
 	"============================================================\r\n"
@@ -75,7 +76,7 @@ int cmd_help()
  */
 int cmd_hello()
 {
-	print("Hello user, welcome to a basic shell.\r\n");
+	printf("Hello user, welcome to a basic shell.\r\n");
 	return 1;
 }
 /* Play command, plays a given frequency with PC speaker.
@@ -85,15 +86,15 @@ int cmd_play()
 	char buf[256];
 	int freq;
 
-	print("Enter a number: ");
+	printf("Enter a number: ");
 	if(gets(buf, sizeof(buf)) <= 0) {
-		print("\r\nYou need to enter a string.\r\n");
+		printf("\r\nYou need to enter a string.\r\n");
 		return -1;
 	}
-	print("\r\n");
+	printf("\r\n");
 	freq = atoi(buf);
 	if(!freq) {
-		print("No number given.\r\n");
+		printf("No number given.\r\n");
 		return -1;
 	}
 	play_sound(freq);
@@ -154,14 +155,14 @@ int cmd_search()
 	char buf[256];
 	char str[256];
 	char *found = 0;
-	print("Enter a string: ");
+	printf("Enter a string: ");
 	if(gets(buf, sizeof(buf)) <= 0) {
-		print("\r\nYou need to enter a string.");
+		printf("\r\nYou need to enter a string.");
 		return -1;
 	}
-	print("\r\nEnter search pattern: ");
+	printf("\r\nEnter search pattern: ");
 	if(gets(str, sizeof(str)) <= 0) {
-		print("\r\nPlease enter search pattern.\r\n");
+		printf("\r\nPlease enter search pattern.\r\n");
 		return -1;
 	}
 	printf("\r\nPattern: ");
@@ -176,11 +177,11 @@ int cmd_search()
 int cmd_resetcmos()
 {
 	char i;
-	print("Resetting CMOS to defaults...\r\n");
+	printf("Resetting CMOS to defaults...\r\n");
 	for(i=0; i<128; i++) {
 		cmos_write(i, 0xff);
 	}
-	print("Done.\r\n");
+	printf("Done.\r\n");
 	return 1;
 }
 /* Reboot command, just reboots the machine.
@@ -194,27 +195,78 @@ int cmd_reboot()
  */
 int cmd_dump()
 {
+	extern boot_t *_boot_sector;
 	char buf[32];
 	int i;
-	print("=============================================\r\n");
-	print("CMOS Data\r\n=============================================\r\n");
-	for(i=0; i<255; i++) {
-		if(i>0 && !(i%15))
-			print("\r\n");
-		itoh(cmos_read(i), buf);
-		printf("%s ", buf);
+	printf("Enter [boot|cmos]: ");
+	if(gets(buf, sizeof(buf)) <= 0) {
+		printf("You must enter boot or 'cmos'.\r\n");
+		return 1;
 	}
-	print("\r\n=============================================\r\n");
-	print("Press any key to continue...\r\n");
-	getch();
-	print("=============================================\r\n");
-	print("CMOS Data\r\n=============================================\r\n");
-	for(i=0; i<255; i++) {
-		if(i>0 && !(i%44))
-			print("\r\n");
-		putch(cmos_read(i));
+	printf("\r\n");
+	if(!strcmp(buf, "cmos")) {
+		printf("=============================================\r\n");
+		printf("CMOS Data\r\n"
+			"=============================================\r\n");
+		for(i=0; i<255; i++) {
+			if(i>0 && !(i%15))
+				printf("\r\n");
+			itoh(cmos_read(i), buf);
+			printf("%s ", buf);
+		}
+		printf("\r\n=============================================\r\n");
+		printf("Press any key to continue...\r\n");
+		getch();
+		printf("=============================================\r\n");
+		printf("CMOS Data\r\n"
+			"=============================================\r\n");
+		for(i=0; i<255; i++) {
+			if(i>0 && !(i%44))
+				printf("\r\n");
+			putch(cmos_read(i));
+		}
+		printf("\r\n=============================================\r\n");
+	} else if(!strcmp(buf, "boot")) {
+		int nl;
+		printf("=============================================\r\n");
+		printf("BOOT Data\r\n"
+			"=============================================\r\n");
+		for(i=0,nl=0; i<sizeof(boot_t); i++) {
+			if(i>0 && !(i%21)) {
+				printf("\r\n");
+				++nl;
+			}
+			if(nl>0 && !(nl%20)) {
+				printf("Press any key to continue...\r\n");
+				getch();
+				++nl;
+			}
+			itoh(((unsigned char*)_boot_sector)[i], buf);
+			printf("%s ", buf);
+		}
+		printf("\r\n=============================================\r\n");
+		printf("Press any key to continue...\r\n");
+		getch();
+		printf("=============================================\r\n");
+		printf("BOOT Data\r\n"
+			"=============================================\r\n");
+		for(i=0,nl=0; i<sizeof(boot_t); i++) {
+			if(i>0 && !(i%50)) {
+				printf("\r\n");
+				++nl;
+			}
+			if(nl>0 && !(nl%20)) {
+				printf("Press any key to continue...\r\n");
+				getch();
+				++nl;
+			}
+			putch(((unsigned char*)_boot_sector)[i]);
+		}
+		printf("\r\n=============================================\r\n");
+	} else {
+		printf("Invalid choice: %s\r\nChoices are: boot or cmos\r\n",
+			buf);
 	}
-	print("\r\n=============================================\r\n");
 	return 1;
 }
 /* Exec command, loads and executes a given filename.
@@ -223,9 +275,9 @@ int cmd_exec()
 {
 #if 0
 	char name[256];
-	print("Enter binary filename: ");
+	printf("Enter binary filename: ");
 	if(gets(name, sizeof(name)) <= 0) {
-		print("\r\nPlease enter a file name.\r\n");
+		printf("\r\nPlease enter a file name.\r\n");
 		return -1;
 	}
 #else
@@ -256,16 +308,16 @@ int shell()
 	char buf[256];
 	int i;
 
-	print("Enter command >> ");
+	printf("Enter command >> ");
 	gets(buf, 255);
-	print("\r\n");
+	printf("\r\n");
 
 	for(i=0; i<command_count(); i++)
 		if(strcmp(commands[i].cmd, buf) == 0)
 			return commands[i].func();
 
-	print("Bad command entered - \"");
-	print(buf);
+	printf("Bad command entered - \"");
+	printf(buf);
 	puts("\".");
 	return 1;
 }

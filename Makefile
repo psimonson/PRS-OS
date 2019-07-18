@@ -12,8 +12,8 @@ LDFLAGS=-static -Tcommand.ld -m elf_i386 -no-pie -nostartfiles --nmagic
 LDFLAGS+=--oformat binary
 
 # uncomment for fat12
-#CMDOBJS=command.c.o io.c.o time.c.o string.c.o shell.c.o disk.c.o fat12.c.o
-CMDOBJS=command.c.o io.c.o time.c.o string.c.o shell.c.o
+CMDOBJS=command.c.o io.c.o time.c.o string.c.o shell.c.o disk.c.o fat12.c.o
+#CMDOBJS=command.c.o io.c.o time.c.o string.c.o shell.c.o
 
 VERSION=0.1
 BASENAM=$(shell basename $(SRCDIR))
