@@ -42,11 +42,12 @@ int printf(const char *format, ...)
 		if(format[0] == '%' && format[1] == '%')
 			putch('%');
 		else if(format[0] == '%' && format[1] != '%'){
-			unsigned long ul = 0;
-			const char *s = NULL;
+			unsigned long ul;
+			const char *s;
 			char buf[256];
-			int c = 0, d = 0;
-			void *p = NULL;
+			int c, d;
+			void *p;
+			long l;
 
 			switch(*++format) {
 			case 'd':
@@ -56,6 +57,22 @@ int printf(const char *format, ...)
 				itoa(d, buf);
 				print(buf);
 				i += strlen(buf);
+			break;
+			case 'l':
+				switch(*++format) {
+				case 'd':
+					l = (long)va_arg(ap, long);
+					memset(buf, 0, sizeof(buf));
+					ltoa(l, buf);
+					print(buf);
+					i += strlen(buf);
+				break;
+				case 'u':
+					/* TODO: implement unsigned long */
+				break;
+				default:
+				break;
+				}
 			break;
 			case 'c':
 				c = (int)va_arg(ap, int);
