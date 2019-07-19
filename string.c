@@ -39,10 +39,10 @@ void itoh(int n, char s[])
 	int i;
 	i = 0;
 	do {
-		s[i++] = hex_digits[(n % 16)];
-		if(n < 16 && i > 0 && (i % 2))
-			s[i++] = '0';
+		s[i++] = hex_digits[n%16];
 	} while((n /= 16) > 0);
+	if(n<0)
+		s[i++] = '0';
 	s[i] = 0;
 	reverse(s);
 }

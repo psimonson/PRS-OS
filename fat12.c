@@ -62,7 +62,7 @@ entry_t *load_root(drive_params_t *p, boot_t *bs)
 	printf("%d %d %d\r\n", c, h, s);
 	do {
 		--retries;
-		if((cflag = read_drive_chs(entries, size, c, h, s, p))) {
+		if((cflag = read_drive_chs(&entries, size, c, h, s, p))) {
 			if(reset_drive(p))
 				goto disk_error;
 			printf("Retrying... Tries left %d.\r\n", retries);
