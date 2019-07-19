@@ -3,6 +3,7 @@
 #######################################################################
 
 SRCDIR=$(shell pwd)
+USER  =$(shell whoami)
 
 CFLAGS=-std=gnu89 -Wall -Werror -Os -march=i686 -ffreestanding -I. -m16 -pedantic
 CFLAGS+=-fno-asynchronous-unwind-tables -fno-pic -fno-builtin -fno-ident
@@ -28,8 +29,8 @@ all: boot.bin command.bin #makeboot
 	$(CC) $(CFLAGS) -fno-PIC -c $< -o $@
 
 makeboot: makeboot.c
-	$(CC) -std=c89 -Wall -Wextra -Werror -I. $(shell pkg-config --cflags prs) -o $@ $^ \
-	$(shell pkg-config --libs prs)
+	$(CC) -std=c89 -Wall -Wextra -Werror -I. $(shell pkg-config --cflags prs) \
+	-o $@ $^ $(shell pkg-config --libs prs)
 
 boot.bin: boot.asm
 	nasm -f bin -o $@ $^
@@ -38,14 +39,15 @@ command.bin: $(CMDOBJS)
 	$(LD) $(LDFLAGS) -o $@ $^
 
 disk: all
-	dd if=/dev/zero of=floppy.img bs=512 count=2880
-	sudo losetup /dev/loop0 floppy.img
-	sudo mkfs.fat -F12 /dev/loop0
-	sudo losetup -d /dev/loop0
+ifneq (,$(wildcard ./floppy.img))
+	rm ./floppy.img
+endif
+	sudo mkfs.fat -F12 -C "floppy.img" 1440
 	sudo mount -t vfat -o loop floppy.img /mnt
 	sudo cp command.bin /mnt/command.bin
 	sudo umount /mnt
-	dd if=boot.bin of=floppy.img bs=1 count=512 conv=notrunc
+	sudo dd if=boot.bin of=floppy.img bs=1 count=512 conv=notrunc
+	sudo chown $(USER):users floppy.img
 
 clean:
 	rm -f floppy.img *~ *.bin *.o
