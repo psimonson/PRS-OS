@@ -58,12 +58,9 @@ void main()
 	/* load root directory and list files */
 	_entry = load_root(&p, _boot_sector);
 	for(file=_entry; file->filename[0] != 0x00; ++file) {
-		if(file->filename[0] == 0x41) {
-			int i;
-			for(i=1; i<11; i+=2)
-				printf("%c", file->filename[i]);
-			printf("\r\n");
-			printf("Size: %x\r\n", file->size);
+		if(file->filename[0] == 0x05) {
+			printf("File: %s\r\n", file->filename);
+			printf("Size: %d\r\n", file->size);
 		}
 	}
 #endif
