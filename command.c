@@ -68,7 +68,7 @@ void main()
 #endif
 
 /* quickly disable with #if 0 for testing something else. */
-#if 1
+#if !TEST_FAT12
 	/* start of actual command mode */
 	printf("Press any key to continue...");
 	getch();
