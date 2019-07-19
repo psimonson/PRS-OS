@@ -9,6 +9,8 @@
 
 #include "defines.h"
 
+#define NULL	((void*)0)	/* void pointer (null pointer) */
+
 /* input/output functions */
 int putch_color(int c, unsigned char color);
 int putch(int c);

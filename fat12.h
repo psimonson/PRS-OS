@@ -44,8 +44,6 @@ typedef struct {
 	char		filename[11];
 	unsigned char	attributes;
 	unsigned char	reserved;
-	unsigned char	create_time_us;
-	unsigned char	create_time;
 	unsigned short	create_date;
 	unsigned short	access_date;
 	unsigned short	last_access_date;

@@ -63,6 +63,7 @@ void main()
 			for(i=1; i<11; i+=2)
 				printf("%c", file->filename[i]);
 			printf("\r\n");
+			printf("Size: %x\r\n", file->size);
 		}
 	}
 #endif

@@ -14,6 +14,8 @@ LDFLAGS+=--oformat binary
 # uncomment for fat12
 CMDOBJS=command.c.o io.c.o time.c.o string.c.o shell.c.o disk.c.o fat12.c.o
 #CMDOBJS=command.c.o io.c.o time.c.o string.c.o shell.c.o
+CMDHDRS=io.h time.h string.h disk.h fat12.h
+#CMDHDRS=io.h time.h string.h
 
 VERSION=0.1
 BASENAM=$(shell basename $(SRCDIR))
@@ -22,7 +24,7 @@ TARNAME=$(BASENAM)-$(VERSION).tgz
 .PHONY: all disk clean run distclean dist
 all: boot.bin command.bin #makeboot
 
-%.c.o: %.c
+%.c.o: %.c $(CMDHDRS)
 	$(CC) $(CFLAGS) -fno-PIC -c $< -o $@
 
 makeboot: makeboot.c

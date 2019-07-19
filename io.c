@@ -42,10 +42,11 @@ int printf(const char *format, ...)
 		if(format[0] == '%' && format[1] == '%')
 			putch('%');
 		else if(format[0] == '%' && format[1] != '%'){
-			const char *s;
+			unsigned long ul = 0;
+			const char *s = NULL;
 			char buf[256];
-			void *p;
-			int c, d;
+			int c = 0, d = 0;
+			void *p = NULL;
 
 			switch(*++format) {
 			case 'd':
@@ -63,9 +64,9 @@ int printf(const char *format, ...)
 			break;
 			case 'x':
 			case 'X':
-				d = (int)va_arg(ap, int);
+				ul = (unsigned long)va_arg(ap, unsigned long);
 				memset(buf, 0, sizeof(buf));
-				itoh(d, buf);
+				itoh(ul, buf);
 				print(buf);
 				i += strlen(buf);
 			break;

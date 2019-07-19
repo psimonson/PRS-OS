@@ -33,7 +33,7 @@ int gets(char *s, int size)
 }
 /* Simple implementation of hex to string.
  */
-void itoh(int n, char s[])
+void itoh(unsigned long n, char s[])
 {
 	static const char hex_digits[] = "0123456789ABCDEF";
 	int i;
@@ -41,8 +41,6 @@ void itoh(int n, char s[])
 	do {
 		s[i++] = hex_digits[n%16];
 	} while((n /= 16) > 0);
-	if(n<0)
-		s[i++] = '0';
 	s[i] = 0;
 	reverse(s);
 }

@@ -8,7 +8,7 @@
 #define STRING_H
 
 int gets(char *s, int size);
-void itoh(int n, char s[]);
+void itoh(unsigned long n, char s[]);
 int atoi(const char *s);
 void itoa(int n, char s[]);
 int strlen(const char *s);
