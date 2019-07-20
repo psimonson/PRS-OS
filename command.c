@@ -44,6 +44,7 @@ void main()
 #if TEST_FAT12
 	unsigned char *bytes;
 	entry_t *file;
+	int i;
 #endif
 	/* get first floppy drive */
 	if(get_drive_params(&p, 0))
@@ -54,13 +55,20 @@ void main()
 
 #if TEST_FAT12
 	/* load root directory and list files */
-	while((bytes = load_next_sector(&p, _boot_sector)) != NULL
-		&& bytes[0] != 0x00) {
-		file = (entry_t*)&bytes[0];
-		if(file->filename[0] == 0xe5) {
-			printf("File deleted.\r\n");
-		} else {
-			printf("%s\r\n", file->filename);
+	i = 0;
+	while((bytes = load_next_sector(&p, _boot_sector)) != NULL) {
+		while(i < _boot_sector->root_entries) {
+			file = (entry_t*)&bytes[i];
+			if(file->filename[0] == 0xe5) {
+				printf("File deleted.\r\n");
+			} else if((file->filename[0] | 0x40) == file->filename[0]) {
+				printf("%s\r\n", file->filename);
+			}
+			if(i>0 &&!(i%(5*32))) {
+				printf("Press any key to continue...\r\n");
+				getch();
+			}
+			i += 32;
 		}
 	}
 #endif
