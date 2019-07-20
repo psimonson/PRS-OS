@@ -36,16 +36,13 @@ extern int shell();
 /* boot sector */
 boot_t *_boot_sector;
 drive_params_t p;
-#if TEST_FAT12
-entry_t *_entry;
-#endif
 
 /* Entry point for my command shell.
  */
 void main()
 {
 #if TEST_FAT12
-	entry_t *file;
+	entry_t *_entry;
 #endif
 	/* get first floppy drive */
 	if(get_drive_params(&p, 0))
@@ -56,16 +53,16 @@ void main()
 
 #if TEST_FAT12
 	/* load root directory and list files */
-	_entry = load_root(&p, _boot_sector);
-	for(file=_entry; file->filename[0] != 0x00; ++file) {
-		if(file->filename[0] == 0x41) {
+	while((_entry = load_root_next(&p, _boot_sector)) != NULL
+		&& _entry->filename[0] != 0x00) {
+		if(_entry->filename[0] == 0x41) {
 			int i;
 			printf("File: ");
 			for(i=1; i<11; i++)
-				if(file->filename[i] != 0x00)
-					putch(file->filename[i]);
+				if(_entry->filename[i] != 0x00)
+					putch(_entry->filename[i]);
 			printf("\r\n");
-			printf("Size: %ld\r\n", file->size);
+			printf("Size: %ld\r\n", _entry->size);
 		}
 	}
 #endif

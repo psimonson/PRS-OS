@@ -45,24 +45,27 @@ disk_error:
 }
 /* Get file entry from FAT12 filesystem.
  */
-entry_t *load_root(drive_params_t *p, boot_t *bs)
+entry_t *load_root_next(drive_params_t *p, boot_t *bs)
 {
 /* TODO: Implement this function */
 #if 1
-	static entry_t entries[224*sizeof(entry_t)/512];
+	static entry_t entry;
 	unsigned char retries, cflag, c, h, s;
+	static char first = 1;
 	int size;
-	memset(entries, 0, 224*sizeof(entry_t)/512);
-	if(reset_drive(p))
-		goto disk_error;
+	memset(&entry, 0, sizeof(entry_t));
+	if(p->lba != 0 && first) return &entry;
 	retries = 3;
-	p->lba = bs->reserved_sectors + (bs->fats * bs->sectors_per_fat);
-	size = bs->root_entries * sizeof(entry_t) / bs->bytes_per_sector;
+	size = sizeof(entry_t);
+	if(first)
+		p->lba = bs->reserved_sectors + (bs->fats * bs->sectors_per_fat);
+	else
+		p->lba += sizeof(entry_t);
 	lba_to_chs(p->lba, &c, &h, &s);
 	printf("%d %d %d\r\n", c, h, s);
 	do {
 		--retries;
-		if((cflag = read_drive_chs(entries, size, c, h, s, p))) {
+		if((cflag = read_drive_chs(&entry, size, c, h, s, p))) {
 			if(reset_drive(p))
 				goto disk_error;
 			printf("Retrying... Tries left %d.\r\n", retries);
@@ -73,8 +76,8 @@ entry_t *load_root(drive_params_t *p, boot_t *bs)
 	printf("[%x] : ", (unsigned char)(p->status >> 8));
 	get_drive_error(p);
 	printf("Sectors read: %d\r\n", ((unsigned char)(p->status)));
-	p->lba = 0;
-	return &entries[0];
+	first = 0;
+	return &entry;
 
 disk_error:
 	printf("[%x] : ", (unsigned char)(p->status >> 8));
