@@ -62,7 +62,8 @@ void main()
 			if(file->filename[0] == 0xe5) {
 				printf("File deleted.\r\n");
 			} else if((file->filename[0] | 0x40) == file->filename[0]) {
-				printf("%s\r\n", file->filename);
+				printf("Name: %s\r\n", file->filename);
+				printf("Size: %d\r\n", file->size);
 			}
 			if(i>0 &&!(i%(5*32))) {
 				printf("Press any key to continue...\r\n");
