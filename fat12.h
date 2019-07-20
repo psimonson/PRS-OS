@@ -12,7 +12,7 @@
 /**
  * Boot sector structure.
  */
-typedef struct {
+typedef struct boot {
 	char		_a[3];
 	char		name[8];
 	unsigned short	bytes_per_sector;
@@ -40,7 +40,7 @@ typedef struct {
 /**
  * Structure for FAT file entry.
  */
-typedef struct {
+typedef struct entry {
 	char		filename[11];
 	unsigned char	attributes;
 	short		reserved;
