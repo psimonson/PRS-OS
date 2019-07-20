@@ -1,14 +1,35 @@
 ======================================================
-                  .:[BOOTCODE v0.1]:.
+                   .:[PS-DOS v0.1]:.
 ======================================================
-Simple Boot Sector using C and inline assembler. It
-displays some simple graphics, then it takes you into
-my very simple shell.
+Very simple Operating System using C/ASM. It is NOT a
+full OS, it may never be it's just a hobby OS.
+Currently only boots from a floppy disk drive but,
+maybe later I'll add support for LBA (Logical Block
+Addressing). Which LBA is used for flash drives and
+hard disks. Current commands include, help, hello,
+play, play music, search, reset_CMOS(#1), reboot,
+dump(#2), exec(#3), ls(#3), exit.
+======================================================
+NOTES:
+	(#1) - Award BIOS only, RISKY to use on other
+	machines. Would not recommend it.
+
+	(#2) - Dumps either boot sector or CMOS to the
+	screen.
+
+	(#3) - Not yet implemented. Currently working
+	on it though.
 ======================================================
 Written by Philip R. Simonson, Please do NOT be a dick
 don't clone/copy and/or modify. Then, put it as your
 own. If you barrowed something from my code. Please
 give me credit.
+
+NOTE: The reason I've decided to make a simple 16-bit
+OS (Operating System), is because I thought it might
+be a challenge. It most definitely is, but it's making
+me a better programmer for doing so. Which I would
+like to be the best I can possibly be.
 
 Thanks,
 Philip R. Simonson
