@@ -43,29 +43,28 @@ disk_error:
 	asm("hlt");
 	return 0;
 }
-/* Get file entry from FAT12 filesystem.
+/* Get file root directory from FAT12 filesystem.
  */
-entry_t *load_root_next(drive_params_t *p, boot_t *bs)
+unsigned char *load_next_sector(drive_params_t *p, boot_t *bs)
 {
 /* TODO: Implement this function */
 #if 1
-	static entry_t entry;
+	static unsigned char sector[512];
 	unsigned char retries, cflag, c, h, s;
 	static char first = 1;
-	int size;
-	memset(&entry, 0, sizeof(entry_t));
-	if(p->lba != 0 && first) return &entry;
+
+	memset(sector, 0, sizeof(sector));
+	if(p->lba != 0 && first) return sector;
 	retries = 3;
-	size = sizeof(entry_t);
 	if(first)
 		p->lba = bs->reserved_sectors + (bs->fats * bs->sectors_per_fat);
 	else
-		p->lba += sizeof(entry_t);
+		p->lba += 1;
 	lba_to_chs(p->lba, &c, &h, &s);
 	printf("%d %d %d\r\n", c, h, s);
 	do {
 		--retries;
-		if((cflag = read_drive_chs(&entry, size, c, h, s, p))) {
+		if((cflag = read_drive_chs(sector, 1, c, h, s, p))) {
 			if(reset_drive(p))
 				goto disk_error;
 			printf("Retrying... Tries left %d.\r\n", retries);
@@ -77,7 +76,7 @@ entry_t *load_root_next(drive_params_t *p, boot_t *bs)
 	get_drive_error(p);
 	printf("Sectors read: %d\r\n", ((unsigned char)(p->status)));
 	first = 0;
-	return &entry;
+	return sector;
 
 disk_error:
 	printf("[%x] : ", (unsigned char)(p->status >> 8));

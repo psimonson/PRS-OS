@@ -42,7 +42,8 @@ drive_params_t p;
 void main()
 {
 #if TEST_FAT12
-	entry_t *_entry;
+	unsigned char *bytes;
+	entry_t *file;
 #endif
 	/* get first floppy drive */
 	if(get_drive_params(&p, 0))
@@ -53,16 +54,13 @@ void main()
 
 #if TEST_FAT12
 	/* load root directory and list files */
-	while((_entry = load_root_next(&p, _boot_sector)) != NULL
-		&& _entry->filename[0] != 0x00) {
-		if(_entry->filename[0] == 0x41) {
-			int i;
-			printf("File: ");
-			for(i=1; i<11; i++)
-				if(_entry->filename[i] != 0x00)
-					putch(_entry->filename[i]);
-			printf("\r\n");
-			printf("Size: %ld\r\n", _entry->size);
+	while((bytes = load_next_sector(&p, _boot_sector)) != NULL
+		&& bytes[0] != 0x00) {
+		file = (entry_t*)&bytes[0];
+		if(file->filename[0] == 0xe5) {
+			printf("File deleted.\r\n");
+		} else {
+			printf("%s\r\n", file->filename);
 		}
 	}
 #endif
