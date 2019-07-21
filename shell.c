@@ -312,6 +312,7 @@ int cmd_ls()
 		get_drive_error(&_drive_params);
 		return -1;
 	}
+	printf("Listing root directory...\r\n");
 	list_directory(&_drive_params, _boot_sector);
 	return 1;
 }
@@ -326,11 +327,11 @@ int cmd_find()
 		printf("\r\nYou must enter a filename.\r\n");
 		return -1;
 	}
-	printf("\r\nSearching...\r\n");
 	if(reset_drive(&_drive_params)) {
 		get_drive_error(&_drive_params);
 		return -1;
 	}
+	printf("\r\nSearching...\r\n");
 	find_file(&_drive_params, _boot_sector, buf);
 	return 1;
 }

@@ -65,6 +65,8 @@ void list_directory(drive_params_t *p, boot_t *bs);
 void find_file(drive_params_t *p, boot_t *bs, const char *filename);
 /* convert filename into cstring */
 void conv_filename(unsigned char *filename, char *newname);
+/* compare filename for input */
+char compare_filename(unsigned char *filename, const char *input);
 
 #endif
 

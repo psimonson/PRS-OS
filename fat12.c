@@ -111,8 +111,6 @@ void list_directory(drive_params_t *p, boot_t *bs)
 	unsigned short i;
 	entry_t *file;
 
-	printf("Listing root directory...\r\n");
-
 	/* load root directory and list files */
 	i = sizeof(entry_t);
 	while((bytes = load_next_sector(p, bs)) != NULL) {
@@ -129,7 +127,6 @@ void list_directory(drive_params_t *p, boot_t *bs)
 			i += sizeof(entry_t)*2;
 		}
 	}
-	printf("End of directory listing.\r\n");
 }
 /* Find file in root directory; compares it with strcmp.
  */
@@ -140,8 +137,6 @@ void find_file(drive_params_t *p, boot_t *bs, const char *filename)
 	entry_t *file;
 	char found = 0;
 
-	printf("Finding file in root directory...\r\n");
-
 	/* load root directory and list files */
 	i = sizeof(entry_t);
 	while((bytes = load_next_sector(p, bs)) != NULL) {
@@ -150,7 +145,7 @@ void find_file(drive_params_t *p, boot_t *bs, const char *filename)
 			if(file->filename[0] == 0xe5) {
 				printf("File deleted.\r\n");
 			} else if((file->filename[0] | 0x40) == file->filename[0]) {
-				if(!memcmp(filename, file->filename, 11))
+				if(!compare_filename(file->filename, filename))
 						found = 1;
 			}
 			i += sizeof(entry_t)*2;
@@ -168,10 +163,27 @@ void conv_filename(unsigned char *filename, char *newname)
 	int i;
 	for(i=0; (*newname = *filename) != ' '; newname++,filename++,i++);
 	while(i<12 && *filename == ' ') filename++;
-	if(*(filename-1) == ' ') {
+	if(*(filename-1) == ' ' && *filename != 0) {
 		*newname++ = '.';
 		i++;
 	}
 	while(i<12 && (*newname++ = *filename++));
 	*newname = 0;
 }
+/* Compare file name to string.
+ */
+char compare_filename(unsigned char *filename, const char *input)
+{
+	int i;
+	for(i=0; i<strlen((char*)filename); i++,input++,filename++)
+		if(*input != *filename)
+			return *input-*filename;
+		else if(*input == '.' && *filename == ' ') {
+			filename++;
+			if(*filename != ' ')
+				input++;
+			continue;
+		}
+	return 0;
+}
+
