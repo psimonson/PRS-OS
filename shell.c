@@ -34,6 +34,7 @@ int cmd_reboot(void);
 int cmd_dump(void);
 int cmd_exec(void);
 int cmd_ls(void);
+int cmd_find(void);
 int cmd_exit(void);
 
 /* command structure initializer */
@@ -48,6 +49,7 @@ static const command_t commands[] = {
 	{"dump", "Dumps the CMOS data to the screen.", &cmd_dump},
 	{"exec", "Execute a given file name.", &cmd_exec},
 	{"ls", "List root directory file names.", &cmd_ls},
+	{"find", "Search for a file in root directory.", &cmd_find},
 	{"exit", "Exit the shell.", &cmd_exit}
 };
 
@@ -88,7 +90,7 @@ int cmd_hello()
  */
 int cmd_play()
 {
-	char buf[256];
+	char buf[50];
 	int freq;
 
 	printf("Enter a number: ");
@@ -111,6 +113,17 @@ int cmd_play()
  */
 int cmd_playmusic()
 {
+#if 0
+	char buf[50];
+
+	printf("Enter filename: ");
+	if(gets(buf, sizeof(buf) <= 0) {
+		printf("\r\nYou need to enter a filename.\r\n");
+		return -1;
+	}
+	printf("\r\n");
+	/* TODO: Add PC speaker code here to play MOD/S3M files. */
+#else
 	int i = 3;
 	while(i > 0) {
 		play_sound(100);
@@ -151,14 +164,15 @@ int cmd_playmusic()
 		no_sound();
 		--i;
 	}
+#endif
 	return 1;
 }
 /* Search command, searchs a string for another string.
  */
 int cmd_search()
 {
-	char buf[256];
-	char str[256];
+	char buf[50];
+	char str[50];
 	char *found = 0;
 	printf("Enter a string: ");
 	if(gets(buf, sizeof(buf)) <= 0) {
@@ -296,9 +310,28 @@ int cmd_ls()
 {
 	if(reset_drive(&_drive_params)) {
 		get_drive_error(&_drive_params);
-		return 1;
+		return -1;
 	}
 	list_directory(&_drive_params, _boot_sector);
+	return 1;
+}
+/* Find command, search for a file in the root directory.
+ */
+int cmd_find()
+{
+	char buf[50];
+
+	printf("Enter filename: ");
+	if(gets(buf, sizeof(buf)) <= 0) {
+		printf("\r\nYou must enter a filename.\r\n");
+		return -1;
+	}
+	printf("\r\nSearching...\r\n");
+	if(reset_drive(&_drive_params)) {
+		get_drive_error(&_drive_params);
+		return -1;
+	}
+	find_file(&_drive_params, _boot_sector, buf);
 	return 1;
 }
 /* Exit command, just exits the shell.

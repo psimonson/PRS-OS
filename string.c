@@ -104,6 +104,16 @@ int strcmp(const char *s, const char *t)
 		s++, t++;
 	return *s-*t;
 }
+/* Simple implementation of memcmp.
+ */
+int memcmp(const void *m, const void *p, unsigned long nmem)
+{
+	unsigned long i;
+	for(i=0; i<nmem; i++)
+		if(((unsigned char*)m)[i] != ((unsigned char *)p)[i])
+			return ((unsigned char *)m)[i]-((unsigned char *)p)[i];
+	return 0;
+}
 /* Simple implementation of sub string.
  */
 char *strstr(char *s, const char *t)

@@ -135,4 +135,34 @@ void list_directory(drive_params_t *p, boot_t *bs)
 	}
 	printf("End of directory listing.\r\n");
 }
+/* Find file in root directory; compares it with strcmp.
+ */
+void find_file(drive_params_t *p, boot_t *bs, const char *filename)
+{
+	unsigned char *bytes;
+	unsigned short i;
+	entry_t *file;
+	char found = 0;
+
+	printf("Finding file in root directory...\r\n");
+
+	/* load root directory and list files */
+	i = 0;
+	while((bytes = load_next_sector(p, bs)) != NULL) {
+		while(i < bs->root_entries) {
+			file = (entry_t*)&bytes[i+sizeof(entry_t)];
+			if(file->filename[0] == 0xe5) {
+				printf("File deleted.\r\n");
+			} else if((file->filename[0] | 0x40) == file->filename[0]) {
+				if(!memcmp(filename, file->filename, 11))
+						found = 1;
+			}
+			i += sizeof(entry_t);
+		}
+	}
+	if(found)
+		printf("File found.\r\n");
+	else
+		printf("File not found.\r\n");
+}
 

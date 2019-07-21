@@ -14,6 +14,7 @@ void itoa(int n, char s[]);
 void ltoa(long n, char s[]);
 int strlen(const char *s);
 int strcmp(const char *s, const char *t);
+int memcmp(const void *m, const void *p, unsigned long nmem);
 char *strstr(char *s, const char *t);
 int strchr(char *s, const char c);
 int strcpy(char *s, const char *t, int size);

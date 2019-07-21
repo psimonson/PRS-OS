@@ -41,7 +41,7 @@ typedef struct boot {
  * Structure for FAT file entry.
  */
 typedef struct entry {
-	unsigned char	filename[11];
+	char		filename[11];
 	unsigned char	attributes;
 	unsigned char	reserved;
 	unsigned char	create_time_ms;
@@ -61,6 +61,8 @@ boot_t *load_boot(drive_params_t *p);
 unsigned char *load_next_sector(drive_params_t *p, boot_t *bs);
 /* list directory structure */
 void list_directory(drive_params_t *p, boot_t *bs);
+/* find file in root directory */
+void find_file(drive_params_t *p, boot_t *bs, const char *filename);
 
 #endif
 
