@@ -10,6 +10,7 @@
 #include "defines.h"
 
 #define NULL	((void*)0)	/* void pointer (null pointer) */
+#define BUFSIZ	512		/* size of one sector on disk */
 
 /* input/output functions */
 int putch_color(int c, unsigned char color);

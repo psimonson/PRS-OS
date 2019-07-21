@@ -59,6 +59,8 @@ typedef struct entry {
 boot_t *load_boot(drive_params_t *p);
 /* try and get root directory entries */
 unsigned char *load_next_sector(drive_params_t *p, boot_t *bs);
+/* list directory structure */
+void list_directory(drive_params_t *p, boot_t *bs);
 
 #endif
 

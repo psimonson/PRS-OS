@@ -51,7 +51,7 @@ unsigned char *load_next_sector(drive_params_t *p, boot_t *bs)
 {
 /* TODO: Implement this function */
 #if 1
-	static unsigned char sector[512];
+	static unsigned char sector[BUFSIZ];
 	unsigned char retries, cflag, c, h, s;
 	static char first = 1;
 	static unsigned char i = 0;
@@ -104,5 +104,37 @@ disk_error:
 	printf("Not yet implemented!\r\n");
 #endif
 	return 0;
+}
+/* List root directory structure; displays name and size of files.
+ */
+void list_directory(drive_params_t *p, boot_t *bs)
+{
+	unsigned char *bytes;
+	unsigned short i;
+	entry_t *file;
+
+	printf("Listing root directory...\r\n");
+
+	/* load root directory and list files */
+	i = 0;
+	while((bytes = load_next_sector(p, bs)) != NULL) {
+		unsigned short l = 0;
+		while(i < bs->root_entries) {
+			file = (entry_t*)&bytes[i+sizeof(entry_t)];
+			if(file->filename[0] == 0xe5) {
+				printf("File deleted.\r\n");
+			} else if((file->filename[0] | 0x40) == file->filename[0]) {
+				printf("File Name: %s\r\n", file->filename);
+				printf("File Size: %d\r\n", file->size);
+				l++;
+			}
+			if(l >= (20*sizeof(entry_t))) {
+				printf("Press any key to continue...\r\n");
+				getch();
+			}
+			i += sizeof(entry_t);
+		}
+	}
+	printf("End of directory listing.\r\n");
 }
 
