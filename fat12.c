@@ -114,23 +114,19 @@ void list_directory(drive_params_t *p, boot_t *bs)
 	printf("Listing root directory...\r\n");
 
 	/* load root directory and list files */
-	i = 0;
+	i = sizeof(entry_t);
 	while((bytes = load_next_sector(p, bs)) != NULL) {
-		unsigned short l = 0;
 		while(i < bs->root_entries) {
-			file = (entry_t*)&bytes[i+sizeof(entry_t)];
+			file = (entry_t*)&bytes[i];
 			if(file->filename[0] == 0xe5) {
 				printf("File deleted.\r\n");
 			} else if((file->filename[0] | 0x40) == file->filename[0]) {
-				printf("File Name: %s\r\n", file->filename);
+				char filename[12];
+				conv_filename(file->filename, filename);
+				printf("File Name: %s\r\n", filename);
 				printf("File Size: %d\r\n", file->size);
-				l++;
 			}
-			if(l >= (20*sizeof(entry_t))) {
-				printf("Press any key to continue...\r\n");
-				getch();
-			}
-			i += sizeof(entry_t);
+			i += sizeof(entry_t)*2;
 		}
 	}
 	printf("End of directory listing.\r\n");
@@ -147,17 +143,17 @@ void find_file(drive_params_t *p, boot_t *bs, const char *filename)
 	printf("Finding file in root directory...\r\n");
 
 	/* load root directory and list files */
-	i = 0;
+	i = sizeof(entry_t);
 	while((bytes = load_next_sector(p, bs)) != NULL) {
 		while(i < bs->root_entries) {
-			file = (entry_t*)&bytes[i+sizeof(entry_t)];
+			file = (entry_t*)&bytes[i];
 			if(file->filename[0] == 0xe5) {
 				printf("File deleted.\r\n");
 			} else if((file->filename[0] | 0x40) == file->filename[0]) {
 				if(!memcmp(filename, file->filename, 11))
 						found = 1;
 			}
-			i += sizeof(entry_t);
+			i += sizeof(entry_t)*2;
 		}
 	}
 	if(found)
@@ -165,4 +161,17 @@ void find_file(drive_params_t *p, boot_t *bs, const char *filename)
 	else
 		printf("File not found.\r\n");
 }
-
+/* Convert file name to string.
+ */
+void conv_filename(unsigned char *filename, char *newname)
+{
+	int i;
+	for(i=0; (*newname = *filename) != ' '; newname++,filename++,i++);
+	while(i<12 && *filename == ' ') filename++;
+	if(*(filename-1) == ' ') {
+		*newname++ = '.';
+		i++;
+	}
+	while(i<12 && (*newname++ = *filename++));
+	*newname = 0;
+}
