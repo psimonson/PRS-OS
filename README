@@ -24,7 +24,7 @@ Written by Philip R. Simonson, Please do NOT be a dick
 don't clone/copy and/or modify. Then, put it as your
 own. If you barrowed something from my code. Please
 give me credit.
-
+======================================================
 NOTE: The reason I've decided to make a simple 16-bit
 OS (Operating System), is because I thought it might
 be a challenge. It most definitely is, but it's making
@@ -35,8 +35,12 @@ responsible for any damage to a computer system. As
 it may not work correctly on all machines although,
 I tried to make it work for many. Which is why I did
 not compile for NATIVE mode, it's compiled for a
-Generic processor.
-
+Generic processor. Please use at YOUR own risk.
+Finally, the only thing that I've borrowed was
+Microsoft's FAT12 file system. I WILL be making my own
+file system to go along with it. But, in the meantime
+hopefully they won't mind me using it (FAT12) to much.
+======================================================
 Thanks,
 Philip R. Simonson
 ======================================================
