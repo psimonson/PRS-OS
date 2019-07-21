@@ -55,22 +55,13 @@ unsigned char *load_next_sector(drive_params_t *p, boot_t *bs)
 	unsigned char retries, cflag, c, h, s;
 	static char first = 1;
 	static unsigned char i = 0;
-	unsigned short size;
 
 	memset(sector, 0, sizeof(sector));
-	if(p->lba != 0 && first) return sector;
-	retries = 3;
 	if(first)
 		p->lba = bs->reserved_sectors + (bs->fats * bs->sectors_per_fat);
 	else
 		p->lba += i;
-	size = bs->root_entries * sizeof(entry_t) / bs->bytes_per_sector;
-	if(i >= size) {
-		memset(sector, 0, sizeof(sector));
-		first = 1;
-		i = 0;
-		return NULL;
-	}
+	retries = 3;
 	lba_to_chs(p->lba, &c, &h, &s);
 	do {
 		--retries;
@@ -79,7 +70,7 @@ unsigned char *load_next_sector(drive_params_t *p, boot_t *bs)
 				goto disk_error;
 			printf("Retrying... Tries left %d.\r\n", retries);
 		}
-	} while(retries > 0 && !cflag);
+	} while(retries > 0 && cflag);
 	if(cflag)
 		goto disk_error;
 #ifdef DEBUG
@@ -89,6 +80,13 @@ unsigned char *load_next_sector(drive_params_t *p, boot_t *bs)
 	printf("LBA [C:%d] [H:%d] [S:%d]\r\n", c, h, s);
 #endif
 	first = 0;
+	if(i >= bs->root_entries) {
+		memset(sector, 0, sizeof(sector));
+		retries = 3;
+		first = 1;
+		i = 0;
+		return NULL;
+	}
 	++i;
 	return sector;
 

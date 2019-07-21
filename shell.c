@@ -10,6 +10,11 @@ asm(".code16gcc");
 #include "time.h"
 #include "string.h"
 #include "fat12.h"
+#include "disk.h"
+
+/* external variables */
+extern boot_t *_boot_sector;		/* boot sector */
+extern drive_params_t _drive_params;	/* disk parameters */
 
 /* command structure */
 typedef struct command {
@@ -289,7 +294,11 @@ int cmd_exec()
  */
 int cmd_ls()
 {
-	puts("Not yet implemented!");
+	if(reset_drive(&_drive_params)) {
+		get_drive_error(&_drive_params);
+		return 1;
+	}
+	list_directory(&_drive_params, _boot_sector);
 	return 1;
 }
 /* Exit command, just exits the shell.
