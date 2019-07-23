@@ -144,7 +144,9 @@ void find_file(drive_params_t *p, boot_t *bs, const char *filename)
 			if(file->filename[0] == 0xe5) {
 				printf("File deleted.\r\n");
 			} else if((file->filename[0] | 0x40) == file->filename[0]) {
-				if(!compare_filename(file->filename, filename))
+				char name[11];
+				conv_filename(file->filename, name);
+				if(!memcmp(filename, name, 11))
 						found = 1;
 			}
 			i += sizeof(entry_t)*2;
@@ -169,20 +171,3 @@ void conv_filename(unsigned char *filename, char *newname)
 	while(i<12 && (*newname++ = *filename++));
 	*newname = 0;
 }
-/* Compare file name to string.
- */
-char compare_filename(unsigned char *filename, const char *input)
-{
-	int i;
-	for(i=0; i<strlen((char*)filename); i++,input++,filename++)
-		if(*input != *filename)
-			return *input-*filename;
-		else if(*input == '.' && *filename == ' ') {
-			filename++;
-			if(*filename != ' ')
-				input++;
-			continue;
-		}
-	return 0;
-}
-
