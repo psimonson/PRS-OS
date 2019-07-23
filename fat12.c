@@ -49,7 +49,6 @@ disk_error:
  */
 unsigned char *load_next_sector(drive_params_t *p, boot_t *bs)
 {
-/* TODO: Implement this function */
 #if 1
 	static unsigned char sector[BUFSIZ];
 	unsigned char retries, cflag, c, h, s;
