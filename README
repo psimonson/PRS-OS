@@ -8,7 +8,7 @@ maybe later I'll add support for LBA (Logical Block
 Addressing). Which LBA is used for flash drives and
 hard disks. Current commands include, help, hello,
 play, play music, search, reset_CMOS(#1), reboot,
-dump(#2), exec(#3), ls(#3), exit.
+dump(#2), exec(#3), ls, find, exit.
 ======================================================
 NOTES:
 	(#1) - Award BIOS only, RISKY to use on other
