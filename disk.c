@@ -112,7 +112,7 @@ int __REGPARM get_drive_status(drive_params_t *p)
 		"setcb %0\n\t"
 		"pop %%es\n\t"
 		"pop %%ds\n\t"
-		: "=m"(failed), "=a"(p->status)
+		: "=r"(failed), "=a"(p->status)
 		: "a"(0x0100), "d"(0x0000 | p->drive)
 	);
 	return failed;
@@ -132,7 +132,7 @@ int __REGPARM reset_drive(drive_params_t *p)
 		"setcb %0\n\t"
 		"pop %%es\n\t"
 		"pop %%ds\n\t"
-		: "=m"(failed), "=a"(p->status)
+		: "=r"(failed), "=a"(p->status)
 		: "a"(0x0000), "d"(0x0000 | p->drive)
 	);
 	return failed;
@@ -155,26 +155,25 @@ int __REGPARM get_drive_params(drive_params_t *p, unsigned char drive)
 		: "=r"(failed), "=a"(p->status), "=c"(tmp1), "=d"(tmp2)
 		: "a"(0x0800), "d"(drive), "D"(0)
 	);
-	if((failed >> 8) != 0)
-		return (failed >> 8);
-	p->drive = drive;
-	p->spt = tmp1 & 0x3f;
-	p->numh = tmp2 >> 8;
-	p->lba = 0;
+	if(!failed) {
+		p->drive = drive;
+		p->spt = tmp1 & 0x3f;
+		p->numh = tmp2 >> 8;
+		p->lba = 0;
+	}
 	return failed;
 }
 /* Reads a disk drive using LBA.
  */
-int __REGPARM read_drive_lba(void *buf, unsigned long lba, unsigned char blocks,
-	drive_params_t* p)
+int __REGPARM read_drive_lba(void *buf, unsigned char blocks, drive_params_t* p)
 {
 	unsigned char failed = 0;
 	unsigned char c,h,s;
 	unsigned short t;
 
 	/* for floppy disk */
-	c = lba / (p->numh * p->spt);
-	t = lba % (p->numh * p->spt);
+	c = p->lba / (p->numh * p->spt);
+	t = p->lba % (p->numh * p->spt);
 	h = t / p->spt;
 	s = (t % p->spt) + 1;
 
@@ -182,7 +181,7 @@ int __REGPARM read_drive_lba(void *buf, unsigned long lba, unsigned char blocks,
 	asm volatile(
 		"push %%ds\n\t"
 		"push %%es\n\t"
-		"movw $0, %0\n\t"
+		"movb $0, %0\n\t"
 		"int $0x13\n\t"
 		"setcb %0\n\t"
 		"pop %%es\n\t"
@@ -204,7 +203,7 @@ int __REGPARM read_drive_chs(void *buf, unsigned char blocks, unsigned char c,
 	asm volatile(
 		"push %%ds\n\t"
 		"push %%es\n\t"
-		"movw $0, %0\n\t"
+		"movb $0, %0\n\t"
 		"int $0x13\n\t"
 		"setcb %0\n\t"
 		"pop %%es\n\t"
@@ -223,16 +222,13 @@ int __REGPARM read_drive(void *buf, unsigned char blocks, unsigned char sector,
 	unsigned char failed = 0;
 	unsigned char c, h, s;
 
-	/* sector calculations */
-	c = (sector / p->spt) / p->numh;
-	h = (sector / p->spt) % p->numh;
-	s = (sector % p->spt) + 1;
+	sector_to_chs(p, sector, &c, &h, &s);
 
 	/* read sectors from disk drive */
 	asm volatile(
 		"push %%ds\n\t"
 		"push %%es\n\t"
-		"movw $0, %0\n\t"
+		"movb $0, %0\n\t"
 		"int $0x13\n\t"
 		"setcb %0\n\t"
 		"pop %%es\n\t"
@@ -243,13 +239,51 @@ int __REGPARM read_drive(void *buf, unsigned char blocks, unsigned char sector,
 	);
 	return failed;
 }
+/* Write to a disk drive. (floppy only)
+ */
+int __REGPARM write_drive(const void *buf, unsigned char blocks, unsigned char sector,
+	drive_params_t *p)
+{
+	unsigned char failed = 0;
+	unsigned char c, h, s;
+
+	sector_to_chs(p, sector, &c, &h, &s);
+
+	/* write blocks starting at sector */
+	asm volatile(
+		"push %%ds\n\t"
+		"push %%es\n\t"
+		"movb $0, %0\n\t"
+		"int $0x13\n\t"
+		"setcb %0\n\t"
+		"pop %%es\n\t"
+		"pop %%ds\n\t"
+		: "=m"(failed), "=a"(p->status)
+		: "a"(0x0300 | blocks), "b"(buf), "c"((c << 8) | s),
+			"d"((h << 8) | p->drive)
+	);
+	return failed;
+}
+
+/* -------------------------- Helper Functions ----------------------- */
+
 /* LBA to CHS conversion function.
  */
 void lba_to_chs(unsigned long lba, unsigned char *c, unsigned char *h,
 	unsigned char *s)
 {
-	*c = lba / (2*FLP_144_SPT);
-	*h = ((lba % (2*FLP_144_SPT)) / FLP_144_SPT);
-	*s = ((lba % (2*FLP_144_SPT)) % FLP_144_SPT + 1);
+	*c = lba / (FLP_144_NUMH*FLP_144_SPT);
+	*h = ((lba % (FLP_144_NUMH*FLP_144_SPT)) / FLP_144_SPT);
+	*s = ((lba % (FLP_144_NUMH*FLP_144_SPT)) % FLP_144_SPT + 1);
+}
+/* CHS to sector conversion.
+ */
+void sector_to_chs(drive_params_t *p, unsigned char sector, unsigned char *c,
+	unsigned char *h, unsigned char *s)
+{
+	/* sector calculations */
+	*c = (sector / p->spt) / p->numh;
+	*h = (sector / p->spt) % p->numh;
+	*s = (sector % p->spt) + 1;
 }
 

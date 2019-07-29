@@ -8,6 +8,7 @@
 #define DISK_H
 
 #define FLP_144_SPT	18	/* sectors per track 1.44MB floppy */
+#define FLP_144_NUMH	2	/* heads per cylinder 1.44MB floppy */
 
 /* Drive failure defines */
 #define	DISK_ERR_OK	0x00	/* success */
@@ -58,16 +59,25 @@ int __REGPARM reset_drive(drive_params_t *p);
 /* get drive parameters */
 int __REGPARM get_drive_params(drive_params_t *p, unsigned char drive);
 /* read data from disk drive */
-int __REGPARM read_drive_lba(void *buf, unsigned long lba, unsigned char blocks,
-	drive_params_t* p);
+int __REGPARM read_drive_lba(void *buf, unsigned char blocks,
+	drive_params_t *p);
 /* read data from disk drive */
 int __REGPARM read_drive_chs(void *buf, unsigned char blocks, unsigned char c,
 	unsigned char h, unsigned char s, drive_params_t* p);
 /* read data from disk drive */
 int __REGPARM read_drive(void *buf, unsigned char blocks, unsigned char sector,
-	drive_params_t* p);
+	drive_params_t *p);
+/* write data to disk drive */
+int __REGPARM write_drive(const void *buf, unsigned char blocks, unsigned char sector,
+	drive_params_t *p);
+
+/* -------------------------- Helper Functions ----------------------- */
+
 /* LBA to CHS */
 void lba_to_chs(unsigned long lba, unsigned char *c, unsigned char *h,
 	unsigned char *s);
+/* sector to CHS */
+void sector_to_chs(drive_params_t *p, unsigned char sector, unsigned char *c,
+	unsigned char *h, unsigned char *s);
 
 #endif
