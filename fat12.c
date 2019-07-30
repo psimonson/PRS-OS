@@ -52,14 +52,10 @@ unsigned char *load_next_sector(drive_params_t *p, boot_t *bs)
 #if 1
 	static unsigned char sector[BUFSIZ];
 	unsigned char retries, cflag, c, h, s;
-	static char first = 1;
 	static unsigned char i = 0;
 
 	memset(sector, 0, sizeof(sector));
-	if(first)
-		p->lba = bs->reserved_sectors + (bs->fats * bs->sectors_per_fat);
-	else
-		p->lba += i;
+	p->lba = i+(bs->reserved_sectors+bs->fats*bs->sectors_per_fat);
 	retries = 3;
 	lba_to_chs(p->lba, &c, &h, &s);
 	do {
@@ -78,11 +74,9 @@ unsigned char *load_next_sector(drive_params_t *p, boot_t *bs)
 	printf("Sectors read: %d\r\n", ((unsigned char)(p->status)));
 	printf("LBA [C:%d] [H:%d] [S:%d]\r\n", c, h, s);
 #endif
-	first = 0;
 	if(i >= bs->root_entries) {
 		memset(sector, 0, sizeof(sector));
 		retries = 3;
-		first = 1;
 		i = 0;
 		return NULL;
 	}

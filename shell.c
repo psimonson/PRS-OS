@@ -35,6 +35,7 @@ int cmd_dump(void);
 int cmd_exec(void);
 int cmd_ls(void);
 int cmd_find(void);
+int cmd_format(void);
 int cmd_exit(void);
 
 /* command structure initializer */
@@ -50,6 +51,7 @@ static const command_t commands[] = {
 	{"exec", "Execute a given file name.", &cmd_exec},
 	{"ls", "List root directory file names.", &cmd_ls},
 	{"find", "Search for a file in root directory.", &cmd_find},
+	{"format", "Format a floppy diskette.", &cmd_format},
 	{"exit", "Exit the shell.", &cmd_exit}
 };
 
@@ -333,6 +335,54 @@ int cmd_find()
 	}
 	printf("\r\nSearching...\r\n");
 	find_file(&_drive_params, _boot_sector, buf);
+	return 1;
+}
+/* Format command, just what it says (format a disk).
+ */
+int cmd_format()
+{
+	static unsigned char sector[512];
+	unsigned char result = 0;
+	unsigned short i, num, last_error = 0;
+	drive_params_t p;
+	char buf[10];
+
+	memset(sector, 0, sizeof(sector));
+	printf("Enter drive index number (0 or 1): ");
+	if(gets(buf, sizeof(buf)) <= 0) {
+		printf("\r\nYou must enter a drive index number.\r\n");
+		return -1;
+	}
+	num = atoi(buf);
+	result = get_drive_params(&p, (num >= 0 && num <= 1 ? num : -1));
+	if(result) {
+		printf("\r\nCould not get drive parameters.\r\n");
+		return -1;
+	}
+	result = reset_drive(&p);
+	if(result) {
+		printf("\r\nCould not reset drive.\r\n");
+		return -1;
+	}
+	i = 0;
+	printf("\r\nWiping drive number %d.\r\n", p.drive);
+	while(!last_error && i < FLP_144_SECT) {
+#ifdef DEBUG
+		unsigned char c, h, s;
+		sector_to_chs(i, &c, &h, &s);
+		printf("Wiping [C:%d | H:%d | S:%d]\r\n", c, h, s);
+#endif
+		result = write_drive(sector, 1, i, &p);
+		if(result) {
+			last_error = get_drive_status(&p);
+			result = 0;
+		}
+		i++;
+	}
+	if(last_error)
+		printf("Failure partially wiped.\r\n");
+	else
+		printf("Drive wiped successfully.\r\n");
 	return 1;
 }
 /* Exit command, just exits the shell.
