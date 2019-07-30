@@ -107,7 +107,6 @@ int __REGPARM get_drive_status(drive_params_t *p)
 	asm volatile(
 		"push %%ds\n\t"
 		"push %%es\n\t"
-		"movb $0, %0\n\t"
 		"int $0x13\n\t"
 		"setcb %0\n\t"
 		"pop %%es\n\t"
@@ -127,7 +126,6 @@ int __REGPARM reset_drive(drive_params_t *p)
 	asm volatile(
 		"push %%ds\n\t"
 		"push %%es\n\t"
-		"movb $0, %0\n\t"
 		"int $0x13\n\t"
 		"setcb %0\n\t"
 		"pop %%es\n\t"
@@ -147,7 +145,6 @@ int __REGPARM get_drive_params(drive_params_t *p, unsigned char drive)
 	asm volatile(
 		"push %%ds\n\t"
 		"push %%es\n\t"
-		"movb $0, %0\n\t"
 		"int $0x13\n\t"
 		"setcb %0\n\t"
 		"pop %%es\n\t"
@@ -181,12 +178,11 @@ int __REGPARM read_drive_lba(void *buf, unsigned char blocks, drive_params_t* p)
 	asm volatile(
 		"push %%ds\n\t"
 		"push %%es\n\t"
-		"movb $0, %0\n\t"
 		"int $0x13\n\t"
 		"setcb %0\n\t"
 		"pop %%es\n\t"
 		"pop %%ds\n\t"
-		: "=m"(failed), "=a"(p->status)
+		: "=r"(failed), "=a"(p->status)
 		: "a"(0x0200 | blocks), "b"(buf),
 			"c"((c << 8) | s), "d"((h << 8) | p->drive)
 	);
@@ -203,12 +199,11 @@ int __REGPARM read_drive_chs(void *buf, unsigned char blocks, unsigned char c,
 	asm volatile(
 		"push %%ds\n\t"
 		"push %%es\n\t"
-		"movb $0, %0\n\t"
 		"int $0x13\n\t"
 		"setcb %0\n\t"
 		"pop %%es\n\t"
 		"pop %%ds\n\t"
-		: "=m"(failed), "=a"(p->status)
+		: "=r"(failed), "=a"(p->status)
 		: "a"(0x0200 | blocks), "b"(buf),
 			"c"((c << 8) | s), "d"((h << 8) | p->drive)
 	);
@@ -228,12 +223,11 @@ int __REGPARM read_drive(void *buf, unsigned char blocks, unsigned char sector,
 	asm volatile(
 		"push %%ds\n\t"
 		"push %%es\n\t"
-		"movb $0, %0\n\t"
 		"int $0x13\n\t"
 		"setcb %0\n\t"
 		"pop %%es\n\t"
 		"pop %%ds\n\t"
-		: "=m"(failed), "=a"(p->status)
+		: "=r"(failed), "=a"(p->status)
 		: "a"(0x0200 | blocks), "b"(buf),
 			"c"((c << 8) | s), "d"((h << 8) | p->drive)
 	);
@@ -253,12 +247,11 @@ int __REGPARM write_drive(const void *buf, unsigned char blocks, unsigned char s
 	asm volatile(
 		"push %%ds\n\t"
 		"push %%es\n\t"
-		"movb $0, %0\n\t"
 		"int $0x13\n\t"
 		"setcb %0\n\t"
 		"pop %%es\n\t"
 		"pop %%ds\n\t"
-		: "=m"(failed), "=a"(p->status)
+		: "=r"(failed), "=a"(p->status)
 		: "a"(0x0300 | blocks), "b"(buf), "c"((c << 8) | s),
 			"d"((h << 8) | p->drive)
 	);
