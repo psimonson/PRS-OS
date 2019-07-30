@@ -217,7 +217,7 @@ int __REGPARM read_drive(void *buf, unsigned char blocks, unsigned char sector,
 	unsigned char failed = 0;
 	unsigned char c, h, s;
 
-	sector_to_chs(p, sector, &c, &h, &s);
+	sector_to_chs(sector, &c, &h, &s);
 
 	/* read sectors from disk drive */
 	asm volatile(
@@ -241,7 +241,7 @@ int __REGPARM write_drive(const void *buf, unsigned char blocks, unsigned char s
 	unsigned char failed = 0;
 	unsigned char c, h, s;
 
-	sector_to_chs(p, sector, &c, &h, &s);
+	sector_to_chs(sector, &c, &h, &s);
 
 	/* write blocks starting at sector */
 	asm volatile(
@@ -271,12 +271,12 @@ void lba_to_chs(unsigned long lba, unsigned char *c, unsigned char *h,
 }
 /* CHS to sector conversion.
  */
-void sector_to_chs(drive_params_t *p, unsigned char sector, unsigned char *c,
+void sector_to_chs(unsigned char sector, unsigned char *c,
 	unsigned char *h, unsigned char *s)
 {
 	/* sector calculations */
-	*c = (sector / p->spt) / p->numh;
-	*h = (sector / p->spt) % p->numh;
-	*s = (sector % p->spt) + 1;
+	*c = (sector / FLP_144_SPT) / FLP_144_NUMH;
+	*h = (sector / FLP_144_SPT) % FLP_144_NUMH;
+	*s = (sector % FLP_144_SPT) + 1;
 }
 

@@ -342,7 +342,8 @@ int cmd_find()
 int cmd_format()
 {
 	static unsigned char sector[512];
-	int result = 0, i, num;
+	unsigned char result = 0;
+	unsigned short i, num, last_error = 0;
 	drive_params_t p;
 	char buf[10];
 
@@ -365,14 +366,23 @@ int cmd_format()
 	}
 	i = 0;
 	printf("\r\nWiping drive number %d.\r\n", p.drive);
-	do {
+	while(!last_error && i < FLP_144_SECT) {
+#ifdef DEBUG
+		unsigned char c, h, s;
+		sector_to_chs(i, &c, &h, &s);
+		printf("Wiping [C:%d | H:%d | S:%d]\r\n", c, h, s);
+#endif
 		result = write_drive(sector, 1, i, &p);
+		if(result) {
+			last_error = get_drive_status(&p);
+			result = 0;
+		}
 		i++;
-	} while(!result && i < 2880);
-	if(result)
-		printf("\r\nFailure partially wiped.\r\n");
+	}
+	if(last_error)
+		printf("Failure partially wiped.\r\n");
 	else
-		printf("\r\nDrive wiped successfully.\r\n");
+		printf("Drive wiped successfully.\r\n");
 	return 1;
 }
 /* Exit command, just exits the shell.
