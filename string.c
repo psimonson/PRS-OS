@@ -51,7 +51,7 @@ int atoi(const char *s)
 	while(*s) {
 		if(*s < '0' || *s > '9')
 			return 0;
-		number = number * 10 + *s - '0';
+		number += (*s - '0') * 10;
 		s++;
 	}
 	return number;
