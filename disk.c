@@ -13,7 +13,7 @@ asm(".code16gcc");
 
 /* Get the current drive error and print error message.
  */
-void get_drive_error(const drive_params_t *p)
+void __REGPARM get_drive_error(const drive_params_t *p)
 {
 	switch((unsigned char)(p->status >> 8)) {
 		case DISK_ERR_OK:
@@ -257,7 +257,7 @@ int __REGPARM write_drive(const void *buf, unsigned char blocks, unsigned char s
 
 /* LBA to CHS conversion function.
  */
-void lba_to_chs(const drive_params_t *p, unsigned char *c,
+void __REGPARM lba_to_chs(const drive_params_t *p, unsigned char *c,
 	unsigned char *h, unsigned char *s)
 {
 #if 1
@@ -273,8 +273,8 @@ void lba_to_chs(const drive_params_t *p, unsigned char *c,
 }
 /* CHS to sector conversion.
  */
-void sector_to_chs(const drive_params_t *p, unsigned char sector, unsigned char *c,
-	unsigned char *h, unsigned char *s)
+void __REGPARM sector_to_chs(const drive_params_t *p, unsigned char sector,
+	unsigned char *c, unsigned char *h, unsigned char *s)
 {
 #if 1
 	*c = (sector / FLP_144_SPT) / FLP_144_NUMH;

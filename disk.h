@@ -52,7 +52,7 @@ typedef struct {
 } __attribute__((packed)) drive_params_t;
 
 /* get drive error and print message */
-void get_drive_error(const drive_params_t *p);
+void __REGPARM get_drive_error(const drive_params_t *p);
 /* get status of last drive operation */
 int __REGPARM get_drive_status(drive_params_t *p);
 /* reset disk drive */
@@ -75,10 +75,10 @@ int __REGPARM write_drive(const void *buf, unsigned char blocks, unsigned char s
 /* -------------------------- Helper Functions ----------------------- */
 
 /* LBA to CHS */
-void lba_to_chs(const drive_params_t *p, unsigned char *c, unsigned char *h,
+void __REGPARM lba_to_chs(const drive_params_t *p, unsigned char *c, unsigned char *h,
 	unsigned char *s);
 /* sector to CHS */
-void sector_to_chs(const drive_params_t *p, unsigned char sector, unsigned char *c,
-	unsigned char *h, unsigned char *s);
+void __REGPARM sector_to_chs(const drive_params_t *p, unsigned char sector,
+	unsigned char *c, unsigned char *h, unsigned char *s);
 
 #endif
