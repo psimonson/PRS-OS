@@ -2,7 +2,7 @@
 ; FAT12 Boot Sector for Floppy Diskettes.
 ; ================================================================
 ; Written by  : Philip R. Simonson
-; Date Written: July 9, 2019
+; Date Written: July 5, 2019
 ; ================================================================
 
 [bits 16]
