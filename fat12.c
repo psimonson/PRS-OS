@@ -81,8 +81,9 @@ unsigned char *load_next_sector(drive_params_t *p, boot_t *bs)
 	printf("Sectors read: %d\r\n", ((unsigned char)(p->status)));
 	printf("LBA [C:%d] [H:%d] [S:%d]\r\n", c, h, s);
 #endif
-	if(i >= bs->reserved_sectors) {
-		memset(sector, 0, sizeof(sector));
+	if(i >= (bs->root_entries*sizeof(entry_t)/bs->bytes_per_sector)) {
+		if(reset_drive(p))
+			goto disk_error;
 		retries = 3;
 		i = 0;
 		return NULL;
@@ -167,11 +168,11 @@ void conv_filename(unsigned char *filename, char *newname)
 {
 	int i;
 	for(i=0; (*newname = *filename) != ' '; newname++,filename++,i++);
-	while(i<12 && *filename == ' ') filename++;
-	if(*(filename-1) == ' ' && *filename != 0) {
+	while(i<11 && *filename == ' ') filename++;
+	if(*(filename-1) == ' ' && (*filename != 0 || *filename != ' ')) {
 		*newname++ = '.';
 		i++;
 	}
-	while(i<12 && (*newname++ = *filename++));
+	while(i<11 && (*newname++ = *filename++));
 	*newname = 0;
 }
