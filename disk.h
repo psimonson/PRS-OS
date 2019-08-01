@@ -48,7 +48,7 @@ typedef struct {
 	unsigned char	numh;
 	unsigned char	_unused;
 	unsigned short	status;
-	unsigned long	lba;
+	unsigned int	lba;
 } __attribute__((packed)) drive_params_t;
 
 /* get drive error and print message */

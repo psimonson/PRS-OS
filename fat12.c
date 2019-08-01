@@ -16,22 +16,19 @@ asm(".code16gcc");
 boot_t *load_boot(drive_params_t *p)
 {
 	static boot_t _bs;
-	char retries, cflag;
+	char retries;
 	memset(&_bs, 0, sizeof(boot_t));
 	if(reset_drive(p))
 		goto disk_error;
 	retries = 3;
 	do {
 		--retries;
-		if((cflag = read_drive((void*)&_bs, 1, 0, p))) {
+		if(read_drive((void*)&_bs, 1, 0, p)) {
 			if(reset_drive(p))
 				goto disk_error;
 			printf("Retrying... Times left %d.\r\n", retries);
 		}
-
-	} while(retries > 0 && cflag);
-	if(cflag)
-		goto disk_error;
+	} while(retries > 0);
 #ifdef DEBUG
 	get_drive_error(p);
 	printf("Sectors read: %d\r\n", ((unsigned char)(p->status)));
@@ -51,8 +48,9 @@ unsigned char *load_next_sector(drive_params_t *p, boot_t *bs)
 {
 #if 1
 	static unsigned char sector[BUFSIZ];
-	unsigned char retries, cflag, c, h, s;
 	static unsigned char i = 0;
+	unsigned char c, h, s;
+	char retries;
 
 	memset(sector, 0, sizeof(sector));
 	if(i==0)
@@ -67,23 +65,20 @@ unsigned char *load_next_sector(drive_params_t *p, boot_t *bs)
 #endif
 	do {
 		--retries;
-		if((cflag = read_drive_chs(sector, 1, c, h, s, p))) {
+		if(read_drive_chs(sector, 1, c, h, s, p)) {
 			if(reset_drive(p))
 				goto disk_error;
 			printf("Retrying... Tries left %d.\r\n", retries);
 		}
-	} while(retries > 0 && cflag);
-	if(cflag)
-		goto disk_error;
+	} while(retries > 0);
+
 #ifdef DEBUG
 	get_drive_error(p);
 	printf("[DRIVE STATUS: %x]\r\n", (unsigned char)(p->status >> 8));
 	printf("Sectors read: %d\r\n", ((unsigned char)(p->status)));
 	printf("LBA [C:%d] [H:%d] [S:%d]\r\n", c, h, s);
 #endif
-	if(i >= (bs->root_entries*sizeof(entry_t)/bs->bytes_per_sector)) {
-		if(reset_drive(p))
-			goto disk_error;
+	if(i >= (bs->root_entries*32/bs->bytes_per_sector)) {
 		retries = 3;
 		i = 0;
 		return NULL;
@@ -115,7 +110,7 @@ void list_directory(drive_params_t *p, boot_t *bs)
 
 	/* load root directory and list files */
 	total_size = 0;
-	i = sizeof(entry_t);
+	i = 0;
 	while((bytes = load_next_sector(p, bs)) != NULL) {
 		while(i < bs->root_entries) {
 			file = (entry_t*)&bytes[i];
@@ -127,7 +122,7 @@ void list_directory(drive_params_t *p, boot_t *bs)
 				printf("%s\r\n", filename);
 				total_size += file->size;
 			}
-			i += sizeof(entry_t)*2;
+			i += sizeof(entry_t);
 		}
 	}
 	printf("Total size in directory %d bytes.\r\n", total_size);
@@ -142,7 +137,7 @@ void find_file(drive_params_t *p, boot_t *bs, const char *filename)
 	char found = 0;
 
 	/* load root directory and list files */
-	i = sizeof(entry_t);
+	i = 0;
 	while((bytes = load_next_sector(p, bs)) != NULL) {
 		while(i < bs->root_entries) {
 			file = (entry_t*)&bytes[i];
@@ -154,7 +149,7 @@ void find_file(drive_params_t *p, boot_t *bs, const char *filename)
 				if(!memcmp(filename, name, 11))
 						found = 1;
 			}
-			i += sizeof(entry_t)*2;
+			i += sizeof(entry_t);
 		}
 	}
 	if(found)
