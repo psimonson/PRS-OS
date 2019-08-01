@@ -53,7 +53,8 @@ typedef struct lfn_entry {
  */
 typedef struct entry {
 	unsigned char	_lfn[32];
-	unsigned char	filename[11];
+	unsigned char	filename[8];
+	unsigned char	extension[3];
 	unsigned char	attributes;
 	unsigned char	reserved;
 	unsigned char	create_time_ms;
@@ -76,9 +77,7 @@ void list_directory(drive_params_t *p, boot_t *bs);
 /* find file in root directory */
 void find_file(drive_params_t *p, boot_t *bs, const char *filename);
 /* convert filename into cstring */
-void conv_filename(unsigned char *filename, char *newname);
-/* compare filename for input */
-char compare_filename(unsigned char *filename, const char *input);
+void extract_filename(const entry_t *filename, char *newname);
 
 #endif
 

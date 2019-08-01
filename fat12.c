@@ -56,7 +56,7 @@ unsigned char *load_next_sector(drive_params_t *p, boot_t *bs)
 	if(i==0)
 		p->lba = bs->reserved_sectors+bs->fats*bs->sectors_per_fat;
 	else
-		p->lba += i;
+		p->lba += i*bs->bytes_per_sector;
 	retries = 3;
 	lba_to_chs(p, &c, &h, &s);
 #ifdef DEBUG
@@ -78,7 +78,7 @@ unsigned char *load_next_sector(drive_params_t *p, boot_t *bs)
 	printf("Sectors read: %d\r\n", ((unsigned char)(p->status)));
 	printf("LBA [C:%d] [H:%d] [S:%d]\r\n", c, h, s);
 #endif
-	if(i >= (bs->root_entries*32/bs->bytes_per_sector)) {
+	if(i >= bs->reserved_sectors) {
 		retries = 3;
 		i = 0;
 		return NULL;
@@ -118,7 +118,7 @@ void list_directory(drive_params_t *p, boot_t *bs)
 				printf("File deleted.\r\n");
 			} else if((file->filename[0] | 0x40) == file->filename[0]) {
 				char filename[12];
-				conv_filename(file->filename, filename);
+				extract_filename(file, filename);
 				printf("%s\r\n", filename);
 				total_size += file->size;
 			}
@@ -144,10 +144,14 @@ void find_file(drive_params_t *p, boot_t *bs, const char *filename)
 			if(file->filename[0] == 0xe5) {
 				printf("File deleted.\r\n");
 			} else if((file->filename[0] | 0x40) == file->filename[0]) {
-				char name[11];
-				conv_filename(file->filename, name);
-				if(!memcmp(filename, name, 11))
-						found = 1;
+				char name[12];
+				extract_filename(file, name);
+				if(!memcmp(filename, name, 11)) {
+					found = 1;
+					printf("Filename: %s\r\n"
+						"File size: %d\r\n",
+						name, file->size);
+				}
 			}
 			i += sizeof(entry_t);
 		}
@@ -159,15 +163,13 @@ void find_file(drive_params_t *p, boot_t *bs, const char *filename)
 }
 /* Convert file name to string.
  */
-void conv_filename(unsigned char *filename, char *newname)
+void extract_filename(const entry_t *file, char *newname)
 {
 	int i;
-	for(i=0; (*newname = *filename) != ' '; newname++,filename++,i++);
-	while(i<11 && *filename == ' ') filename++;
-	if(*(filename-1) == ' ' && (*filename != 0 || *filename != ' ')) {
+	for(i=0; i < 8 && (*newname = file->filename[i]) != ' '; newname++,i++);
+	if(file->filename[i] == ' ') {
 		*newname++ = '.';
-		i++;
 	}
-	while(i<11 && (*newname++ = *filename++));
+	for(i=0; i<3 && (*newname = file->extension[i]) != ' '; newname++,i++);
 	*newname = 0;
 }
