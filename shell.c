@@ -36,6 +36,7 @@ int cmd_exec(void);
 int cmd_ls(void);
 int cmd_find(void);
 int cmd_format(void);
+int cmd_type(void);
 int cmd_exit(void);
 
 /* command structure initializer */
@@ -52,6 +53,7 @@ static const command_t commands[] = {
 	{"ls", "List root directory file names.", &cmd_ls},
 	{"find", "Search for a file in root directory.", &cmd_find},
 	{"format", "Format a floppy diskette.", &cmd_format},
+	{"type", "Re-type the phrase you enter.", &cmd_type},
 	{"exit", "Exit the shell.", &cmd_exit}
 };
 
@@ -422,6 +424,21 @@ int cmd_format()
 		printf("Failure partially wiped.\r\n");
 	else
 		printf("Drive wiped successfully.\r\n");
+	return 1;
+}
+/* Type command, just types the text you enter with a short delay.
+ */
+int cmd_type()
+{
+	char buf[80];
+	printf("Enter some text for the typer...\r\n> ");
+	if(gets(buf, 80) <= 0) {
+		printf("\r\nYou must enter something.\r\n");
+		return -1;
+	}
+	printf("\r\n");
+	typerf("%s", buf);
+	printf("\r\n");
 	return 1;
 }
 /* Exit command, just exits the shell.

@@ -8,15 +8,21 @@
 #define IO_H
 
 #include "defines.h"
+#include <stdarg.h>
+
+#define TRUE	1
+#define FALSE	0
 
 #define NULL	((void*)0)	/* void pointer (null pointer) */
 #define BUFSIZ	512		/* size of one sector on disk */
 
 /* input/output functions */
 int __REGPARM putch_color(int c, unsigned char color);
-int __REGPARM putch(int c);
+int __REGPARM putchar(int c, unsigned char delay);
+int __REGPARM vprintf(const char *format, va_list ap, unsigned char delay);
 int __REGPARM printf(const char *format, ...);
-int __REGPARM print(const char *s);
+int __REGPARM typerf(const char *format, ...);
+int __REGPARM print_delay(const char *s, unsigned char delay);
 int __REGPARM puts(const char *s);
 char __REGPARM getch();
 char __REGPARM getche();
@@ -42,5 +48,8 @@ void __REGPARM cmos_invert(unsigned char addr);
 /* input and output to ports functions */
 void __REGPARM outb(unsigned short port, unsigned char byte);
 unsigned char __REGPARM inb(unsigned short port);
+
+#define putch(ch) putchar(ch, FALSE)
+#define print(str) print_delay(str, FALSE)
 
 #endif

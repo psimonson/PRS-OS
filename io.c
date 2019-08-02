@@ -6,8 +6,6 @@
 
 asm(".code16gcc");
 
-#include <stdarg.h>
-
 #include "io.h"
 #include "time.h"
 #include "string.h"
@@ -24,24 +22,26 @@ int __REGPARM putch_color(int ic, unsigned char color)
 }
 /* Puts a character on the screen with default color 0x07.
  */
-int __REGPARM putch(int ic)
+int __REGPARM putchar(int ch, unsigned char delay)
 {
-	char c = (char)ic;
+	char c = (char)ch;
+	if(delay) {
+		play_sound(500);
+		wait(150000);
+		no_sound();
+	}
 	putch_color(c, 0x07);
-	return ic;
+	return ch;
 }
 /* Prints a formatted string on the screen using putch.
  */
-int __REGPARM printf(const char *format, ...)
+int __REGPARM vprintf(const char *format, va_list ap, unsigned char delay)
 {
-	va_list ap;
 	int i = 0;
-
-	va_start(ap, format);
 	while(*format) {
 		if(format[0] == '%' && format[1] == '%')
-			putch('%');
-		else if(format[0] == '%' && format[1] != '%'){
+			putchar('%', delay);
+		else if(format[0] == '%' && format[1] != '%') {
 			unsigned long ul;
 			const char *s;
 			char buf[256];
@@ -55,8 +55,7 @@ int __REGPARM printf(const char *format, ...)
 				d = (int)va_arg(ap, int);
 				memset(buf, 0, sizeof(buf));
 				itoa(d, buf);
-				print(buf);
-				i += strlen(buf);
+				i += print_delay(buf, delay);
 			break;
 			case 'l':
 				switch(*++format) {
@@ -64,8 +63,7 @@ int __REGPARM printf(const char *format, ...)
 					l = (long)va_arg(ap, long);
 					memset(buf, 0, sizeof(buf));
 					ltoa(l, buf);
-					print(buf);
-					i += strlen(buf);
+					i += print_delay(buf, delay);
 				break;
 				case 'u':
 					/* TODO: implement unsigned long */
@@ -76,7 +74,7 @@ int __REGPARM printf(const char *format, ...)
 			break;
 			case 'c':
 				c = (int)va_arg(ap, int);
-				putch(c);
+				putchar(c, delay);
 				i++;
 			break;
 			case 'x':
@@ -84,8 +82,7 @@ int __REGPARM printf(const char *format, ...)
 				ul = (unsigned long)va_arg(ap, unsigned long);
 				memset(buf, 0, sizeof(buf));
 				itoh(ul, buf);
-				print(buf);
-				i += strlen(buf);
+				i += print_delay(buf, delay);
 			break;
 			case 'p':
 			case 'P':
@@ -96,43 +93,59 @@ int __REGPARM printf(const char *format, ...)
 				}
 				memset(buf, 0, sizeof(buf));
 				itoh((int)p, buf);
-				print(buf);
-				i += strlen(buf);
+				i += print_delay(buf, delay);
 			break;
 			case 's':
 				s = (const char *)va_arg(ap, const char *);
-				print(s);
-				i += strlen(s);
+				i += print_delay(s, delay);
 			break;
 			default:
 			break;
 			}
 		} else {
-			putch(*format);
+			putchar(*format, delay);
 			i++;
 		}
 		format++;
 	}
-	va_end(ap);
 	return i;
+}
+/* Prints a formatted string.
+ */
+int __REGPARM printf(const char *format, ...)
+{
+	int bytes = 0;
+	va_list ap;
+	va_start(ap, format);
+	bytes = vprintf(format, ap, FALSE);
+	va_end(ap);
+	return bytes;
+}
+/* Text typer; prints a formatted string a character at a time with delay.
+ */
+int __REGPARM typerf(const char *format, ...)
+{
+	int bytes = 0;
+	va_list ap;
+	va_start(ap, format);
+	bytes = vprintf(format, ap, TRUE);
+	va_end(ap);
+	return bytes;
 }
 /* Prints a string on the screen using putch.
  */
-int __REGPARM print(const char *s)
+int __REGPARM print_delay(const char *s, unsigned char delay)
 {
 	const char *p = s;
 	while(*p)
-		putch(*p++);
+		putchar(*p++, delay);
 	return p-s;
 }
 /* Prints a string with a new line.
  */
 int __REGPARM puts(const char *s)
 {
-	int bytes = 0;
-	if((bytes = print(s)))
-		return bytes += print("\r\n");
-	return -1;
+	return printf("%s\r\n", s);
 }
 /* Gets a character from the keyboard.
  */
