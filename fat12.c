@@ -23,7 +23,7 @@ boot_t *load_boot(drive_params_t *p)
 	retries = 3;
 	do {
 		--retries;
-		if(read_drive((void*)&_bs, 1, 0, p)) {
+		if(read_drive(&_bs, 1, 0, p)) { /* 1 block, 0 = 1st sector */
 			if(reset_drive(p))
 				goto disk_error;
 			printf("Retrying... Times left %d.\r\n", retries);
@@ -34,6 +34,37 @@ boot_t *load_boot(drive_params_t *p)
 	printf("Sectors read: %d\r\n", ((unsigned char)(p->status)));
 #endif
 	return &_bs;
+
+disk_error:
+	get_drive_error(p);
+	puts("Hanging system.");
+	asm("cli");
+	asm("hlt");
+	return 0;
+}
+/* Load FAT12 table from reserved sector.
+ */
+void *load_fat12(drive_params_t *p)
+{
+	static unsigned char FAT_table[BUFSIZ];
+	char retries;
+	memset(FAT_table, 0, sizeof(FAT_table));
+	if(reset_drive(p))
+		goto disk_error;
+	retries = 3;
+	do {
+		--retries;
+		if(read_drive(FAT_table, 1, 1, p)) { /* 1 block, 1 = 2nd sector */
+			if(reset_drive(p))
+				goto disk_error;
+			printf("Retrying... Times left %d.\r\n", retries);
+		}
+	} while(retries > 0);
+#ifdef DEBUG
+	get_drive_error(p);
+	printf("Sectors read: %d\r\n", ((unsigned char)(p->status)));
+#endif
+	return FAT_table;
 
 disk_error:
 	get_drive_error(p);

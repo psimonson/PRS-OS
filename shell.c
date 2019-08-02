@@ -217,11 +217,12 @@ int cmd_reboot()
 int cmd_dump()
 {
 	extern boot_t *_boot_sector;
+	extern void *_FAT_table;
 	char buf[32];
 	int i;
-	printf("Enter [boot|cmos]: ");
+	printf("Enter [boot|cmos|FAT]: ");
 	if(gets(buf, sizeof(buf)) <= 0) {
-		printf("You must enter boot or 'cmos'.\r\n");
+		printf("You must enter 'boot', 'cmos', or 'FAT'.\r\n");
 		return 1;
 	}
 	printf("\r\n");
@@ -284,8 +285,46 @@ int cmd_dump()
 			putch(((unsigned char*)_boot_sector)[i]);
 		}
 		printf("\r\n=============================================\r\n");
+	} else if(!strcmp(buf, "FAT")) {
+		int nl;
+		printf("=============================================\r\n");
+		printf("FAT12 Data\r\n"
+			"=============================================\r\n");
+		for(i=0,nl=0; i<BUFSIZ; i++) {
+			if(i>0 && !(i%21)) {
+				printf("\r\n");
+				++nl;
+			}
+			if(nl>0 && !(nl%20)) {
+				printf("Press any key to continue...\r\n");
+				getch();
+				++nl;
+			}
+			itoh(((unsigned char*)_FAT_table)[i], buf);
+			printf("%s ", buf);
+		}
+		printf("\r\n=============================================\r\n");
+		printf("Press any key to continue...\r\n");
+		getch();
+		printf("=============================================\r\n");
+		printf("FAT12 Data\r\n"
+			"=============================================\r\n");
+		for(i=0,nl=0; i<BUFSIZ; i++) {
+			if(i>0 && !(i%50)) {
+				printf("\r\n");
+				++nl;
+			}
+			if(nl>0 && !(nl%20)) {
+				printf("Press any key to continue...\r\n");
+				getch();
+				++nl;
+			}
+			putch(((unsigned char*)_FAT_table)[i]);
+		}
+		printf("\r\n=============================================\r\n");
 	} else {
-		printf("Invalid choice: %s\r\nChoices are: boot or cmos\r\n",
+		printf("Invalid choice: %s\r\n"
+			"Choices are: 'boot', 'cmos', or 'FAT'.\r\n",
 			buf);
 	}
 	return 1;
