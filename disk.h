@@ -7,6 +7,7 @@
 #ifndef DISK_H
 #define DISK_H
 
+#define USE_FLP_144	1		/* use floppy 1.44MB floppy */
 #define FLP_144_SECT	(18*80*2)	/* total sectors of 1.44MB floppy */
 #define FLP_144_SPT	18		/* sectors per track 1.44MB floppy */
 #define FLP_144_NUMH	2		/* heads per cylinder 1.44MB floppy */

@@ -42,7 +42,7 @@ disk: all
 ifneq (,$(wildcard ./floppy.img))
 	rm ./floppy.img
 endif
-	sudo mkfs.fat -F12 -C "floppy.img" 1440
+	sudo mkfs.fat -F12 -I -C "floppy.img" 1440
 	sudo mount -t vfat -o loop floppy.img /mnt
 	sudo cp command.bin /mnt/command.bin
 	sudo umount /mnt

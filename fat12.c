@@ -52,11 +52,11 @@ unsigned char *load_next_sector(drive_params_t *p, boot_t *bs)
 	unsigned char c, h, s;
 	char retries;
 
-	memset(sector, 0, sizeof(sector));
 	if(i==0)
 		p->lba = bs->reserved_sectors+bs->fats*bs->sectors_per_fat;
 	else
 		p->lba += i*bs->bytes_per_sector;
+	memset(sector, 0, sizeof(sector));
 	retries = 3;
 	lba_to_chs(p, &c, &h, &s);
 #ifdef DEBUG

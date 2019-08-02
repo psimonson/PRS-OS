@@ -260,7 +260,7 @@ int __REGPARM write_drive(const void *buf, unsigned char blocks, unsigned char s
 void __REGPARM lba_to_chs(const drive_params_t *p, unsigned char *c,
 	unsigned char *h, unsigned char *s)
 {
-#if 1
+#if USE_FLP_144
 	*c = p->lba / (FLP_144_NUMH*FLP_144_SPT);
 	*h = ((p->lba % (FLP_144_NUMH*FLP_144_SPT)) / FLP_144_SPT);
 	*s = ((p->lba % (FLP_144_NUMH*FLP_144_SPT)) % FLP_144_SPT + 1);
@@ -276,7 +276,7 @@ void __REGPARM lba_to_chs(const drive_params_t *p, unsigned char *c,
 void __REGPARM sector_to_chs(const drive_params_t *p, unsigned char sector,
 	unsigned char *c, unsigned char *h, unsigned char *s)
 {
-#if 1
+#if USE_FLP_144
 	*c = (sector / FLP_144_SPT) / FLP_144_NUMH;
 	*h = (sector / FLP_144_SPT) % FLP_144_NUMH;
 	*s = (sector % FLP_144_SPT) + 1;
