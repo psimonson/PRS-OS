@@ -80,36 +80,34 @@ unsigned char *load_next_sector(drive_params_t *p, boot_t *bs)
 #if 1
 	static unsigned char sector[BUFSIZ];
 	static unsigned char i = 0;
+#ifdef DEBUG
 	unsigned char c, h, s;
+#endif
 	char retries;
 
-	if(i==0)
-		p->lba = bs->reserved_sectors+bs->fats*bs->sectors_per_fat;
-	else
-		p->lba += i*bs->bytes_per_sector;
 	memset(sector, 0, sizeof(sector));
 	retries = 3;
-	lba_to_chs(p, &c, &h, &s);
-#ifdef DEBUG
-	printf("SPT:%d NUMH:%d\r\n", p->spt, p->numh);
-	printf("c:%d, h:%d, s:%d\r\n", c, h, s);
-#endif
+
 	do {
 		--retries;
-		if(read_drive_chs(sector, 1, c, h, s, p)) {
+		p->lba = (bs->reserved_sectors+bs->fats*bs->sectors_per_fat)+i;
+		if(read_drive_lba(sector, 1, p)) {
 			if(reset_drive(p))
 				goto disk_error;
+#ifdef DEBUG
 			printf("Retrying... Tries left %d.\r\n", retries);
+#endif
 		}
 	} while(retries > 0);
 
 #ifdef DEBUG
+	lba_to_chs(p, &c, &h, &s);
 	get_drive_error(p);
 	printf("[DRIVE STATUS: %x]\r\n", (unsigned char)(p->status >> 8));
 	printf("Sectors read: %d\r\n", ((unsigned char)(p->status)));
 	printf("LBA [C:%d] [H:%d] [S:%d]\r\n", c, h, s);
 #endif
-	if(i >= bs->reserved_sectors) {
+	if(i >= (bs->root_entries*32/bs->bytes_per_sector)) {
 		retries = 3;
 		i = 0;
 		return NULL;

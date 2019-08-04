@@ -46,6 +46,7 @@ void main()
 	/* load boot sector into memory */
 	if((_boot_sector = load_boot(&_drive_params)) == 0)
 		goto end;
+	/* load reserved FAT table */
 	if((_FAT_table = load_fat12(&_drive_params)) == 0)
 		goto end;
 
