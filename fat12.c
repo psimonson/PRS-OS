@@ -90,12 +90,19 @@ unsigned char *load_next_sector(drive_params_t *p, boot_t *bs)
 
 	do {
 		--retries;
-		p->lba = (bs->reserved_sectors+bs->fats*bs->sectors_per_fat)+i;
+		p->lba = bs->reserved_sectors+bs->fats*bs->sectors_per_fat;
+		p->lba += i*31;
 		if(read_drive_lba(sector, 1, p)) {
 			if(reset_drive(p))
 				goto disk_error;
 #ifdef DEBUG
 			printf("Retrying... Tries left %d.\r\n", retries);
+#endif
+		} else {
+#ifdef DEBUG
+			lba_to_chs(p, &c, &h, &s);
+			printf("LBA:%d = [C:%d H:%d S:%d]\r\n",
+				p->lba, c, h, s);
 #endif
 		}
 	} while(retries > 0);
