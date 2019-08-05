@@ -80,24 +80,25 @@ unsigned char *load_next_sector(drive_params_t *p, boot_t *bs)
 #if 1
 	static unsigned char sector[BUFSIZ];
 	static unsigned char i = 0;
+	unsigned short lba;
+	unsigned char size;
 #ifdef DEBUG
 	unsigned char c, h, s;
 #endif
-	char retries;
+	char retries, cflag;
 
 	memset(sector, 0, sizeof(sector));
 	retries = 3;
+	cflag = 0;
 
+	size = (32 * bs->root_entries) / bs->bytes_per_sector;
+	lba = (bs->fats*bs->sectors_per_fat)+bs->reserved_sectors+bs->hidden_sectors;
 	do {
 		--retries;
-		p->lba = bs->reserved_sectors+bs->fats*bs->sectors_per_fat;
-		p->lba += i*31;
-		if(read_drive_lba(sector, 1, p)) {
-			if(reset_drive(p))
-				goto disk_error;
-#ifdef DEBUG
+		p->lba = lba;
+		if((cflag = read_drive_lba(sector, 1, p)) != 0) {
 			printf("Retrying... Tries left %d.\r\n", retries);
-#endif
+			goto disk_error;
 		} else {
 #ifdef DEBUG
 			lba_to_chs(p, &c, &h, &s);
@@ -105,8 +106,11 @@ unsigned char *load_next_sector(drive_params_t *p, boot_t *bs)
 				p->lba, c, h, s);
 #endif
 		}
-	} while(retries > 0);
-
+	} while(retries > 0 && cflag);
+	if(cflag) {
+		printf("Reading drive failed.\r\n");
+		goto disk_error;
+	}
 #ifdef DEBUG
 	lba_to_chs(p, &c, &h, &s);
 	get_drive_error(p);
@@ -114,7 +118,7 @@ unsigned char *load_next_sector(drive_params_t *p, boot_t *bs)
 	printf("Sectors read: %d\r\n", ((unsigned char)(p->status)));
 	printf("LBA [C:%d] [H:%d] [S:%d]\r\n", c, h, s);
 #endif
-	if(i >= (bs->root_entries*32/bs->bytes_per_sector)) {
+	if(i >= size) {
 		retries = 3;
 		i = 0;
 		return NULL;
@@ -148,9 +152,11 @@ void list_directory(drive_params_t *p, boot_t *bs)
 	total_size = 0;
 	i = 0;
 	while((bytes = load_next_sector(p, bs)) != NULL) {
-		while(i < bs->root_entries) {
+		while(i < (bs->root_entries*sizeof(entry_t))) {
 			file = (entry_t*)&bytes[i];
-			if(file->filename[0] == 0xe5) {
+			if(file->filename[0] == 0x00) {
+				break;
+			} else if(file->filename[0] == 0xe5) {
 				printf("File deleted.\r\n");
 			} else if((file->filename[0] | 0x40) == file->filename[0]) {
 				char filename[12];
@@ -175,9 +181,11 @@ void find_file(drive_params_t *p, boot_t *bs, const char *filename)
 	/* load root directory and list files */
 	i = 0;
 	while((bytes = load_next_sector(p, bs)) != NULL) {
-		while(i < bs->root_entries) {
+		while(i < (bs->root_entries*sizeof(entry_t))) {
 			file = (entry_t*)&bytes[i];
-			if(file->filename[0] == 0xe5) {
+			if(file->filename[0] == 0x00) {
+				break;
+			} else if(file->filename[0] == 0xe5) {
 				printf("File deleted.\r\n");
 			} else if((file->filename[0] | 0x40) == file->filename[0]) {
 				char name[12];
