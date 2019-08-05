@@ -5,11 +5,11 @@
 SRCDIR=$(shell pwd)
 USER  =$(shell whoami)
 
-CFLAGS=-std=gnu89 -Wall -Werror -Os -march=i686 -ffreestanding -I. -m16 -pedantic
+CFLAGS=-std=gnu89 -Wall -Werror -s -Os -march=i686 -ffreestanding -I. -m16 -pedantic
 CFLAGS+=-fno-asynchronous-unwind-tables -fno-pic -fno-builtin -fno-ident
 CFLAGS+=-fomit-frame-pointer
 
-LDFLAGS=-static -Tcommand.ld -m elf_i386 -no-pie -nostartfiles --nmagic
+LDFLAGS=-static -s -Os -Tcommand.ld -m elf_i386 -no-pie -nostartfiles --nmagic
 LDFLAGS+=--oformat binary
 
 # uncomment for fat12
