@@ -16,19 +16,23 @@ asm(".code16gcc");
 boot_t *load_boot(drive_params_t *p)
 {
 	static boot_t _bs;
-	char retries;
+	char retries, cflag;
 	memset(&_bs, 0, sizeof(boot_t));
 	if(reset_drive(p))
 		goto disk_error;
+	cflag = 0;
 	retries = 3;
 	do {
 		--retries;
-		if(read_drive(&_bs, 1, 0, p)) { /* 1 block, 0 = 1st sector */
-			if(reset_drive(p))
-				goto disk_error;
+		if((cflag = read_drive(&_bs, 1, 0, p))) {
 			printf("Retrying... Times left %d.\r\n", retries);
+			cflag = (reset_drive(p) ? 1 : 0);
 		}
-	} while(retries > 0);
+	} while(retries > 0 && cflag);
+	if(cflag) {
+		printf("Reading drive failed.\r\n");
+		goto disk_error;
+	}
 #ifdef DEBUG
 	get_drive_error(p);
 	printf("Sectors read: %d\r\n", ((unsigned char)(p->status)));
@@ -47,19 +51,23 @@ disk_error:
 void *load_fat12(drive_params_t *p)
 {
 	static unsigned char FAT_table[BUFSIZ];
-	char retries;
+	char retries, cflag;
 	memset(FAT_table, 0, sizeof(FAT_table));
 	if(reset_drive(p))
 		goto disk_error;
+	cflag = 0;
 	retries = 3;
 	do {
 		--retries;
-		if(read_drive(FAT_table, 1, 1, p)) { /* 1 block, 1 = 2nd sector */
-			if(reset_drive(p))
-				goto disk_error;
+		if((cflag = read_drive(FAT_table, 1, 1, p))) {
 			printf("Retrying... Times left %d.\r\n", retries);
+			cflag = (reset_drive(p) ? 1 : 0);
 		}
-	} while(retries > 0);
+	} while(retries > 0 && cflag);
+	if(cflag) {
+		printf("Reading drive failed.\r\n");
+		goto disk_error;
+	}
 #ifdef DEBUG
 	get_drive_error(p);
 	printf("Sectors read: %d\r\n", ((unsigned char)(p->status)));
@@ -98,7 +106,7 @@ unsigned char *load_next_sector(drive_params_t *p, boot_t *bs)
 		p->lba = lba+i;
 		if((cflag = read_drive_lba(sector, 1, p)) != 0) {
 			printf("Retrying... Tries left %d.\r\n", retries);
-			goto disk_error;
+			cflag = (reset_drive(p) ? 1 : 0);
 		} else {
 #ifdef DEBUG
 			lba_to_chs(p, &c, &h, &s);
