@@ -126,13 +126,11 @@ unsigned char *load_next_sector(drive_params_t *p, boot_t *bs)
 	printf("Sectors read: %d\r\n", ((unsigned char)(p->status)));
 	printf("LBA [C:%d] [H:%d] [S:%d]\r\n", c, h, s);
 #endif
-	if(i >= size) {
-		retries = 3;
-		i = 0;
-		return NULL;
-	}
-	++i;
-	return sector;
+	if(i++ < size)
+		return sector;
+	retries = 3;
+	i = 0;
+	return NULL;
 
 disk_error:
 	get_drive_error(p);
