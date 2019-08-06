@@ -49,7 +49,7 @@ endif
 	sudo mkfs.fat -F12 -I -C "floppy.img" 1440
 	sudo mount -t vfat -o loop floppy.img /mnt
 	sudo cp command.bin /mnt/command.bin
-	sudo umount /mnt
+	sudo umount -R /mnt
 	sudo dd if=boot.bin of=floppy.img bs=1 count=512 conv=notrunc
 	sudo chown $(USER):users floppy.img
 
@@ -61,7 +61,7 @@ endif
 	sudo mount -t vfat -o loop floppy.img /mnt
 	sudo cp command.bin /mnt
 	sudo cp $(DISKFILES) /mnt
-	sudo umount /mnt
+	sudo umount -R /mnt
 	sudo dd if=boot.bin of=floppy.img bs=1 count=512 conv=notrunc
 	sudo chown $(USER):users floppy.img
 

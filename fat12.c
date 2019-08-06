@@ -149,16 +149,15 @@ disk_error:
  */
 void list_directory(drive_params_t *p, boot_t *bs)
 {
-	unsigned char *bytes;
-	unsigned short i;
+	static unsigned char *bytes;
+	static unsigned short i = 0;
+	static entry_t *file;
 	unsigned short total_size;
-	entry_t *file;
 
 	/* load root directory and list files */
 	total_size = 0;
-	i = 0;
 	while((bytes = load_next_sector(p, bs)) != NULL) {
-		while(i < (bs->root_entries*sizeof(entry_t))) {
+		while(i < BUFSIZ) {
 			file = (entry_t*)&bytes[i];
 			if(file->filename[0] == 0x00) {
 				break;
@@ -172,6 +171,7 @@ void list_directory(drive_params_t *p, boot_t *bs)
 			}
 			i += sizeof(entry_t);
 		}
+		i = 0;
 	}
 	printf("Total size in directory %d bytes.\r\n", total_size);
 }
@@ -179,15 +179,15 @@ void list_directory(drive_params_t *p, boot_t *bs)
  */
 void find_file(drive_params_t *p, boot_t *bs, const char *filename)
 {
-	unsigned char *bytes;
-	unsigned short i;
-	entry_t *file;
-	char found = 0;
+	static unsigned short i = 0;
+	static unsigned char *bytes;
+	static entry_t *file;
+	char found;
 
 	/* load root directory and list files */
-	i = 0;
+	found = 0;
 	while((bytes = load_next_sector(p, bs)) != NULL) {
-		while(i < (bs->root_entries*sizeof(entry_t))) {
+		while(i < BUFSIZ) {
 			file = (entry_t*)&bytes[i];
 			if(file->filename[0] == 0x00) {
 				break;
@@ -205,6 +205,7 @@ void find_file(drive_params_t *p, boot_t *bs, const char *filename)
 			}
 			i += sizeof(entry_t);
 		}
+		i = 0;
 	}
 	if(found)
 		printf("File found.\r\n");
