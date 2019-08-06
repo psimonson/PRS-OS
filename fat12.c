@@ -95,7 +95,7 @@ unsigned char *load_next_sector(drive_params_t *p, boot_t *bs)
 	lba = (bs->fats*bs->sectors_per_fat)+bs->reserved_sectors+bs->hidden_sectors;
 	do {
 		--retries;
-		p->lba = lba;
+		p->lba = lba+i;
 		if((cflag = read_drive_lba(sector, 1, p)) != 0) {
 			printf("Retrying... Tries left %d.\r\n", retries);
 			goto disk_error;
@@ -190,7 +190,7 @@ void find_file(drive_params_t *p, boot_t *bs, const char *filename)
 			} else if((file->filename[0] | 0x40) == file->filename[0]) {
 				char name[12];
 				extract_filename(file, name);
-				if(!memcmp(filename, name, 11)) {
+				if(!strcmp(filename, name)) {
 					found = 1;
 					printf("Filename: %s\r\n"
 						"File size: %d\r\n",
@@ -211,7 +211,11 @@ void extract_filename(const entry_t *file, char *newname)
 {
 	int i;
 	for(i=0; i < 8 && (*newname = file->filename[i]) != ' '; newname++,i++);
-	if(file->filename[i] == ' ') {
+	if(file->filename[i] != ' ' && *newname != '.') {
+		*newname++ = '.';
+	}
+	for(i=0; file->extension[i] == ' '; i++);
+	if(file->extension[i] != ' ' && *newname != '.') {
 		*newname++ = '.';
 	}
 	for(i=0; i<3 && (*newname = file->extension[i]) != ' '; newname++,i++);
