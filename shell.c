@@ -417,6 +417,11 @@ int cmd_format()
 		if(result) {
 			last_error = get_drive_status(&p);
 			result = 0;
+		} else {
+			if((i%80) == 0) {
+				printf("Wiped: %d%%\r\n",
+					(int)((i/(float)FLP_144_SECT)*100));
+			}
 		}
 		i++;
 	}
