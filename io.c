@@ -26,9 +26,10 @@ int __REGPARM putchar(int ch, unsigned char delay)
 {
 	char c = (char)ch;
 	if(delay) {
-		play_sound(500);
-		wait(150000);
+		play_sound(400);
+		wait(50000);
 		no_sound();
+		wait(100000);
 	}
 	putch_color(c, 0x07);
 	return ch;
