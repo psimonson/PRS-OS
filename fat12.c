@@ -153,13 +153,17 @@ void list_directory(drive_params_t *p, boot_t *bs)
 	static unsigned short i = 0;
 	static entry_t *file;
 	unsigned short total_size;
+	char end_list;
 
 	/* load root directory and list files */
+	end_list = 0;
 	total_size = 0;
 	while((bytes = load_next_sector(p, bs)) != NULL) {
+		if(end_list) continue;
 		while(i < BUFSIZ) {
 			file = (entry_t*)&bytes[i];
 			if(file->filename[0] == 0x00) {
+				end_list = 1;
 				break;
 			} else if(file->filename[0] == 0xe5) {
 				printf("File deleted.\r\n");
@@ -187,6 +191,7 @@ void find_file(drive_params_t *p, boot_t *bs, const char *filename)
 	/* load root directory and list files */
 	found = 0;
 	while((bytes = load_next_sector(p, bs)) != NULL) {
+		if(found) continue;
 		while(i < BUFSIZ) {
 			file = (entry_t*)&bytes[i];
 			if(file->filename[0] == 0x00) {
