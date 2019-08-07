@@ -13,7 +13,7 @@ asm(".code16gcc");
 
 /* Get the current drive error and print error message.
  */
-void get_drive_error(drive_params_t *p)
+void __REGPARM get_drive_error(const drive_params_t *p)
 {
 	switch((unsigned char)(p->status >> 8)) {
 		case DISK_ERR_OK:
@@ -166,13 +166,8 @@ int __REGPARM read_drive_lba(void *buf, unsigned char blocks, drive_params_t* p)
 {
 	unsigned char failed = 0;
 	unsigned char c,h,s;
-	unsigned short t;
 
-	/* for floppy disk */
-	c = p->lba / (p->numh * p->spt);
-	t = p->lba % (p->numh * p->spt);
-	h = t / p->spt;
-	s = (t % p->spt) + 1;
+	lba_to_chs(p, &c, &h, &s);
 
 	/* read sectors from disk drive */
 	asm volatile(
@@ -217,7 +212,7 @@ int __REGPARM read_drive(void *buf, unsigned char blocks, unsigned char sector,
 	unsigned char failed = 0;
 	unsigned char c, h, s;
 
-	sector_to_chs(sector, &c, &h, &s);
+	sector_to_chs(p, sector, &c, &h, &s);
 
 	/* read sectors from disk drive */
 	asm volatile(
@@ -241,7 +236,7 @@ int __REGPARM write_drive(const void *buf, unsigned char blocks, unsigned char s
 	unsigned char failed = 0;
 	unsigned char c, h, s;
 
-	sector_to_chs(sector, &c, &h, &s);
+	sector_to_chs(p, sector, &c, &h, &s);
 
 	/* write blocks starting at sector */
 	asm volatile(
@@ -262,21 +257,36 @@ int __REGPARM write_drive(const void *buf, unsigned char blocks, unsigned char s
 
 /* LBA to CHS conversion function.
  */
-void lba_to_chs(unsigned long lba, unsigned char *c, unsigned char *h,
-	unsigned char *s)
+void __REGPARM lba_to_chs(const drive_params_t *p, unsigned char *c,
+	unsigned char *h, unsigned char *s)
 {
-	*c = lba / (FLP_144_NUMH*FLP_144_SPT);
-	*h = ((lba % (FLP_144_NUMH*FLP_144_SPT)) / FLP_144_SPT);
-	*s = ((lba % (FLP_144_NUMH*FLP_144_SPT)) % FLP_144_SPT + 1);
+	unsigned int temp;
+#if USE_FLP_144
+	temp = p->lba / FLP_144_SPT;
+	*c = temp / FLP_144_NUMH;
+	*h = temp % FLP_144_NUMH;
+	*s = (p->lba % FLP_144_SPT) + 1;
+#else
+	temp = p->lba / p->spt;
+	*c = temp / p->numh;
+	*h = temp % p->numh;
+	*s = (p->lba % p->spt) + 1;
+#endif
 }
 /* CHS to sector conversion.
  */
-void sector_to_chs(unsigned char sector, unsigned char *c,
-	unsigned char *h, unsigned char *s)
+void __REGPARM sector_to_chs(const drive_params_t *p, unsigned char sector,
+	unsigned char *c, unsigned char *h, unsigned char *s)
 {
-	/* sector calculations */
+#if USE_FLP_144
 	*c = (sector / FLP_144_SPT) / FLP_144_NUMH;
 	*h = (sector / FLP_144_SPT) % FLP_144_NUMH;
 	*s = (sector % FLP_144_SPT) + 1;
+	(void)p;
+#else
+	*c = (sector / p->spt) / p->numh;
+	*h = (sector / p->spt) % p->numh;
+	*s = (sector % p->spt) + 1;
+#endif
 }
 

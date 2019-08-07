@@ -31,6 +31,7 @@ asm("jmp main");
 /* boot sector */
 boot_t *_boot_sector;
 drive_params_t _drive_params;
+void *_FAT_table;
 
 /* external linkage; shell.c has this in it */
 extern int shell();
@@ -44,6 +45,9 @@ void main()
 		goto end;
 	/* load boot sector into memory */
 	if((_boot_sector = load_boot(&_drive_params)) == 0)
+		goto end;
+	/* load reserved FAT table */
+	if((_FAT_table = load_fat12(&_drive_params)) == 0)
 		goto end;
 
 	/* start of actual command mode */
