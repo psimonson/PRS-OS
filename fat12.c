@@ -160,7 +160,7 @@ void list_directory(drive_params_t *p, boot_t *bs)
 	total_size = 0;
 	while((bytes = load_next_sector(p, bs)) != NULL) {
 		if(end_list) continue;
-		while(i < BUFSIZ) {
+		while(i <= BUFSIZ) {
 			file = (entry_t*)&bytes[i];
 			if(file->filename[0] == 0x00) {
 				end_list = 1;
@@ -192,7 +192,7 @@ void find_file(drive_params_t *p, boot_t *bs, const char *filename)
 	found = 0;
 	while((bytes = load_next_sector(p, bs)) != NULL) {
 		if(found) continue;
-		while(i < BUFSIZ) {
+		while(i <= BUFSIZ) {
 			file = (entry_t*)&bytes[i];
 			if(file->filename[0] == 0x00) {
 				break;
