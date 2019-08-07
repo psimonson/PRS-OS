@@ -11,7 +11,7 @@ asm(".code16gcc");
 
 /* My Simple implementation of gets.
  */
-int gets(char *s, int size)
+int __REGPARM gets(char *s, int size)
 {
 	char c;
 	int i;
@@ -33,7 +33,7 @@ int gets(char *s, int size)
 }
 /* Simple implementation of hex to string.
  */
-void itoh(unsigned long n, char s[])
+void __REGPARM itoh(unsigned long n, char s[])
 {
 	const char hex[] = "0123456789ABCDEF";
 	int i = 0;
@@ -45,7 +45,7 @@ void itoh(unsigned long n, char s[])
 }
 /* Simple implementation of convert string to int.
  */
-int atoi(const char *s)
+int __REGPARM atoi(const char *s)
 {
 	int number = 0;
 	while(*s) {
@@ -58,7 +58,7 @@ int atoi(const char *s)
 }
 /* Simple implementation of itoa.
  */
-void itoa(int n, char s[])
+void __REGPARM itoa(int n, char s[])
 {
 	int i,sign;
 	if((sign = n) < 0)
@@ -74,7 +74,7 @@ void itoa(int n, char s[])
 }
 /* Simple implementation of ltoa.
  */
-void ltoa(long n, char s[])
+void __REGPARM ltoa(long n, char s[])
 {
 	long i, sign;
 	if((sign = n) < 0)
@@ -90,7 +90,7 @@ void ltoa(long n, char s[])
 }
 /* Simple implementation of string length.
  */
-int strlen(const char *s)
+int __REGPARM strlen(const char *s)
 {
 	const char *p = s;
 	while(*p) p++;
@@ -98,7 +98,7 @@ int strlen(const char *s)
 }
 /* Simple implementation of string compare.
  */
-int strcmp(const char *s, const char *t)
+int __REGPARM strcmp(const char *s, const char *t)
 {
 	while(*s && *s == *t)
 		s++, t++;
@@ -106,7 +106,7 @@ int strcmp(const char *s, const char *t)
 }
 /* Simple implementation of memcmp.
  */
-int memcmp(const void *m, const void *p, unsigned long nmem)
+int __REGPARM memcmp(const void *m, const void *p, unsigned long nmem)
 {
 	unsigned long i;
 	for(i=0; i<nmem; i++)
@@ -116,7 +116,7 @@ int memcmp(const void *m, const void *p, unsigned long nmem)
 }
 /* Simple implementation of sub string.
  */
-char *strstr(char *s, const char *t)
+char *__REGPARM strstr(char *s, const char *t)
 {
 	char *p = s;
 	while(*p) {
@@ -131,7 +131,7 @@ char *strstr(char *s, const char *t)
 }
 /* Simple implementation of strchr.
  */
-int strchr(char *s, const char c)
+int __REGPARM strchr(char *s, const char c)
 {
 	char *p = s;
 	while(*p)
@@ -141,7 +141,7 @@ int strchr(char *s, const char c)
 }
 /* Simple implementation of strcpy.
  */
-int strcpy(char *s, const char *t, int size)
+int __REGPARM strcpy(char *s, const char *t, int size)
 {
 	char *p = (char*)t;
 	int i = 0;
@@ -152,7 +152,7 @@ int strcpy(char *s, const char *t, int size)
 }
 /* Simple implementation of memset.
  */
-int memset(void *mem, int c, int size)
+int __REGPARM memset(void *mem, int c, int size)
 {
 	unsigned char *p = mem;
 	while(p-((unsigned char*)mem) < size)
@@ -161,7 +161,7 @@ int memset(void *mem, int c, int size)
 }
 /* Simple implementation of memcpy.
  */
-int memcpy(void *dst, const void *src, int size)
+int __REGPARM memcpy(void *dst, const void *src, int size)
 {
 	char *cdst = (char*)dst;
 	const char *csrc = (const char*)src;
@@ -172,7 +172,7 @@ int memcpy(void *dst, const void *src, int size)
 }
 /* Simple implementation of reverse.
  */
-void reverse(char s[])
+void __REGPARM reverse(char s[])
 {
 	int i,j;
 	for(i=0,j=strlen(s)-1; i<j; i++,j--) {

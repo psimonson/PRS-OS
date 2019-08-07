@@ -20,23 +20,59 @@ boot_t *load_boot(drive_params_t *p)
 	memset(&_bs, 0, sizeof(boot_t));
 	if(reset_drive(p))
 		goto disk_error;
+	cflag = 0;
 	retries = 3;
 	do {
 		--retries;
-		if((cflag = read_drive((void*)&_bs, 1, 0, p))) {
-			if(!reset_drive(p))
-				goto disk_error;
+		if((cflag = read_drive(&_bs, 1, 0, p))) {
 			printf("Retrying... Times left %d.\r\n", retries);
+			cflag = (reset_drive(p) ? 1 : 0);
 		}
-
-	} while(retries > 0 && !cflag);
-	if(cflag)
+	} while(retries > 0 && cflag);
+	if(cflag) {
+		printf("Reading drive failed.\r\n");
 		goto disk_error;
+	}
 #ifdef DEBUG
 	get_drive_error(p);
 	printf("Sectors read: %d\r\n", ((unsigned char)(p->status)));
 #endif
 	return &_bs;
+
+disk_error:
+	get_drive_error(p);
+	puts("Hanging system.");
+	asm("cli");
+	asm("hlt");
+	return 0;
+}
+/* Load FAT12 table from reserved sector.
+ */
+void *load_fat12(drive_params_t *p)
+{
+	static unsigned char FAT_table[BUFSIZ];
+	char retries, cflag;
+	memset(FAT_table, 0, sizeof(FAT_table));
+	if(reset_drive(p))
+		goto disk_error;
+	cflag = 0;
+	retries = 3;
+	do {
+		--retries;
+		if((cflag = read_drive(FAT_table, 1, 1, p))) {
+			printf("Retrying... Times left %d.\r\n", retries);
+			cflag = (reset_drive(p) ? 1 : 0);
+		}
+	} while(retries > 0 && cflag);
+	if(cflag) {
+		printf("Reading drive failed.\r\n");
+		goto disk_error;
+	}
+#ifdef DEBUG
+	get_drive_error(p);
+	printf("Sectors read: %d\r\n", ((unsigned char)(p->status)));
+#endif
+	return FAT_table;
 
 disk_error:
 	get_drive_error(p);
@@ -51,37 +87,50 @@ unsigned char *load_next_sector(drive_params_t *p, boot_t *bs)
 {
 #if 1
 	static unsigned char sector[BUFSIZ];
-	unsigned char retries, cflag, c, h, s;
 	static unsigned char i = 0;
+	unsigned short lba;
+	unsigned char size;
+#ifdef DEBUG
+	unsigned char c, h, s;
+#endif
+	char retries, cflag;
 
 	memset(sector, 0, sizeof(sector));
-	p->lba = i+(bs->reserved_sectors+bs->fats*bs->sectors_per_fat);
 	retries = 3;
-	lba_to_chs(p->lba, &c, &h, &s);
+	cflag = 0;
+
+	size = (32 * bs->root_entries) / bs->bytes_per_sector;
+	lba = (bs->fats*bs->sectors_per_fat)+bs->reserved_sectors+bs->hidden_sectors;
 	do {
 		--retries;
-		if((cflag = read_drive_chs(sector, 1, c, h, s, p))) {
-			if(reset_drive(p))
-				goto disk_error;
+		p->lba = lba+i;
+		if((cflag = read_drive_lba(sector, 1, p)) != 0) {
 			printf("Retrying... Tries left %d.\r\n", retries);
+			cflag = (reset_drive(p) ? 1 : 0);
+		} else {
+#ifdef DEBUG
+			lba_to_chs(p, &c, &h, &s);
+			printf("LBA:%d = [C:%d H:%d S:%d]\r\n",
+				p->lba, c, h, s);
+#endif
 		}
 	} while(retries > 0 && cflag);
-	if(cflag)
+	if(cflag) {
+		printf("Reading drive failed.\r\n");
 		goto disk_error;
+	}
 #ifdef DEBUG
+	lba_to_chs(p, &c, &h, &s);
 	get_drive_error(p);
 	printf("[DRIVE STATUS: %x]\r\n", (unsigned char)(p->status >> 8));
 	printf("Sectors read: %d\r\n", ((unsigned char)(p->status)));
 	printf("LBA [C:%d] [H:%d] [S:%d]\r\n", c, h, s);
 #endif
-	if(i >= bs->root_entries) {
-		memset(sector, 0, sizeof(sector));
-		retries = 3;
-		i = 0;
-		return NULL;
-	}
-	++i;
-	return sector;
+	if(i++ < size)
+		return sector;
+	retries = 3;
+	i = 0;
+	return NULL;
 
 disk_error:
 	get_drive_error(p);
@@ -100,51 +149,63 @@ disk_error:
  */
 void list_directory(drive_params_t *p, boot_t *bs)
 {
-	unsigned char *bytes;
-	unsigned short i;
-	entry_t *file;
+	static unsigned char *bytes;
+	static unsigned short i = 0;
+	static entry_t *file;
+	unsigned short total_size;
 
 	/* load root directory and list files */
-	i = sizeof(entry_t);
+	total_size = 0;
 	while((bytes = load_next_sector(p, bs)) != NULL) {
-		while(i < bs->root_entries) {
+		while(i < BUFSIZ) {
 			file = (entry_t*)&bytes[i];
-			if(file->filename[0] == 0xe5) {
+			if(file->filename[0] == 0x00) {
+				break;
+			} else if(file->filename[0] == 0xe5) {
 				printf("File deleted.\r\n");
 			} else if((file->filename[0] | 0x40) == file->filename[0]) {
 				char filename[12];
-				conv_filename(file->filename, filename);
-				printf("File Name: %s\r\n", filename);
-				printf("File Size: %d\r\n", file->size);
+				extract_filename(file, filename);
+				printf("%s\r\n", filename);
+				total_size += file->size;
 			}
-			i += sizeof(entry_t)*2;
+			i += sizeof(entry_t);
 		}
+		i = 0;
 	}
+	printf("Total size in directory %d bytes.\r\n", total_size);
 }
 /* Find file in root directory; compares it with strcmp.
  */
 void find_file(drive_params_t *p, boot_t *bs, const char *filename)
 {
-	unsigned char *bytes;
-	unsigned short i;
-	entry_t *file;
-	char found = 0;
+	static unsigned short i = 0;
+	static unsigned char *bytes;
+	static entry_t *file;
+	char found;
 
 	/* load root directory and list files */
-	i = sizeof(entry_t);
+	found = 0;
 	while((bytes = load_next_sector(p, bs)) != NULL) {
-		while(i < bs->root_entries) {
+		while(i < BUFSIZ) {
 			file = (entry_t*)&bytes[i];
-			if(file->filename[0] == 0xe5) {
+			if(file->filename[0] == 0x00) {
+				break;
+			} else if(file->filename[0] == 0xe5) {
 				printf("File deleted.\r\n");
 			} else if((file->filename[0] | 0x40) == file->filename[0]) {
-				char name[11];
-				conv_filename(file->filename, name);
-				if(!memcmp(filename, name, 11))
-						found = 1;
+				char name[12];
+				extract_filename(file, name);
+				if(!strcmp(filename, name)) {
+					found = 1;
+					printf("Filename: %s\r\n"
+						"File size: %d\r\n",
+						name, file->size);
+				}
 			}
-			i += sizeof(entry_t)*2;
+			i += sizeof(entry_t);
 		}
+		i = 0;
 	}
 	if(found)
 		printf("File found.\r\n");
@@ -153,15 +214,14 @@ void find_file(drive_params_t *p, boot_t *bs, const char *filename)
 }
 /* Convert file name to string.
  */
-void conv_filename(unsigned char *filename, char *newname)
+void extract_filename(const entry_t *file, char *newname)
 {
 	int i;
-	for(i=0; (*newname = *filename) != ' '; newname++,filename++,i++);
-	while(i<12 && *filename == ' ') filename++;
-	if(*(filename-1) == ' ' && *filename != 0) {
+	for(i=0; i < 8 && (*newname = file->filename[i]) != ' '; newname++,i++);
+	for(i=0; file->extension[i] == ' '; i++);
+	if(file->extension[i] != ' ' && *newname != '.') {
 		*newname++ = '.';
-		i++;
 	}
-	while(i<12 && (*newname++ = *filename++));
+	for(i=0; i<3 && (*newname = file->extension[i]) != ' '; newname++,i++);
 	*newname = 0;
 }
