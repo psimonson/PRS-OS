@@ -41,14 +41,8 @@ int __REGPARM vprintf(const char *format, va_list ap, unsigned char delay)
 	int i = 0;
 	while(*format) {
 		if(format[0] == '%' && format[1] == '%') {
-			switch(*++format) {
-			case '%':
-				putchar('%', delay);
-				i++;
-			break;
-			default:
-			break;
-			}
+			putchar(*++format, delay);
+			i++;
 		} else if(format[0] == '%' && format[1] != '%') {
 			unsigned long ul;
 			const char *s;
