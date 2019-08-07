@@ -218,9 +218,6 @@ void extract_filename(const entry_t *file, char *newname)
 {
 	int i;
 	for(i=0; i < 8 && (*newname = file->filename[i]) != ' '; newname++,i++);
-	if(file->filename[i] != ' ' && *newname != '.') {
-		*newname++ = '.';
-	}
 	for(i=0; file->extension[i] == ' '; i++);
 	if(file->extension[i] != ' ' && *newname != '.') {
 		*newname++ = '.';
