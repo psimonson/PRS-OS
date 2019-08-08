@@ -7,14 +7,12 @@
 asm(".code16gcc");
 /* setup segment registers */
 asm(
-	"movw %cs, %ax\n\t"
+	"cli\n\t"
+	"movw $0x0050, %ax\n\t"
 	"movw %ax, %ds\n\t"
 	"movw %ax, %es\n\t"
-	"movw %ax, %fs\n\t"
-	"movw %ax, %gs\n\t"
-	"cli\n\t"
 	"movw %ax, %ss\n\t"
-	"movw $0x0000, %sp\n\t"
+	"movw $0xffff, %sp\n\t"
 	"sti\n\t"
 );
 asm("jmp main");
