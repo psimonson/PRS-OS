@@ -24,8 +24,8 @@ int __REGPARM printf(const char *format, ...);
 int __REGPARM typerf(const char *format, ...);
 int __REGPARM print_delay(const char *s, unsigned char delay);
 int __REGPARM puts(const char *s);
-char __REGPARM getch();
-char __REGPARM getche();
+unsigned char __REGPARM getch();
+unsigned char __REGPARM getche();
 
 /* graphics functions */
 void __REGPARM init_graphics(unsigned char mode);

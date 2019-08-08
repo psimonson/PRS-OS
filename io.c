@@ -151,17 +151,17 @@ int __REGPARM puts(const char *s)
 }
 /* Gets a character from the keyboard.
  */
-char __REGPARM getch()
+unsigned char __REGPARM getch()
 {
-	char c;
+	unsigned char c;
 	asm("int $0x16" : "=a"(c) : "a"(0x0000));
 	return c;
 }
 /* Gets a character from the keyboard and echoes it on screen.
  */
-char __REGPARM getche()
+unsigned char __REGPARM getche()
 {
-	char c;
+	unsigned char c;
 	c = getch();
 	putch(c);
 	return c;
