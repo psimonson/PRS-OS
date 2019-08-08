@@ -7,10 +7,10 @@ USER  =$(shell whoami)
 
 CFLAGS=-std=gnu89 -Wall -Werror -s -Os -march=i686 -ffreestanding -I. -m16 -pedantic
 CFLAGS+=-fno-asynchronous-unwind-tables -fno-pic -fno-builtin -fno-ident
-CFLAGS+=-fomit-frame-pointer
+CFLAGS+=-fomit-frame-pointer -ffunction-sections -fdata-sections
 
 LDFLAGS=-static -s -Os -Tcommand.ld -m elf_i386 -no-pie -nostartfiles --nmagic
-LDFLAGS+=--oformat binary
+LDFLAGS+=--gc-sections --oformat binary
 
 # uncomment for fat12
 CMDOBJS=command.c.o io.c.o time.c.o string.c.o shell.c.o disk.c.o fat12.c.o
