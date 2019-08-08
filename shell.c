@@ -363,6 +363,7 @@ int cmd_ls()
  */
 int cmd_find()
 {
+	entry_t *file;
 	char buf[50];
 
 	printf("Enter filename: ");
@@ -375,7 +376,15 @@ int cmd_find()
 		return -1;
 	}
 	printf("\r\nSearching...\r\n");
-	find_file(&_drive_params, _boot_sector, buf);
+	file = find_file(&_drive_params, _boot_sector, buf);
+	if(file == 0)
+		printf("File not found.\r\n");
+	else {
+		char name[12];
+		extract_filename(file, name);
+		printf("File name: %s\r\nFile size: %d\r\n",
+			name, file->size);
+	}
 	return 1;
 }
 /* Format command, just what it says (format a disk).

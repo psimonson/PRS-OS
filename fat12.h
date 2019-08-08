@@ -77,7 +77,7 @@ unsigned char *load_next_sector(drive_params_t *p, boot_t *bs);
 /* list directory structure */
 void list_directory(drive_params_t *p, boot_t *bs);
 /* find file in root directory */
-void find_file(drive_params_t *p, boot_t *bs, const char *filename);
+entry_t *find_file(drive_params_t *p, boot_t *bs, const char *filename);
 /* convert filename into cstring */
 void extract_filename(const entry_t *filename, char *newname);
 

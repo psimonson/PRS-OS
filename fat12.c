@@ -181,11 +181,12 @@ void list_directory(drive_params_t *p, boot_t *bs)
 }
 /* Find file in root directory; compares it with strcmp.
  */
-void find_file(drive_params_t *p, boot_t *bs, const char *filename)
+entry_t *find_file(drive_params_t *p, boot_t *bs, const char *filename)
 {
 	static unsigned short i = 0;
 	static unsigned char *bytes;
-	static entry_t *file;
+	static entry_t curfile;
+	entry_t *file;
 	char found;
 
 	/* load root directory and list files */
@@ -203,9 +204,7 @@ void find_file(drive_params_t *p, boot_t *bs, const char *filename)
 				extract_filename(file, name);
 				if(!strcmp(filename, name)) {
 					found = 1;
-					printf("Filename: %s\r\n"
-						"File size: %d\r\n",
-						name, file->size);
+					memcpy(&curfile, file, sizeof(entry_t));
 				}
 			}
 			i += sizeof(entry_t);
@@ -213,9 +212,8 @@ void find_file(drive_params_t *p, boot_t *bs, const char *filename)
 		i = 0;
 	}
 	if(found)
-		printf("File found.\r\n");
-	else
-		printf("File not found.\r\n");
+		return &curfile;
+	return 0;
 }
 /* Convert file name to string.
  */
