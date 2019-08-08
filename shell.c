@@ -37,6 +37,7 @@ int cmd_ls(void);
 int cmd_find(void);
 int cmd_format(void);
 int cmd_type(void);
+int cmd_version(void);
 int cmd_exit(void);
 
 /* command structure initializer */
@@ -54,6 +55,7 @@ static const command_t commands[] = {
 	{"find", "Search for a file in root directory.", &cmd_find},
 	{"format", "Format a floppy diskette.", &cmd_format},
 	{"type", "Re-type the phrase you enter.", &cmd_type},
+	{"version", "Display the version information.", &cmd_version},
 	{"exit", "Exit the shell.", &cmd_exit}
 };
 
@@ -453,6 +455,16 @@ int cmd_type()
 	printf("\r\n");
 	typerf("%s", buf);
 	printf("\r\n");
+	return 1;
+}
+/* Version command, just displays version information.
+ */
+int cmd_version()
+{
+	printf("PS-DOS %s - by Philip R. Simonson\r\n",
+		PROGRAM_VERSION);
+	typerf("Please do NOT remove this command and/or\r\n"
+		"change what it says.\r\n");
 	return 1;
 }
 /* Exit command, just exits the shell.
