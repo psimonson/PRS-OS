@@ -21,7 +21,7 @@ typedef struct command {
 	char *cmd;
 	char *help;
 	int (*func)(void);
-} __attribute__((packed)) command_t;
+} __PACKED command_t;
 
 /* command prototypes here */
 int cmd_help(void);
@@ -478,7 +478,7 @@ int cmd_exit()
 
 /* Main function for processing and getting commands.
  */
-int shell()
+__REGPARM int shell()
 {
 	char buf[256];
 	int i, running;

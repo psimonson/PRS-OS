@@ -13,7 +13,7 @@ asm(".code16gcc");
 
 /* Get the current drive error and print error message.
  */
-void __REGPARM get_drive_error(const drive_params_t *p)
+__REGPARM void get_drive_error(const drive_params_t *p)
 {
 	switch((unsigned char)(p->status >> 8)) {
 		case DISK_ERR_OK:
@@ -100,7 +100,7 @@ void __REGPARM get_drive_error(const drive_params_t *p)
 }
 /* Get the status of last drive operation.
  */
-int __REGPARM get_drive_status(drive_params_t *p)
+__REGPARM int get_drive_status(drive_params_t *p)
 {
 	unsigned char failed = 0;
 
@@ -118,7 +118,7 @@ int __REGPARM get_drive_status(drive_params_t *p)
 }
 /* Reset the disk drive.
  */
-int __REGPARM reset_drive(drive_params_t *p)
+__REGPARM int reset_drive(drive_params_t *p)
 {
 	unsigned char failed = 0;
 
@@ -137,7 +137,7 @@ int __REGPARM reset_drive(drive_params_t *p)
 }
 /* Gets drive parameters.
  */
-int __REGPARM get_drive_params(drive_params_t *p, unsigned char drive)
+__REGPARM int get_drive_params(drive_params_t *p, unsigned char drive)
 {
 	unsigned char failed = 0;
 	unsigned short tmp1, tmp2;
@@ -162,7 +162,7 @@ int __REGPARM get_drive_params(drive_params_t *p, unsigned char drive)
 }
 /* Reads a disk drive using LBA.
  */
-int __REGPARM read_drive_lba(void *buf, unsigned char blocks, drive_params_t* p)
+__REGPARM int read_drive_lba(void *buf, unsigned char blocks, drive_params_t* p)
 {
 	unsigned char failed = 0;
 	unsigned char c,h,s;
@@ -185,7 +185,7 @@ int __REGPARM read_drive_lba(void *buf, unsigned char blocks, drive_params_t* p)
 }
 /* Reads a disk drive using CHS.
  */
-int __REGPARM read_drive_chs(void *buf, unsigned char blocks, unsigned char c,
+__REGPARM int read_drive_chs(void *buf, unsigned char blocks, unsigned char c,
 	unsigned char h, unsigned char s, drive_params_t* p)
 {
 	unsigned char failed = 0;
@@ -206,7 +206,7 @@ int __REGPARM read_drive_chs(void *buf, unsigned char blocks, unsigned char c,
 }
 /* Reads a disk drive by sectors. (floppy only)
  */
-int __REGPARM read_drive(void *buf, unsigned char blocks, unsigned char sector,
+__REGPARM int read_drive(void *buf, unsigned char blocks, unsigned char sector,
 	drive_params_t* p)
 {
 	unsigned char failed = 0;
@@ -230,7 +230,7 @@ int __REGPARM read_drive(void *buf, unsigned char blocks, unsigned char sector,
 }
 /* Write to a disk drive. (floppy only)
  */
-int __REGPARM write_drive(const void *buf, unsigned char blocks, unsigned char sector,
+__REGPARM int write_drive(const void *buf, unsigned char blocks, unsigned char sector,
 	drive_params_t *p)
 {
 	unsigned char failed = 0;
@@ -257,7 +257,7 @@ int __REGPARM write_drive(const void *buf, unsigned char blocks, unsigned char s
 
 /* LBA to CHS conversion function.
  */
-void __REGPARM lba_to_chs(const drive_params_t *p, unsigned char *c,
+__REGPARM void lba_to_chs(const drive_params_t *p, unsigned char *c,
 	unsigned char *h, unsigned char *s)
 {
 	unsigned int temp;
@@ -275,7 +275,7 @@ void __REGPARM lba_to_chs(const drive_params_t *p, unsigned char *c,
 }
 /* CHS to sector conversion.
  */
-void __REGPARM sector_to_chs(const drive_params_t *p, unsigned char sector,
+__REGPARM void sector_to_chs(const drive_params_t *p, unsigned char sector,
 	unsigned char *c, unsigned char *h, unsigned char *s)
 {
 #if USE_FLP_144

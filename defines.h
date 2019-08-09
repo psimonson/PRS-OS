@@ -18,5 +18,6 @@
 #define __REGPARM	__attribute__((regparm(3)))
 #define __PACKED	__attribute__((packed))
 #define __NORETURN	__attribute__((noreturn))
+#define __INTERRUPT	__attribute__((interrupt))
 
 #endif

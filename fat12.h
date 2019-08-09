@@ -7,6 +7,7 @@
 #ifndef FAT12_H
 #define FAT12_H
 
+#include "defines.h"
 #include "disk.h"
 
 /* Boot sector structure.
@@ -34,7 +35,7 @@ typedef struct boot {
 	unsigned char	type[8];
 	unsigned char	_c[448];
 	unsigned short	sig;
-} __attribute__((packed)) boot_t;
+} __PACKED boot_t;
 
 /* Structure for LFN entry.
  */
@@ -47,7 +48,7 @@ typedef struct lfn_entry {
 	unsigned char	lname[12];
 	unsigned short	reserved;
 	unsigned char	fname[4];
-} __attribute__((packed)) lfn_entry_t;
+} __PACKED lfn_entry_t;
 
 /* Structure for FAT file entry.
  */
@@ -66,7 +67,7 @@ typedef struct entry {
 	unsigned short	last_write_date;
 	unsigned short	cluster;
 	unsigned int	size;
-} __attribute__((packed)) entry_t;
+} __PACKED entry_t;
 
 /* try and fill boot structure */
 boot_t *load_boot(drive_params_t *p);

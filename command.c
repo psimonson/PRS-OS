@@ -22,11 +22,11 @@ drive_params_t _drive_params;
 void *_FAT_table;
 
 /* external linkage; shell.c has this in it */
-extern int shell();
+extern __REGPARM int shell();
 
 /* Entry point for my command shell.
  */
-void __REGPARM main()
+__REGPARM void main()
 {
 	/* setup segment registers */
 	asm(
