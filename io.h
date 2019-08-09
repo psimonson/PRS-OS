@@ -32,7 +32,7 @@ int __REGPARM getche();
 
 /* graphics functions */
 void __REGPARM init_graphics(unsigned char mode);
-void __REGPARM putpixel(unsigned short y, unsigned short x, unsigned char color);
+void __REGPARM put_pixel(unsigned short y, unsigned short x, unsigned char color);
 
 /* miscellaneous functions */
 void __REGPARM set_cursor(unsigned short shape);

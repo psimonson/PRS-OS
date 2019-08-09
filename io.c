@@ -177,7 +177,7 @@ void __REGPARM init_graphics(unsigned char mode)
 }
 /* Plot a pixel at given (y,x) coords.
  */
-void __REGPARM putpixel(unsigned short y, unsigned short x, unsigned char color)
+void __REGPARM put_pixel(unsigned short y, unsigned short x, unsigned char color)
 {
 	asm("int $0x10": : "a"(0x0c00 | color), "b"(0x0000), "c"(y), "d"(x));
 }
