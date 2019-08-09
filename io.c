@@ -151,20 +151,20 @@ int __REGPARM puts(const char *s)
 }
 /* Gets a character from the keyboard.
  */
-unsigned char __REGPARM getch()
+int __REGPARM getch()
 {
 	unsigned char c;
 	asm("int $0x16" : "=a"(c) : "a"(0x0000));
-	return c;
+	return 0x0000 | c;
 }
 /* Gets a character from the keyboard and echoes it on screen.
  */
-unsigned char __REGPARM getche()
+int __REGPARM getche()
 {
 	unsigned char c;
 	c = getch();
 	putch(c);
-	return c;
+	return 0x0000 | c;
 }
 
 /* ------------------------- Graphics Functions ------------------------- */
@@ -177,16 +177,22 @@ void __REGPARM init_graphics(unsigned char mode)
 }
 /* Plot a pixel at given (y,x) coords.
  */
-void __REGPARM putpixel(short y, short x, unsigned char color)
+void __REGPARM putpixel(unsigned short y, unsigned short x, unsigned char color)
 {
 	asm("int $0x10": : "a"(0x0c00 | color), "b"(0x0000), "c"(y), "d"(x));
 }
 
 /* ---------------------- Miscellaneous Functions ----------------------- */
 
+/* Set cursor shape.
+ */
+void __REGPARM set_cursor(unsigned short shape)
+{
+	asm("int $0x10": : "a"(0x0100), "c"(shape));
+}
 /* Set cursor position.
  */
-void __REGPARM set_cursoryx(char y, char x)
+void __REGPARM set_cursoryx(unsigned char y, unsigned char x)
 {
 	asm("int $0x10": : "a"(0x0200), "b"(0x0000), "d"((y << 8) | x));
 }

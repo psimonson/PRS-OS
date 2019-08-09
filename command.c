@@ -53,6 +53,7 @@ void __REGPARM main()
 	printf("Press any key to continue...");
 	getch();
 	init_graphics(0x03);
+	set_cursor(CSHAPE_BLOCK);
 	puts(INFOMSG);
 	wait(1000000);
 	beep();

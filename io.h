@@ -10,11 +10,14 @@
 #include "defines.h"
 #include <stdarg.h>
 
-#define TRUE	1
-#define FALSE	0
+#define TRUE		1		/* true 1=on */
+#define FALSE		0		/* false 0=off */
 
-#define NULL	((void*)0)	/* void pointer (null pointer) */
-#define BUFSIZ	512		/* size of one sector on disk */
+#define NULL		((void*)0)	/* void pointer (null pointer) */
+#define BUFSIZ		512		/* size of one sector on disk */
+
+#define CSHAPE_NORM	0x0607		/* Normal cursor */
+#define CSHAPE_BLOCK	0x0007		/* Block cursor */
 
 /* input/output functions */
 int __REGPARM putch_color(int c, unsigned char color);
@@ -24,15 +27,16 @@ int __REGPARM printf(const char *format, ...);
 int __REGPARM typerf(const char *format, ...);
 int __REGPARM print_delay(const char *s, unsigned char delay);
 int __REGPARM puts(const char *s);
-unsigned char __REGPARM getch();
-unsigned char __REGPARM getche();
+int __REGPARM getch();
+int __REGPARM getche();
 
 /* graphics functions */
 void __REGPARM init_graphics(unsigned char mode);
-void __REGPARM putpixel(short y, short x, unsigned char color);
+void __REGPARM putpixel(unsigned short y, unsigned short x, unsigned char color);
 
 /* miscellaneous functions */
-void __REGPARM set_cursoryx(char y, char x);
+void __REGPARM set_cursor(unsigned short shape);
+void __REGPARM set_cursoryx(unsigned char y, unsigned char x);
 void __REGPARM reboot();
 
 /* sound functions (PC Speaker) */
