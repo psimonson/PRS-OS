@@ -10,7 +10,7 @@ CFLAGS+=-fno-asynchronous-unwind-tables -fno-pic -fno-builtin -fno-ident
 CFLAGS+=-fomit-frame-pointer -ffunction-sections -fdata-sections
 
 LDFLAGS=-static -s -Os -Tcommand.ld -m elf_i386 -no-pie -nostartfiles --nmagic
-LDFLAGS+=--gc-sections --oformat binary
+LDFLAGS+=--gc-sections# --oformat binary
 
 # uncomment for fat12
 CMDOBJS=command.c.o io.c.o time.c.o string.c.o shell.c.o disk.c.o fat12.c.o
@@ -40,9 +40,10 @@ boot.bin: boot.asm
 	nasm -f bin -o $@ $^
 
 command.bin: $(CMDOBJS)
-	$(LD) $(LDFLAGS) -o $@ $^
+	$(LD) $(LDFLAGS) -o command.elf $^
+	objcopy -R .comment -R .note -R .gnu.version -O binary command.elf $@
 
-disk: all
+disk: clean all
 ifneq (,$(wildcard ./floppy.img))
 	rm ./floppy.img
 endif
@@ -53,7 +54,7 @@ endif
 	sudo dd if=boot.bin of=floppy.img bs=1 count=512 conv=notrunc
 	sudo chown $(USER):users floppy.img
 
-disk2: all
+disk2: clean all
 ifneq (,$(wildcard ./floppy.img))
 	rm ./floppy.img
 endif
@@ -66,7 +67,7 @@ endif
 	sudo chown $(USER):users floppy.img
 
 clean:
-	rm -f floppy.img *~ *.bin *.o
+	rm -f floppy.img *~ *.elf *.bin *.o
 
 run:
 	qemu-system-i386 -soundhw pcspk -fda floppy.img -boot a
