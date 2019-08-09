@@ -26,7 +26,7 @@ extern int shell();
 
 /* Entry point for my command shell.
  */
-void main()
+void __REGPARM main()
 {
 	/* setup segment registers */
 	asm(
