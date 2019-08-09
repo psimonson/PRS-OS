@@ -43,7 +43,7 @@ command.bin: $(CMDOBJS)
 	strip --strip-unneeded -R .comment -R .note -R .gnu.version command.elf
 	objcopy -O binary command.elf $@
 
-disk: clean all
+disk: all
 ifneq (,$(wildcard ./floppy.img))
 	rm ./floppy.img
 endif
@@ -54,7 +54,7 @@ endif
 	sudo dd if=boot.bin of=floppy.img bs=1 count=512 conv=notrunc
 	sudo chown $(USER):users floppy.img
 
-disk2: clean all
+disk2: all
 ifneq (,$(wildcard ./floppy.img))
 	rm ./floppy.img
 endif
