@@ -96,22 +96,22 @@ int cmd_hello()
  */
 int cmd_play()
 {
-	char buf[50];
-	int freq;
+	char buf[20];
+	unsigned short freq;
 
 	printf("Enter a number: ");
 	if(gets(buf, sizeof(buf)) <= 0) {
 		printf("\r\nYou need to enter a string.\r\n");
 		return -1;
 	}
-	printf("\r\n");
 	freq = atoi(buf);
 	if(!freq) {
-		printf("No number given.\r\n");
+		printf("\r\nInvalid number given.\r\n");
 		return -1;
 	}
+	printf("\r\nPlaying frequency: %d\r\n", freq);
 	play_sound(freq);
-	wait(50000);
+	wait(100000);
 	no_sound();
 	return 1;
 }

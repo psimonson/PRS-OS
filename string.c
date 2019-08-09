@@ -51,7 +51,7 @@ __REGPARM int atoi(const char *s)
 	while(*s) {
 		if(*s < '0' || *s > '9')
 			return 0;
-		number += (*s - '0') * 10;
+		number = (number * 10) + (*s - '0');
 		s++;
 	}
 	return number;
@@ -69,7 +69,7 @@ __REGPARM void itoa(int n, char s[])
 	} while((n /= 10) > 0);
 	if(sign < 0)
 		s[i++] = '-';
-	s[i] = 0;
+	s[i] = '\0';
 	reverse(s);
 }
 /* Simple implementation of ltoa.
