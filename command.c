@@ -5,18 +5,6 @@
  */
 
 asm(".code16gcc");
-/* setup segment registers */
-asm(
-	"movw %cs, %ax\n\t"
-	"movw %ax, %ds\n\t"
-	"movw %ax, %es\n\t"
-	"movw %ax, %fs\n\t"
-	"movw %ax, %gs\n\t"
-	"cli\n\t"
-	"movw %ax, %ss\n\t"
-	"movw $0x0000, %sp\n\t"
-	"sti\n\t"
-);
 asm("jmp main");
 
 #include "io.h"
@@ -34,12 +22,23 @@ drive_params_t _drive_params;
 void *_FAT_table;
 
 /* external linkage; shell.c has this in it */
-extern int shell();
+extern __REGPARM int shell();
 
 /* Entry point for my command shell.
  */
-void main()
+__REGPARM void main()
 {
+	/* setup segment registers */
+	asm(
+		"cli\n\t"
+		"movw $0x0050, %ax\n\t"
+		"movw %ax, %ds\n\t"
+		"movw %ax, %es\n\t"
+		"movw %ax, %ss\n\t"
+		"movw $0xffff, %sp\n\t"
+		"sti\n\t"
+	);
+
 	/* get first floppy drive */
 	if(get_drive_params(&_drive_params, 0))
 		goto end;
@@ -54,6 +53,7 @@ void main()
 	printf("Press any key to continue...");
 	getch();
 	init_graphics(0x03);
+	set_cursor(CSHAPE_BLOCK);
 	puts(INFOMSG);
 	wait(1000000);
 	beep();

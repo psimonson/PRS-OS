@@ -7,6 +7,8 @@
 #ifndef DISK_H
 #define DISK_H
 
+#include "defines.h"
+
 #define USE_FLP_144	1		/* use floppy 1.44MB floppy */
 #define FLP_144_SECT	(18*80*2)	/* total sectors of 1.44MB floppy */
 #define FLP_144_SPT	18		/* sectors per track 1.44MB floppy */
@@ -50,36 +52,36 @@ typedef struct {
 	unsigned char	_unused;
 	unsigned short	status;
 	unsigned int	lba;
-} __attribute__((packed)) drive_params_t;
+} __PACKED drive_params_t;
 
 /* get drive error and print message */
-void __REGPARM get_drive_error(const drive_params_t *p);
+__REGPARM void get_drive_error(const drive_params_t *p);
 /* get status of last drive operation */
-int __REGPARM get_drive_status(drive_params_t *p);
+__REGPARM int get_drive_status(drive_params_t *p);
 /* reset disk drive */
-int __REGPARM reset_drive(drive_params_t *p);
+__REGPARM int reset_drive(drive_params_t *p);
 /* get drive parameters */
-int __REGPARM get_drive_params(drive_params_t *p, unsigned char drive);
+__REGPARM int get_drive_params(drive_params_t *p, unsigned char drive);
 /* read data from disk drive */
-int __REGPARM read_drive_lba(void *buf, unsigned char blocks,
+__REGPARM int read_drive_lba(void *buf, unsigned char blocks,
 	drive_params_t *p);
 /* read data from disk drive */
-int __REGPARM read_drive_chs(void *buf, unsigned char blocks, unsigned char c,
+__REGPARM int read_drive_chs(void *buf, unsigned char blocks, unsigned char c,
 	unsigned char h, unsigned char s, drive_params_t* p);
 /* read data from disk drive */
-int __REGPARM read_drive(void *buf, unsigned char blocks, unsigned char sector,
+__REGPARM int read_drive(void *buf, unsigned char blocks, unsigned char sector,
 	drive_params_t *p);
 /* write data to disk drive */
-int __REGPARM write_drive(const void *buf, unsigned char blocks, unsigned char sector,
+__REGPARM int write_drive(const void *buf, unsigned char blocks, unsigned char sector,
 	drive_params_t *p);
 
 /* -------------------------- Helper Functions ----------------------- */
 
 /* LBA to CHS */
-void __REGPARM lba_to_chs(const drive_params_t *p, unsigned char *c, unsigned char *h,
+__REGPARM void lba_to_chs(const drive_params_t *p, unsigned char *c, unsigned char *h,
 	unsigned char *s);
 /* sector to CHS */
-void __REGPARM sector_to_chs(const drive_params_t *p, unsigned char sector,
+__REGPARM void sector_to_chs(const drive_params_t *p, unsigned char sector,
 	unsigned char *c, unsigned char *h, unsigned char *s);
 
 #endif

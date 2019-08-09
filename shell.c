@@ -21,7 +21,7 @@ typedef struct command {
 	char *cmd;
 	char *help;
 	int (*func)(void);
-} __attribute__((packed)) command_t;
+} __PACKED command_t;
 
 /* command prototypes here */
 int cmd_help(void);
@@ -37,6 +37,7 @@ int cmd_ls(void);
 int cmd_find(void);
 int cmd_format(void);
 int cmd_type(void);
+int cmd_version(void);
 int cmd_exit(void);
 
 /* command structure initializer */
@@ -54,6 +55,7 @@ static const command_t commands[] = {
 	{"find", "Search for a file in root directory.", &cmd_find},
 	{"format", "Format a floppy diskette.", &cmd_format},
 	{"type", "Re-type the phrase you enter.", &cmd_type},
+	{"version", "Display the version information.", &cmd_version},
 	{"exit", "Exit the shell.", &cmd_exit}
 };
 
@@ -94,22 +96,22 @@ int cmd_hello()
  */
 int cmd_play()
 {
-	char buf[50];
-	int freq;
+	char buf[20];
+	unsigned short freq;
 
 	printf("Enter a number: ");
 	if(gets(buf, sizeof(buf)) <= 0) {
 		printf("\r\nYou need to enter a string.\r\n");
 		return -1;
 	}
-	printf("\r\n");
 	freq = atoi(buf);
 	if(!freq) {
-		printf("No number given.\r\n");
+		printf("\r\nInvalid number given.\r\n");
 		return -1;
 	}
+	printf("\r\nPlaying frequency: %d\r\n", freq);
 	play_sound(freq);
-	wait(50000);
+	wait(100000);
 	no_sound();
 	return 1;
 }
@@ -363,6 +365,7 @@ int cmd_ls()
  */
 int cmd_find()
 {
+	entry_t *file;
 	char buf[50];
 
 	printf("Enter filename: ");
@@ -375,7 +378,15 @@ int cmd_find()
 		return -1;
 	}
 	printf("\r\nSearching...\r\n");
-	find_file(&_drive_params, _boot_sector, buf);
+	file = find_file(&_drive_params, _boot_sector, buf);
+	if(file == 0)
+		printf("File not found.\r\n");
+	else {
+		char name[12];
+		extract_filename(file, name);
+		printf("File name: %s\r\nFile size: %d\r\n",
+			name, file->size);
+	}
 	return 1;
 }
 /* Format command, just what it says (format a disk).
@@ -446,6 +457,16 @@ int cmd_type()
 	printf("\r\n");
 	return 1;
 }
+/* Version command, just displays version information.
+ */
+int cmd_version()
+{
+	printf("PS-DOS %s - by Philip R. Simonson\r\n",
+		PROGRAM_VERSION);
+	typerf("Please do NOT remove this command and/or\r\n"
+		"change what it says.\r\n");
+	return 1;
+}
 /* Exit command, just exits the shell.
  */
 int cmd_exit()
@@ -457,7 +478,7 @@ int cmd_exit()
 
 /* Main function for processing and getting commands.
  */
-int shell()
+__REGPARM int shell()
 {
 	char buf[256];
 	int i, running;

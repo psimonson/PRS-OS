@@ -7,19 +7,21 @@
 #ifndef STRING_H
 #define STRING_H
 
-int __REGPARM gets(char *s, int size);
-void __REGPARM itoh(unsigned long n, char s[]);
-int __REGPARM atoi(const char *s);
-void __REGPARM itoa(int n, char s[]);
-void __REGPARM ltoa(long n, char s[]);
-int __REGPARM strlen(const char *s);
-int __REGPARM strcmp(const char *s, const char *t);
-int __REGPARM memcmp(const void *m, const void *p, unsigned long nmem);
-char *__REGPARM strstr(char *s, const char *t);
-int __REGPARM strchr(char *s, const char c);
-int __REGPARM strcpy(char *s, const char *t, int size);
-int __REGPARM memset(void *mem, int c, int size);
-int __REGPARM memcpy(void *dst, const void *src, int size);
-void __REGPARM reverse(char s[]);
+#include "defines.h"
+
+__REGPARM int gets(char *s, int size);
+__REGPARM void itoh(unsigned long n, char s[]);
+__REGPARM int atoi(const char *s);
+__REGPARM void itoa(int n, char s[]);
+__REGPARM void ltoa(long n, char s[]);
+__REGPARM int strlen(const char *s);
+__REGPARM int strcmp(const char *s, const char *t);
+__REGPARM int memcmp(const void *m, const void *p, unsigned long nmem);
+__REGPARM char *strstr(char *s, const char *t);
+__REGPARM int strchr(char *s, const char c);
+__REGPARM int strcpy(char *s, const char *t, int size);
+__REGPARM int memset(void *mem, int c, int size);
+__REGPARM int memcpy(void *dst, const void *src, int size);
+__REGPARM void reverse(char s[]);
 
 #endif
