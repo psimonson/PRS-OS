@@ -73,7 +73,7 @@ boot_t *load_boot(drive_params_t *p);
 /* try and load FAT12 table */
 void *load_fat12(drive_params_t *p);
 /* try and get root directory entries */
-unsigned char *load_next_sector(drive_params_t *p, boot_t *bs);
+unsigned char *load_next_sector(drive_params_t *p, boot_t *bs, char *end_list);
 /* list directory structure */
 void list_directory(drive_params_t *p, boot_t *bs);
 /* find file in root directory */

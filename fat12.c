@@ -83,7 +83,7 @@ disk_error:
 }
 /* Get file root directory from FAT12 filesystem.
  */
-unsigned char *load_next_sector(drive_params_t *p, boot_t *bs)
+unsigned char *load_next_sector(drive_params_t *p, boot_t *bs, char *end_list)
 {
 #if 1
 	static unsigned char sector[BUFSIZ];
@@ -126,7 +126,7 @@ unsigned char *load_next_sector(drive_params_t *p, boot_t *bs)
 	printf("Sectors read: %d\r\n", ((unsigned char)(p->status)));
 	printf("LBA [C:%d] [H:%d] [S:%d]\r\n", c, h, s);
 #endif
-	if(i++ < size)
+	if(*end_list == 0 && i++ < size)
 		return sector;
 	retries = 3;
 	i = 0;
@@ -158,8 +158,7 @@ void list_directory(drive_params_t *p, boot_t *bs)
 	/* load root directory and list files */
 	end_list = 0;
 	total_size = 0;
-	while((bytes = load_next_sector(p, bs)) != NULL) {
-		if(end_list) continue;
+	while((bytes = load_next_sector(p, bs, &end_list)) != NULL) {
 		while(i <= BUFSIZ) {
 			file = (entry_t*)&bytes[i];
 			if(file->filename[0] == 0x00) {
@@ -187,15 +186,15 @@ entry_t *find_file(drive_params_t *p, boot_t *bs, const char *filename)
 	static unsigned char *bytes;
 	static entry_t curfile;
 	entry_t *file;
-	char found;
+	char found, end_list;
 
 	/* load root directory and list files */
-	found = 0;
-	while((bytes = load_next_sector(p, bs)) != NULL) {
-		if(found) continue;
+	found = end_list = 0;
+	while((bytes = load_next_sector(p, bs, &end_list)) != NULL) {
 		while(i <= BUFSIZ) {
 			file = (entry_t*)&bytes[i];
 			if(file->filename[0] == 0x00) {
+				end_list = 1;
 				break;
 			} else if(file->filename[0] == 0xe5) {
 				printf("File deleted.\r\n");
