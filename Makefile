@@ -6,17 +6,16 @@ SRCDIR=$(shell pwd)
 USER  =$(shell whoami)
 
 CFLAGS=-std=gnu89 -Wall -Werror -s -Os -march=i686 -ffreestanding -I. -m16 -pedantic
-CFLAGS+=-fno-asynchronous-unwind-tables -fno-pic -fno-builtin -fno-ident
-CFLAGS+=-fomit-frame-pointer
+CFLAGS+=-fno-asynchronous-unwind-tables -fno-pic -fno-pie -fno-builtin
+CFLAGS+=-fomit-frame-pointer -ffunction-sections -fdata-sections -fno-ident
 
-LDFLAGS=-static -s -Os -Tcommand.ld -m elf_i386 -no-pie -nostartfiles --nmagic
-LDFLAGS+=--oformat binary
+LDFLAGS=-static -s -Os -m elf_i386 -no-pie -nostartfiles --nmagic
+LDFLAGS+=--gc-sections# --oformat binary
 
-# uncomment for fat12
+# ===============================
+# COMMAND.BIN OBJECTS
+# ===============================
 CMDOBJS=command.c.o io.c.o time.c.o string.c.o shell.c.o disk.c.o fat12.c.o
-#CMDOBJS=command.c.o io.c.o time.c.o string.c.o shell.c.o
-CMDHDRS=io.h time.h string.h disk.h fat12.h
-#CMDHDRS=io.h time.h string.h
 
 SOURCES=$(wildcard *.c)
 HEADERS=$(wildcard *.h)
@@ -29,7 +28,7 @@ TARNAME=$(BASENAM)-$(VERSION).tgz
 .PHONY: all disk disk2 clean run distclean dist
 all: boot.bin command.bin #makeboot
 
-%.c.o: %.c $(CMDHDRS)
+%.c.o: %.c $(HEADERS)
 	$(CC) $(CFLAGS) -fno-PIC -c $< -o $@
 
 makeboot: makeboot.c
@@ -40,7 +39,9 @@ boot.bin: boot.asm
 	nasm -f bin -o $@ $^
 
 command.bin: $(CMDOBJS)
-	$(LD) $(LDFLAGS) -o $@ $^
+	$(LD) -Tcommand.ld $(LDFLAGS) -o command.elf $^
+	strip --strip-unneeded -R .comment -R .note -R .gnu.version command.elf
+	objcopy -O binary command.elf $@
 
 disk: all
 ifneq (,$(wildcard ./floppy.img))
@@ -66,7 +67,7 @@ endif
 	sudo chown $(USER):users floppy.img
 
 clean:
-	rm -f floppy.img *~ *.bin *.o
+	rm -f floppy.img *~ *.elf *.bin *.o
 
 run:
 	qemu-system-i386 -soundhw pcspk -fda floppy.img -boot a

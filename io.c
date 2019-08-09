@@ -14,15 +14,19 @@ asm(".code16gcc");
 
 /* Puts a character on the screen.
  */
-int __REGPARM putch_color(int ic, unsigned char color)
+__REGPARM int putch_color(int ic, unsigned char color)
 {
 	char c = (char)ic;
-	asm("int $0x10": : "a"((0x0e << 8) | c), "b"((0x00 << 8) | color), "c"(0x0001));
+	asm(
+		"int $0x10"
+		:
+		: "a"((0x0e << 8) | c), "b"((0x00 << 8) | color), "c"(0x0001)
+	);
 	return c;
 }
 /* Puts a character on the screen with default color 0x07.
  */
-int __REGPARM putchar(int ch, unsigned char delay)
+__REGPARM int putchar(int ch, unsigned char delay)
 {
 	char c = (char)ch;
 	if(delay) {
@@ -36,7 +40,7 @@ int __REGPARM putchar(int ch, unsigned char delay)
 }
 /* Prints a formatted string on the screen using putch.
  */
-int __REGPARM vprintf(const char *format, va_list ap, unsigned char delay)
+__REGPARM int vprintf(const char *format, va_list ap, unsigned char delay)
 {
 	int i = 0;
 	while(*format) {
@@ -114,7 +118,7 @@ int __REGPARM vprintf(const char *format, va_list ap, unsigned char delay)
 }
 /* Prints a formatted string.
  */
-int __REGPARM printf(const char *format, ...)
+__REGPARM int printf(const char *format, ...)
 {
 	int bytes = 0;
 	va_list ap;
@@ -125,7 +129,7 @@ int __REGPARM printf(const char *format, ...)
 }
 /* Text typer; prints a formatted string a character at a time with delay.
  */
-int __REGPARM typerf(const char *format, ...)
+__REGPARM int typerf(const char *format, ...)
 {
 	int bytes = 0;
 	va_list ap;
@@ -136,7 +140,7 @@ int __REGPARM typerf(const char *format, ...)
 }
 /* Prints a string on the screen using putch.
  */
-int __REGPARM print_delay(const char *s, unsigned char delay)
+__REGPARM int print_delay(const char *s, unsigned char delay)
 {
 	const char *p = s;
 	while(*p)
@@ -145,54 +149,60 @@ int __REGPARM print_delay(const char *s, unsigned char delay)
 }
 /* Prints a string with a new line.
  */
-int __REGPARM puts(const char *s)
+__REGPARM int puts(const char *s)
 {
 	return printf("%s\r\n", s);
 }
 /* Gets a character from the keyboard.
  */
-char __REGPARM getch()
+__REGPARM int getch()
 {
-	char c;
+	unsigned char c;
 	asm("int $0x16" : "=a"(c) : "a"(0x0000));
-	return c;
+	return 0x0000 | c;
 }
 /* Gets a character from the keyboard and echoes it on screen.
  */
-char __REGPARM getche()
+__REGPARM int getche()
 {
-	char c;
+	unsigned char c;
 	c = getch();
 	putch(c);
-	return c;
+	return 0x0000 | c;
 }
 
 /* ------------------------- Graphics Functions ------------------------- */
 
 /* Initilize graphics.
  */
-void __REGPARM init_graphics(unsigned char mode)
+__REGPARM void init_graphics(unsigned char mode)
 {
 	asm("int $0x10": : "a"(0x0000 | mode));
 }
 /* Plot a pixel at given (y,x) coords.
  */
-void __REGPARM putpixel(short y, short x, unsigned char color)
+__REGPARM void put_pixel(unsigned short y, unsigned short x, unsigned char color)
 {
 	asm("int $0x10": : "a"(0x0c00 | color), "b"(0x0000), "c"(y), "d"(x));
 }
 
 /* ---------------------- Miscellaneous Functions ----------------------- */
 
+/* Set cursor shape.
+ */
+__REGPARM void set_cursor(unsigned short shape)
+{
+	asm("int $0x10": : "a"(0x0100), "c"(shape));
+}
 /* Set cursor position.
  */
-void __REGPARM set_cursoryx(char y, char x)
+__REGPARM void set_cursoryx(unsigned char y, unsigned char x)
 {
 	asm("int $0x10": : "a"(0x0200), "b"(0x0000), "d"((y << 8) | x));
 }
 /* Reboot system.
  */
-void __REGPARM reboot()
+__REGPARM void reboot()
 {
 	asm("jmpw $0xFFFF, $0x0000");
 }
@@ -201,7 +211,7 @@ void __REGPARM reboot()
 
 /* Play a sound of nfreq.
  */
-void __REGPARM play_sound(unsigned short nfreq)
+__REGPARM void play_sound(unsigned short nfreq)
 {
 	unsigned short div;
 	unsigned char tmp;
@@ -219,14 +229,14 @@ void __REGPARM play_sound(unsigned short nfreq)
 }
 /* Stop sound.
  */
-void __REGPARM no_sound()
+__REGPARM void no_sound()
 {
 	unsigned char tmp = inb(0x61) & 0xFC;
 	outb(0x61, tmp);
 }
 /* Beep the PC speaker.
  */
-void __REGPARM beep()
+__REGPARM void beep()
 {
 	play_sound(1000);
 	wait(50000);
@@ -237,7 +247,7 @@ void __REGPARM beep()
 
 /* Read a byte from the CMOS.
  */
-unsigned char __REGPARM cmos_read(unsigned char addr)
+__REGPARM unsigned char cmos_read(unsigned char addr)
 {
 	outb(0x70, addr);
 	wait(50000);
@@ -245,7 +255,7 @@ unsigned char __REGPARM cmos_read(unsigned char addr)
 }
 /* Write a byte to the CMOS.
  */
-void __REGPARM cmos_write(unsigned char addr, unsigned char byte)
+__REGPARM void cmos_write(unsigned char addr, unsigned char byte)
 {
 	outb(0x70, addr);
 	wait(50000);
@@ -253,7 +263,7 @@ void __REGPARM cmos_write(unsigned char addr, unsigned char byte)
 }
 /* Invert byte from CMOS.
  */
-void __REGPARM cmos_invert(unsigned char addr)
+__REGPARM void cmos_invert(unsigned char addr)
 {
 	cmos_write(addr, 255 ^ cmos_read(addr));
 }
@@ -262,13 +272,13 @@ void __REGPARM cmos_invert(unsigned char addr)
 
 /* Output to port.
  */
-void __REGPARM outb(unsigned short port, unsigned char value)
+__REGPARM void outb(unsigned short port, unsigned char value)
 {
 	asm volatile("outb %0, %1" : : "a"(value), "Nd"(port));
 }
 /* Input to port.
  */
-unsigned char __REGPARM inb(unsigned short port)
+__REGPARM unsigned char inb(unsigned short port)
 {
 	unsigned char value = 0;
 	asm volatile("inb %1, %0" : "=a"(value) : "Nd"(port));
