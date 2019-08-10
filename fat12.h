@@ -10,33 +10,52 @@
 #include "defines.h"
 #include "disk.h"
 
+/* FAT32 Extended boot structure.
+ */
+typedef struct fat32 {
+	unsigned int	table_size_32;
+	unsigned short	extended_flags;
+	unsigned short	fat_version;
+	unsigned int	root_cluster;
+	unsigned short	fat_info;
+	unsigned short	backup_boot_sector;
+	unsigned char	reserved_0[12];
+	unsigned char	drive_number;
+	unsigned char	reserved_1;
+	unsigned char	boot_sig;
+	unsigned int	volume_id;
+	unsigned char	volule_label[11];
+	unsigned char	fat_type[8];
+} __PACKED fat32_t;
+/* FAT12 Extended boot structure.
+ */
+typedef struct fat12 {
+	unsigned char	bios_drive;
+	unsigned char	reserved1;
+	unsigned char	boot_sig;
+	unsigned int	volume_id;
+	unsigned char	volume_label[11];
+	unsigned char	fat_type[8];
+} __PACKED fat12_t;
 /* Boot sector structure.
  */
 typedef struct boot {
-	unsigned char	_a[3];
-	unsigned char	name[8];
+	unsigned char	bootjmp[3];
+	unsigned char	oem_name[8];
 	unsigned short	bytes_per_sector;
 	unsigned char	sectors_per_cluster;
 	unsigned short	reserved_sectors;
-	unsigned char	fats;
+	unsigned char	table_count;
 	unsigned short	root_entries;
 	unsigned short	total_sectors;
-	unsigned char	media;
+	unsigned char	media_type;
 	unsigned short	sectors_per_fat;
 	unsigned short	sectors_per_track;
 	unsigned short	heads_per_cylinder;
 	unsigned int	hidden_sectors;
 	unsigned int	total_sectors_big;
-	unsigned short	drive_index;
-	unsigned char	_unused;
-	unsigned char	ext_boot_sig;
-	unsigned int	id;
-	unsigned char	label[11];
-	unsigned char	type[8];
-	unsigned char	_c[448];
-	unsigned short	sig;
+	unsigned char	extended_section[54];
 } __PACKED boot_t;
-
 /* Structure for LFN entry.
  */
 typedef struct lfn_entry {
@@ -49,7 +68,6 @@ typedef struct lfn_entry {
 	unsigned short	reserved;
 	unsigned char	fname[4];
 } __PACKED lfn_entry_t;
-
 /* Structure for FAT file entry.
  */
 typedef struct entry {
