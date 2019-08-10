@@ -100,7 +100,7 @@ unsigned char *load_next_sector(drive_params_t *p, boot_t *bs, char *end_list)
 	cflag = 0;
 
 	size = (32 * bs->root_entries) / bs->bytes_per_sector;
-	lba = (bs->fats*bs->sectors_per_fat)+bs->reserved_sectors+bs->hidden_sectors;
+	lba = (bs->table_count*bs->sectors_per_fat)+bs->reserved_sectors+bs->hidden_sectors;
 	do {
 		--retries;
 		p->lba = lba+i;
