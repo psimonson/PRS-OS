@@ -257,7 +257,7 @@ int cmd_dump()
 		printf("=============================================\r\n");
 		printf("BOOT Data\r\n"
 			"=============================================\r\n");
-		for(i=0,nl=0; i<sizeof(boot_t); i++) {
+		for(i=0,nl=0; i<BUFSIZ; i++) {
 			if(i>0 && !(i%21)) {
 				printf("\r\n");
 				++nl;
@@ -276,7 +276,7 @@ int cmd_dump()
 		printf("=============================================\r\n");
 		printf("BOOT Data\r\n"
 			"=============================================\r\n");
-		for(i=0,nl=0; i<sizeof(boot_t); i++) {
+		for(i=0,nl=0; i<BUFSIZ; i++) {
 			if(i>0 && !(i%50)) {
 				printf("\r\n");
 				++nl;
@@ -461,7 +461,7 @@ int cmd_type()
  */
 int cmd_version()
 {
-	printf("PS-DOS %s - by Philip R. Simonson\r\n",
+	printf("PRS-OS %s - by Philip R. Simonson\r\n",
 		PROGRAM_VERSION);
 	typerf("Please do NOT remove this command and/or\r\n"
 		"change what it says.\r\n");
