@@ -461,7 +461,7 @@ int cmd_type()
  */
 int cmd_version()
 {
-	printf("PS-DOS %s - by Philip R. Simonson\r\n",
+	printf("PRS-OS %s - by Philip R. Simonson\r\n",
 		PROGRAM_VERSION);
 	typerf("Please do NOT remove this command and/or\r\n"
 		"change what it says.\r\n");
