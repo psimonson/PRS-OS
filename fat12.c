@@ -162,7 +162,6 @@ void list_directory(drive_params_t *p, boot_t *bs)
 		while(i <= BUFSIZ) {
 			file = (entry_t*)&bytes[i];
 			if(file->filename[0] == 0x00) {
-				end_list = 1;
 				break;
 			} else if(file->filename[0] == 0xe5) {
 				printf("File deleted.\r\n");
@@ -194,7 +193,6 @@ entry_t *find_file(drive_params_t *p, boot_t *bs, const char *filename)
 		while(i <= BUFSIZ) {
 			file = (entry_t*)&bytes[i];
 			if(file->filename[0] == 0x00) {
-				end_list = 1;
 				break;
 			} else if(file->filename[0] == 0xe5) {
 				printf("File deleted.\r\n");
