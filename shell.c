@@ -38,6 +38,7 @@ int cmd_find(void);
 int cmd_format(void);
 int cmd_type(void);
 int cmd_version(void);
+int cmd_shutdown(void);
 int cmd_exit(void);
 
 /* command structure initializer */
@@ -56,6 +57,7 @@ static const command_t commands[] = {
 	{"format", "Format a floppy diskette.", &cmd_format},
 	{"type", "Re-type the phrase you enter.", &cmd_type},
 	{"version", "Display the version information.", &cmd_version},
+	{"shutdown", "Power off the computer system.", &cmd_shutdown},
 	{"exit", "Exit the shell.", &cmd_exit}
 };
 
@@ -466,6 +468,29 @@ int cmd_version()
 	typerf("Please do NOT remove this command and/or\r\n"
 		"change what it says.\r\n");
 	return 1;
+}
+/* Shutdown command, just powers off the computer (ACPI shutdown).
+ */
+int cmd_shutdown()
+{
+	printf("Shutting down system...\r\n");
+	asm volatile(
+		/* connect to APM API */
+		"movw $0x5301, %ax\n"
+		"xorw %bx, %bx\n"
+		"int $0x15\n"
+		/* try setting APM to ver 1.2 */
+		"movw $0x530E, %ax\n"
+		"xorw %bx, %bx\n"
+		"movw $0x0102, %cx\n"
+		"int $0x15\n"
+		/* turn off system */
+		"movw $0x5307, %ax\n"
+		"movw $0x0001, %bx\n"
+		"movw $0x0003, %cx\n"
+		"int $0x15\n"
+	);
+	return 0;
 }
 /* Exit command, just exits the shell.
  */

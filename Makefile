@@ -8,6 +8,7 @@ USER  =$(shell whoami)
 CFLAGS=-std=gnu89 -Wall -Werror -s -Os -march=i686 -ffreestanding -I. -m16 -pedantic
 CFLAGS+=-fno-asynchronous-unwind-tables -fno-pic -fno-pie -fno-builtin
 CFLAGS+=-fomit-frame-pointer -ffunction-sections -fdata-sections -fno-ident
+CFLAGS+=-fno-stack-protector
 
 LDFLAGS=-static -s -Os -m elf_i386 -no-pie -nostartfiles --nmagic
 LDFLAGS+=--gc-sections# --oformat binary
