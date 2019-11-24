@@ -98,7 +98,7 @@ __REGPARM int vprintf(const char *format, va_list ap, unsigned char delay)
 					break;
 				}
 				memset(buf, 0, sizeof(buf));
-				itoh((int)p, buf);
+				itoh(*(int*)p, buf);
 				i += print_delay(buf, delay);
 			break;
 			case 's':

@@ -97,6 +97,8 @@ unsigned char *load_next_sector(drive_params_t *p, boot_t *bs, char *end_list);
 void list_directory(drive_params_t *p, boot_t *bs);
 /* find file in root directory */
 entry_t *find_file(drive_params_t *p, boot_t *bs, const char *filename);
+/* load file to address */
+void load_file(drive_params_t *p, boot_t *bs, const char *filename);
 /* convert filename into cstring */
 void extract_filename(const entry_t *filename, char *newname);
 

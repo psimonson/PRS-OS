@@ -339,13 +339,19 @@ int cmd_dump()
  */
 int cmd_exec()
 {
-#if 0
+#if 1
 	char name[256];
 	printf("Enter binary filename: ");
 	if(gets(name, sizeof(name)) <= 0) {
 		printf("\r\nPlease enter a file name.\r\n");
 		return -1;
 	}
+	printf("\r\n");
+	if(reset_drive(&_drive_params)) {
+		get_drive_error(&_drive_params);
+		return -1;
+	}
+	load_file(&_drive_params, _boot_sector, name);
 #else
 	puts("Not yet implemented!");
 #endif

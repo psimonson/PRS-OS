@@ -11,6 +11,9 @@ asm(".code16gcc");
 #include "fat12.h"
 #include "disk.h"
 
+/* address to use for executable */
+static unsigned long *_exec_file = (unsigned long *)0x00007e00;
+
 /* Fill boot structure with boot sector data.
  */
 boot_t *load_boot(drive_params_t *p)
@@ -211,6 +214,18 @@ entry_t *find_file(drive_params_t *p, boot_t *bs, const char *filename)
 	if(found)
 		return &curfile;
 	return 0;
+}
+/* Load file from disk to address 0x00000200
+ */
+void load_file(drive_params_t *p, boot_t *bs, const char *name)
+{
+	char filename[12];
+	entry_t *file;
+	file = find_file(p, bs, name);
+	if(file == NULL) return;
+	extract_filename(file, filename);
+	printf("Loading %s at location: %p\r\n", filename, _exec_file);
+	/* TODO: Add code to load file */
 }
 /* Convert file name to string.
  */
