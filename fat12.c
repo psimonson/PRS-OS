@@ -12,7 +12,7 @@ asm(".code16gcc");
 #include "disk.h"
 
 /* address to use for executable */
-static unsigned long *_exec_file = (unsigned long *)0x00007e00;
+static unsigned char *_exec_file = (unsigned char *)0x00007e00;
 
 /* Fill boot structure with boot sector data.
  */
@@ -215,17 +215,42 @@ entry_t *find_file(drive_params_t *p, boot_t *bs, const char *filename)
 		return &curfile;
 	return 0;
 }
+/* Calculate file cluster from FAT table.
+ */
+void load_next_cluster(drive_params_t *p, int first, int *active)
+{
+	extern unsigned char *_FAT_table;
+	unsigned int fat_offset;
+	unsigned int ent_offset;
+	unsigned short table_value;
+
+	*active = (*active == -1 ? first : *active);
+	fat_offset = *active + (*active / 2);
+	ent_offset = fat_offset % 512;
+	table_value = *(unsigned short*)&_FAT_table[ent_offset];
+
+	if(*active & 0x0001)
+		table_value >>= 4;
+	else
+		table_value &= 0x0FFF;
+	*active = table_value;
+	if(table_value != 0xFF8 || table_value != 0xFF7)
+		read_drive((unsigned char*)_exec_file, 1, *active, p);
+	else if(table_value == 0xFF8)
+		*active = -1;
+}
 /* Load file from disk to address 0x00000200
  */
 void load_file(drive_params_t *p, boot_t *bs, const char *name)
 {
 	char filename[12];
 	entry_t *file;
+	static int active = -1;
 	file = find_file(p, bs, name);
 	if(file == NULL) return;
 	extract_filename(file, filename);
 	printf("Loading %s at location: %p\r\n", filename, _exec_file);
-	/* TODO: Add code to load file */
+	load_next_cluster(p, bs->reserved_sectors, &active);
 }
 /* Convert file name to string.
  */
